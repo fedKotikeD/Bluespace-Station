@@ -105,7 +105,7 @@ entities:
   - name: ЦентКом
     type: MetaData
   - type: Transform
-  - index: 4
+  - index: 10
     type: Map
   - type: PhysicsMap
   - type: Broadphase
@@ -2751,8 +2751,8 @@ entities:
     - volume: 2500
       temperature: 293.15
       moles:
-      - 20.04244
-      - 75.39776
+      - 19.481253
+      - 73.28662
       - 0
       - 0
       - 0
@@ -5378,20 +5378,20 @@ entities:
   - containers:
       entity_storage: !type:Container
         ents:
-        - 403
-        - 392
-        - 393
-        - 394
-        - 395
-        - 396
-        - 397
-        - 398
-        - 399
-        - 402
-        - 400
-        - 404
-        - 405
         - 401
+        - 405
+        - 404
+        - 400
+        - 398
+        - 397
+        - 396
+        - 395
+        - 394
+        - 393
+        - 392
+        - 402
+        - 399
+        - 403
     type: ContainerContainer
   - fibers: []
     fingerprints:
@@ -5468,12 +5468,43 @@ entities:
     type: Physics
   - type: InsideEntityStorage
 - uid: 399
-  type: CentcomPDA
+  type: CentcomIDCardSyndie
   components:
   - flags: InContainer
     type: MetaData
   - parent: 391
     type: Transform
+  - tags:
+    - Medical
+    - Janitor
+    - Hydroponics
+    - Quartermaster
+    - HeadOfSecurity
+    - Research
+    - Theatre
+    - ChiefMedicalOfficer
+    - Captain
+    - ResearchDirector
+    - Maintenance
+    - Atmospherics
+    - Engineering
+    - NuclearOperative
+    - Cargo
+    - Brig
+    - Chapel
+    - Salvage
+    - Chemistry
+    - HeadOfPersonnel
+    - Kitchen
+    - External
+    - Armory
+    - ChiefEngineer
+    - EmergencyShuttleRepealAll
+    - Service
+    - Security
+    - Bar
+    - Command
+    type: Access
   - canCollide: False
     type: Physics
   - type: InsideEntityStorage
@@ -5498,12 +5529,32 @@ entities:
     type: Physics
   - type: InsideEntityStorage
 - uid: 402
-  type: ClothingBackpackHolding
+  type: ClothingBackpackDuffelHolding
   components:
   - flags: InContainer
     type: MetaData
   - parent: 391
     type: Transform
+  - containers:
+      storagebase: !type:Container
+        ents:
+        - 3552
+        - 3553
+        - 3554
+        - 3555
+        - 3556
+        - 3557
+        - 3558
+        - 3559
+        - 3560
+        - 3561
+        - 3562
+        - 3563
+        - 3564
+        - 3565
+        - 3566
+        - 3567
+    type: ContainerContainer
   - canCollide: False
     type: Physics
   - type: InsideEntityStorage
@@ -29444,4 +29495,172 @@ entities:
     type: Transform
   - location: CC_delivery
     type: WarpPoint
+- uid: 3552
+  type: EmergencyMedipen
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3553
+  type: EmergencyMedipen
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3554
+  type: EmergencyMedipen
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3555
+  type: EmergencyMedipen
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3556
+  type: OxygenTankFilled
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - nextAttack: 50.416857
+    type: MeleeWeapon
+  - canCollide: False
+    type: Physics
+- uid: 3557
+  type: ClothingMaskGasCentcom
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3558
+  type: ClothingOuterHardsuitERTLeader
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3559
+  type: Hypospray
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3560
+  type: NocturineChemistryBottle
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3561
+  type: NocturineChemistryBottle
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3562
+  type: NocturineChemistryBottle
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3563
+  type: NocturineChemistryBottle
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3564
+  type: EpinephrineChemistryBottle
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3565
+  type: EpinephrineChemistryBottle
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 3566
+  type: ChemistryEmptyBottle04
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - tags:
+    - Bottle
+    type: Tag
+  - solutions:
+      drink:
+        canMix: True
+        maxVol: 1000
+        reagents:
+        - Quantity: 1000
+          ReagentId: ChloralHydrate
+    type: SolutionContainerManager
+  - canCollide: False
+    type: Physics
+- uid: 3567
+  type: ChemistryEmptyBottle04
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - tags:
+    - Bottle
+    type: Tag
+  - solutions:
+      drink:
+        canMix: True
+        maxVol: 1000
+        reagents:
+        - Quantity: 1000
+          ReagentId: ChloralHydrate
+    type: SolutionContainerManager
+  - canCollide: False
+    type: Physics
 ...
