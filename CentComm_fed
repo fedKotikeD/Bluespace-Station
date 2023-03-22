@@ -5555,6 +5555,7 @@ entities:
         ents:
         - 428
         - 430
+        - 1548
         - 2630
         - 2631
         - 2708
@@ -5568,7 +5569,6 @@ entities:
         - 3552
         - 3553
         - 3554
-        - 3555
     type: ContainerContainer
   - canCollide: False
     type: Physics
@@ -5831,8 +5831,8 @@ entities:
   - containers:
       entity_storage: !type:Container
         ents:
+        - 3555
         - 3556
-        - 3557
         - 427
         - 429
     type: ContainerContainer
@@ -5910,7 +5910,7 @@ entities:
   components:
   - flags: InContainer
     type: MetaData
-  - parent: 3557
+  - parent: 3556
     type: Transform
   - canCollide: False
     type: Physics
@@ -14495,12 +14495,14 @@ entities:
     parent: 1
     type: Transform
 - uid: 1548
-  type: DisposalRouter
+  type: EmergencyMedipen
   components:
-  - rot: 1.5707963267948966 rad
-    pos: 40.5,10.5
-    parent: 1
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
     type: Transform
+  - canCollide: False
+    type: Physics
 - uid: 1549
   type: KitchenSpike
   components:
@@ -21664,12 +21666,14 @@ entities:
   - canCollide: False
     type: Physics
 - uid: 2631
-  type: EmergencyMedipen
+  type: OxygenTankFilled
   components:
   - flags: InContainer
     type: MetaData
   - parent: 402
     type: Transform
+  - nextAttack: 50.416857
+    type: MeleeWeapon
   - canCollide: False
     type: Physics
 - uid: 2632
@@ -22156,14 +22160,12 @@ entities:
     parent: 1
     type: Transform
 - uid: 2708
-  type: OxygenTankFilled
+  type: ClothingMaskGasCentcom
   components:
   - flags: InContainer
     type: MetaData
   - parent: 402
     type: Transform
-  - nextAttack: 50.416857
-    type: MeleeWeapon
   - canCollide: False
     type: Physics
 - uid: 2709
@@ -22173,15 +22175,6 @@ entities:
     parent: 1
     type: Transform
 - uid: 2710
-  type: ClothingMaskGasCentcom
-  components:
-  - flags: InContainer
-    type: MetaData
-  - parent: 402
-    type: Transform
-  - canCollide: False
-    type: Physics
-- uid: 2711
   type: ClothingOuterHardsuitERTLeader
   components:
   - flags: InContainer
@@ -22190,8 +22183,17 @@ entities:
     type: Transform
   - canCollide: False
     type: Physics
-- uid: 2712
+- uid: 2711
   type: Hypospray
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 402
+    type: Transform
+  - canCollide: False
+    type: Physics
+- uid: 2712
+  type: NocturineChemistryBottle
   components:
   - flags: InContainer
     type: MetaData
@@ -22227,7 +22229,7 @@ entities:
   - canCollide: False
     type: Physics
 - uid: 2716
-  type: NocturineChemistryBottle
+  type: EpinephrineChemistryBottle
   components:
   - flags: InContainer
     type: MetaData
@@ -29577,12 +29579,23 @@ entities:
   - canCollide: False
     type: Physics
 - uid: 3553
-  type: EpinephrineChemistryBottle
+  type: ChemistryEmptyBottle04
   components:
   - flags: InContainer
     type: MetaData
   - parent: 402
     type: Transform
+  - tags:
+    - Bottle
+    type: Tag
+  - solutions:
+      drink:
+        canMix: True
+        maxVol: 1000
+        reagents:
+        - Quantity: 1000
+          ReagentId: ChloralHydrate
+    type: SolutionContainerManager
   - canCollide: False
     type: Physics
 - uid: 3554
@@ -29606,26 +29619,6 @@ entities:
   - canCollide: False
     type: Physics
 - uid: 3555
-  type: ChemistryEmptyBottle04
-  components:
-  - flags: InContainer
-    type: MetaData
-  - parent: 402
-    type: Transform
-  - tags:
-    - Bottle
-    type: Tag
-  - solutions:
-      drink:
-        canMix: True
-        maxVol: 1000
-        reagents:
-        - Quantity: 1000
-          ReagentId: ChloralHydrate
-    type: SolutionContainerManager
-  - canCollide: False
-    type: Physics
-- uid: 3556
   type: ClothingBackpackDuffelSyndicateCostumeCentcom
   components:
   - flags: InContainer
@@ -29635,7 +29628,7 @@ entities:
   - canCollide: False
     type: Physics
   - type: InsideEntityStorage
-- uid: 3557
+- uid: 3556
   type: ClothingBackpackDuffelMilitary
   components:
   - flags: InContainer
@@ -29645,25 +29638,34 @@ entities:
   - containers:
       storagebase: !type:Container
         ents:
+        - 3557
         - 3558
         - 3559
         - 3560
         - 3561
-        - 3562
         - 431
     type: ContainerContainer
   - canCollide: False
     type: Physics
   - type: InsideEntityStorage
-- uid: 3558
+- uid: 3557
   type: CyberPen
   components:
   - flags: InContainer
     type: MetaData
-  - parent: 3557
+  - parent: 3556
     type: Transform
   - nextAttack: 258.215666
     type: MeleeWeapon
+  - canCollide: False
+    type: Physics
+- uid: 3558
+  type: PaperOffice
+  components:
+  - flags: InContainer
+    type: MetaData
+  - parent: 3556
+    type: Transform
   - canCollide: False
     type: Physics
 - uid: 3559
@@ -29671,7 +29673,7 @@ entities:
   components:
   - flags: InContainer
     type: MetaData
-  - parent: 3557
+  - parent: 3556
     type: Transform
   - canCollide: False
     type: Physics
@@ -29680,7 +29682,7 @@ entities:
   components:
   - flags: InContainer
     type: MetaData
-  - parent: 3557
+  - parent: 3556
     type: Transform
   - canCollide: False
     type: Physics
@@ -29689,19 +29691,17 @@ entities:
   components:
   - flags: InContainer
     type: MetaData
-  - parent: 3557
+  - parent: 3556
     type: Transform
   - canCollide: False
     type: Physics
 - uid: 3562
-  type: PaperOffice
+  type: DisposalJunction
   components:
-  - flags: InContainer
-    type: MetaData
-  - parent: 3557
+  - rot: 1.5707963267948966 rad
+    pos: 40.5,10.5
+    parent: 1
     type: Transform
-  - canCollide: False
-    type: Physics
 - uid: 3563
   type: WallReinforced
   components:
