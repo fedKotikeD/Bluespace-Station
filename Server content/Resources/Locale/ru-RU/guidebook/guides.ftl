@@ -1,6 +1,7 @@
 guide-entry-engineering = Инженерное дело
 guide-entry-construction = Строительство
 guide-entry-atmospherics = Атмосфера
+guide-entry-botany = Ботаника
 guide-entry-fires = Пожары и разгерметизации
 guide-entry-shuttle-craft = Шаттлостроение
 guide-entry-power = Электропитание
@@ -19,3 +20,5 @@ guide-entry-xenoarchaeology = Ксеноархеология
 guide-entry-artifact-reports = Отчёты об артефактах
 guide-entry-traversal-distorter = Поперечный искатель
 guide-entry-ss14 = Космическая станция 14
+guide-entry-security = Безопасность станции
+guide-entry-dna = ДНК

@@ -7,9 +7,11 @@
   "targets": {
     ".NETCoreApp,Version=v7.0": {},
     ".NETCoreApp,Version=v7.0/win-x64": {
-      "Robust.Packaging/0.88.0.0": {
+      "Robust.Packaging/0.96.7.0": {
         "dependencies": {
-          "Robust.Shared": "0.88.0"
+          "Robust.Shared": "0.96.7",
+          "Robust.NetSerializer.Reference": "4.1.1.0",
+          "SpaceWizards.Lidgren.Network.Reference": "0.0.0.0"
         },
         "runtime": {
           "Robust.Packaging.dll": {}
@@ -213,15 +215,15 @@
           "Robust.NetSerializer.dll": {}
         }
       },
-      "Robust.Physics/0.88.0": {
+      "Robust.Physics/0.96.7": {
         "dependencies": {
-          "Robust.Shared.Maths": "0.88.0"
+          "Robust.Shared.Maths": "0.96.7"
         },
         "runtime": {
           "Robust.Physics.dll": {}
         }
       },
-      "Robust.Shared/0.88.0": {
+      "Robust.Shared/0.96.7": {
         "dependencies": {
           "Linguini.Bundle": "0.1.3",
           "Microsoft.Extensions.ObjectPool": "6.0.2",
@@ -230,9 +232,9 @@
           "Nett": "0.15.0",
           "Pidgin": "2.5.0",
           "Robust.NetSerializer": "4.1.1",
-          "Robust.Physics": "0.88.0",
+          "Robust.Physics": "0.96.7",
           "Robust.Shared.AuthLib": "0.1.2",
-          "Robust.Shared.Maths": "0.88.0",
+          "Robust.Shared.Maths": "0.96.7",
           "Serilog": "2.10.0",
           "SharpZstd.Interop": "1.5.2-beta2",
           "SixLabors.ImageSharp": "2.1.3",
@@ -245,7 +247,7 @@
           "Robust.Shared.dll": {}
         }
       },
-      "Robust.Shared.Maths/0.88.0": {
+      "Robust.Shared.Maths/0.96.7": {
         "runtime": {
           "Robust.Shared.Maths.dll": {}
         }
@@ -254,11 +256,27 @@
         "runtime": {
           "SpaceWizards.Lidgren.Network.dll": {}
         }
+      },
+      "Robust.NetSerializer.Reference/4.1.1.0": {
+        "runtime": {
+          "Robust.NetSerializer.dll": {
+            "assemblyVersion": "4.1.1.0",
+            "fileVersion": "4.1.1.0"
+          }
+        }
+      },
+      "SpaceWizards.Lidgren.Network.Reference/0.0.0.0": {
+        "runtime": {
+          "SpaceWizards.Lidgren.Network.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
       }
     }
   },
   "libraries": {
-    "Robust.Packaging/0.88.0.0": {
+    "Robust.Packaging/0.96.7.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -457,23 +475,33 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Robust.Physics/0.88.0": {
+    "Robust.Physics/0.96.7": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "Robust.Shared/0.88.0": {
+    "Robust.Shared/0.96.7": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "Robust.Shared.Maths/0.88.0": {
+    "Robust.Shared.Maths/0.96.7": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
     "SpaceWizards.Lidgren.Network/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Robust.NetSerializer.Reference/4.1.1.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SpaceWizards.Lidgren.Network.Reference/0.0.0.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }
