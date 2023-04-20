@@ -15,7 +15,7 @@ bindto = "::,0.0.0.0"
 max_connections = 256
 # Automatic port forwarding!
 # Disabled by default because you may not want to do this.
-# upnp = true
+upnp = true
 
 [status]
 # The status server is the TCP side, used by the launcher to determine engine version, etc.
@@ -32,13 +32,7 @@ enabled = true
 # connectaddress = "udp://localhost:1212"
 
 [game]
-hostname = "MyServer"
-
-[console]
-# If this is true, people connecting from this machine (loopback)
-# will automatically be elevated to full admin privileges.
-# This literally works by checking if address == 127.0.0.1 || address == ::1
-loginlocal = true
+hostname = "Bluespace-Station"
 
 [hub]
 # Set to true to show this server on the public server list
