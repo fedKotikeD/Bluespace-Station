@@ -1,0 +1,21 @@
+name: "Выписать задание"
+description: "Если необходимо что-либо добавить."
+labels: ["task"]
+body:
+  - type: textarea
+    id: description
+    validations:
+      required: true
+    attributes:
+      label: "Описание"
+      description: "Что нужно сделать"
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Параметры"
+      description: "Задайте параметры вашего задания (например, размер, вес)"
+      placeholder: |
+        1. 20 сантиметров
+        2. 40 килограмм
+        3. 6 мегатабайт
