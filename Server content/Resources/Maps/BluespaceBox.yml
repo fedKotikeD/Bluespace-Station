@@ -3901,7 +3901,7 @@ entities:
     pos: -66.5,21.5
     parent: 8364
     type: Transform
-  - SecondsUntilStateChange: -31688.473
+  - SecondsUntilStateChange: -33787.938
     changeAirtight: False
     state: Opening
     type: Door
@@ -15125,6 +15125,12 @@ entities:
   components:
   - rot: -1.5707963267948966 rad
     pos: 1.5,-8.5
+    parent: 8364
+    type: Transform
+- uid: 2277
+  type: SpawnPointZookeeper
+  components:
+  - pos: 56.5,-8.5
     parent: 8364
     type: Transform
 - uid: 2291
