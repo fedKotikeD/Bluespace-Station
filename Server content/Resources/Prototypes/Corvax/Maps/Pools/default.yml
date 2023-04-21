@@ -1,19 +1,4 @@
 - type: gameMapPool
   id: CorvaxDefaultMapPool
   maps:
-  - CorvaxDelta
-  - CorvaxBox
-  - CorvaxIshimura
-  - CorvaxAvrite
   - BluespaceBox
-  - Bagel
-  - Cluster
-  - Kettle
-  - Marathon
-  - Omega
-  - Moose
-  - Origin
-  - Meta
-  - Barratry
-  - Aspid
-  - Fland  
