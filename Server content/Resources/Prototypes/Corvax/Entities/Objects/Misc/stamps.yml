@@ -33,3 +33,15 @@
   - type: Sprite
     sprite: Objects/Misc/bureaucracy.rsi
     state: stamp-iaa
+
+- type: entity
+  name: OUT OF SHAPE stamp
+  parent: RubberStampMime
+  id: RubberStampOutOfShape
+  components:
+  - type: Stamp
+    stampedName: stamp-component-stamped-name-out_of_shape
+    stampState: "paper_stamp-deny"
+  - type: Sprite
+    sprite: Objects/Misc/bureaucracy.rsi
+    state: stamp-deny

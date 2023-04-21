@@ -79,3 +79,5 @@ ent-RubberStampCE = chief engineer's rubber stamp
     .desc = { ent-RubberStampMime.desc }
 ent-RubberStampAdmin = admin's rubber stamp
     .desc = By the decision of the gods
+ent-RubberStampOutOfShape = OUT OF SHAPE stamp
+    .desc = Wrong, damn it!

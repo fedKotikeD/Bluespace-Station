@@ -16,3 +16,4 @@ stamp-component-stamped-name-trader = Торговец
 stamp-component-stamped-name-syndicate = Синдикат
 stamp-component-stamped-name-ce = Старший инженер
 stamp-component-stamped-name-admin = АДМИН
+stamp-component-stamped-name-out_of_shape = НЕ ПО ФОРМЕ
