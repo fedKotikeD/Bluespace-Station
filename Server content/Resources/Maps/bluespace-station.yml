@@ -3857,10 +3857,10 @@ entities:
   - enabled: True
     type: AmbientSound
 - uid: 556
-  type: AtmosDeviceFanTiny
+  type: WallReinforced
   components:
-  - pos: -0.5,-0.5
-    parent: 11906
+  - pos: 57.5,-54.5
+    parent: 8364
     type: Transform
 - uid: 557
   type: Grille
@@ -3901,10 +3901,7 @@ entities:
     pos: -66.5,21.5
     parent: 8364
     type: Transform
-  - dockJointId: docking46345
-    dockedWith: 21828
-    type: Docking
-  - SecondsUntilStateChange: -31218.441
+  - SecondsUntilStateChange: -31688.473
     changeAirtight: False
     state: Opening
     type: Door
@@ -3944,6 +3941,8 @@ entities:
       friction: 0.4
       id: docking
     type: Fixtures
+  - lastDocked: 562
+    type: RecentlyDocked
 - uid: 563
   type: APCBasic
   components:
@@ -14929,9 +14928,10 @@ entities:
     parent: 8364
     type: Transform
 - uid: 2249
-  type: SheetSteel
+  type: SpawnVehicleMotobike
   components:
-  - pos: 60.60743,-43.443428
+  - rot: -1.5707963267948966 rad
+    pos: 3.5,-8.5
     parent: 8364
     type: Transform
 - uid: 2250
@@ -14941,41 +14941,38 @@ entities:
     parent: 8364
     type: Transform
 - uid: 2251
-  type: GasPort
+  type: GasPipeStraight
   components:
-  - rot: 1.5707963267948966 rad
-    pos: 51.5,-45.5
+  - rot: -1.5707963267948966 rad
+    pos: -30.5,-31.5
     parent: 8364
     type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 2252
-  type: GasVentPump
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 56.5,-45.5
-    parent: 8364
-    type: Transform
-  - color: '#0335FCFF'
+  - color: '#FF1212FF'
     type: AtmosPipeColor
   - bodyType: Static
     type: Physics
-- uid: 2253
-  type: FirelockGlass
+- uid: 2252
+  type: WallReinforced
   components:
   - pos: 56.5,-42.5
     parent: 8364
     type: Transform
+- uid: 2253
+  type: WallReinforced
+  components:
+  - pos: 57.5,-42.5
+    parent: 8364
+    type: Transform
 - uid: 2254
-  type: FirelockGlass
+  type: WallReinforced
   components:
   - pos: 58.5,-42.5
     parent: 8364
     type: Transform
 - uid: 2255
-  type: FirelockGlass
+  type: AtmosDeviceFanTiny
   components:
-  - pos: 57.5,-54.5
+  - pos: 53.5,-54.5
     parent: 8364
     type: Transform
 - uid: 2256
@@ -14997,26 +14994,18 @@ entities:
     parent: 8364
     type: Transform
 - uid: 2259
-  type: Poweredlight
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 51.5,-51.5
-    parent: 8364
-    type: Transform
-  - powerLoad: 0
-    type: ApcPowerReceiver
-- uid: 2260
-  type: EmergencyLight
+  type: SpawnVehicleMotobike
   components:
   - rot: -1.5707963267948966 rad
-    pos: 63.5,-48.5
+    pos: -4.5,-8.5
     parent: 8364
     type: Transform
-  - enabled: True
-    type: PointLight
-  - enabled: True
-    type: AmbientSound
-  - type: ActiveEmergencyLight
+- uid: 2260
+  type: RandomInstruments
+  components:
+  - pos: 57.5,-57.5
+    parent: 8364
+    type: Transform
 - uid: 2261
   type: ClosetEmergencyFilledRandom
   components:
@@ -15054,33 +15043,31 @@ entities:
     parent: 8364
     type: Transform
 - uid: 2264
-  type: CableApcExtension
+  type: SpawnVehicleMotobike
   components:
-  - pos: 53.5,-53.5
+  - rot: -1.5707963267948966 rad
+    pos: -1.5,-8.5
     parent: 8364
     type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 2265
-  type: AirlockScienceGlassLocked
+  type: SpawnVehicleMotobike
   components:
-  - name: Atmos Sci Test Lab
-    type: MetaData
-  - pos: 56.5,-42.5
+  - rot: -1.5707963267948966 rad
+    pos: -3.5,-8.5
     parent: 8364
     type: Transform
 - uid: 2266
-  type: CableApcExtension
+  type: SpawnVehicleMotobike
   components:
-  - pos: 59.5,-47.5
+  - rot: -1.5707963267948966 rad
+    pos: -2.5,-8.5
     parent: 8364
     type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 2267
-  type: CableApcExtension
+  type: SpawnVehicleMotobike
   components:
-  - pos: 56.5,-44.5
+  - rot: -1.5707963267948966 rad
+    pos: 0.5,-8.5
     parent: 8364
     type: Transform
 - uid: 2268
@@ -15134,105 +15121,12 @@ entities:
     parent: 8364
     type: Transform
 - uid: 2276
-  type: WallReinforced
+  type: SpawnVehicleMotobike
   components:
-  - pos: 52.5,-52.5
+  - rot: -1.5707963267948966 rad
+    pos: 1.5,-8.5
     parent: 8364
     type: Transform
-- uid: 2277
-  type: ReinforcedPlasmaWindow
-  components:
-  - pos: 52.5,-50.5
-    parent: 8364
-    type: Transform
-- uid: 2278
-  type: ReinforcedWindow
-  components:
-  - pos: 53.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 2279
-  type: GasPipeBend
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 55.5,-44.5
-    parent: 8364
-    type: Transform
-  - color: '#0335FCFF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
-- uid: 2280
-  type: WallReinforced
-  components:
-  - pos: 54.5,-49.5
-    parent: 8364
-    type: Transform
-- uid: 2281
-  type: GasPort
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 61.5,-53.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 2282
-  type: Grille
-  components:
-  - pos: 52.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 2283
-  type: Grille
-  components:
-  - pos: 52.5,-51.5
-    parent: 8364
-    type: Transform
-- uid: 2284
-  type: ReinforcedPlasmaWindow
-  components:
-  - pos: 54.5,-51.5
-    parent: 8364
-    type: Transform
-- uid: 2285
-  type: Grille
-  components:
-  - pos: 53.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 2286
-  type: Grille
-  components:
-  - pos: 56.5,-51.5
-    parent: 8364
-    type: Transform
-- uid: 2287
-  type: ReinforcedWindow
-  components:
-  - pos: 54.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 2288
-  type: ReinforcedWindow
-  components:
-  - pos: 56.5,-52.5
-    parent: 8364
-    type: Transform
-- uid: 2289
-  type: CableApcExtension
-  components:
-  - pos: 58.5,-44.5
-    parent: 8364
-    type: Transform
-- uid: 2290
-  type: CableApcExtension
-  components:
-  - pos: 58.5,-50.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 2291
   type: WallReinforced
   components:
@@ -16717,22 +16611,6 @@ entities:
   - pos: 68.5,-30.5
     parent: 8364
     type: Transform
-- uid: 2536
-  type: GasPipeBend
-  components:
-  - pos: 59.5,-44.5
-    parent: 8364
-    type: Transform
-  - color: '#FF1212FF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
-- uid: 2537
-  type: AtmosFixBlockerMarker
-  components:
-  - pos: 53.5,-51.5
-    parent: 8364
-    type: Transform
 - uid: 2538
   type: Window
   components:
@@ -16967,44 +16845,6 @@ entities:
   - pos: 58.5,-58.5
     parent: 8364
     type: Transform
-- uid: 2576
-  type: CableApcExtension
-  components:
-  - pos: 63.5,-44.5
-    parent: 8364
-    type: Transform
-- uid: 2577
-  type: CableApcExtension
-  components:
-  - pos: 52.5,-44.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 2578
-  type: ReinforcedWindow
-  components:
-  - pos: 56.5,-53.5
-    parent: 8364
-    type: Transform
-- uid: 2579
-  type: ReinforcedWindow
-  components:
-  - pos: 55.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 2580
-  type: Grille
-  components:
-  - pos: 56.5,-52.5
-    parent: 8364
-    type: Transform
-- uid: 2581
-  type: Grille
-  components:
-  - pos: 54.5,-47.5
-    parent: 8364
-    type: Transform
 - uid: 2582
   type: WindowReinforcedDirectional
   components:
@@ -17223,12 +17063,6 @@ entities:
   type: Grille
   components:
   - pos: 52.5,-38.5
-    parent: 8364
-    type: Transform
-- uid: 2615
-  type: WallReinforced
-  components:
-  - pos: 52.5,-49.5
     parent: 8364
     type: Transform
 - uid: 2616
@@ -55445,7 +55279,7 @@ entities:
         tiles: XgAAAFEAAAFRAAACUQAAA1EAAAFeAAAARAAAAkQAAAFEAAABRAAAA0QAAANEAAAARAAAAEQAAABEAAAAUQAAAl4AAABRAAACUQAAAVEAAABRAAAAXgAAAEQAAANEAAABRAAAA0QAAABEAAACRAAAAEQAAABEAAABRAAAA1EAAABeAAAAUQAAAVEAAAFRAAADUQAAAVEAAAJRAAADUQAAA1EAAABRAAACUQAAAVEAAABRAAAAUQAAAFEAAANRAAABXgAAAFEAAANRAAABUQAAA1EAAABeAAAAUQAAA1EAAANRAAAAUQAAAlEAAAFRAAAAUQAAAlEAAABRAAABUQAAA14AAABRAAABUQAAAVEAAAJRAAABXgAAAFEAAABRAAABUQAAAFEAAABRAAADUQAAAVEAAABRAAAAUQAAAVEAAABeAAAAUQAAAFEAAANRAAADXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABRAAABUQAAA1EAAABeAAAAXgAAAFEAAAJRAAAAUQAAA14AAABdAAAAOgAAADoAAAA6AAAAXgAAADoAAABeAAAAUQAAAFEAAAJEAAADXgAAAFEAAAJRAAADUQAAAlEAAAJeAAAAXQAAADoAAAA6AAAAOgAAADoAAAA6AAAAOgAAAFEAAABRAAADRAAAAl4AAABeAAAAUQAAAFEAAAFRAAACXgAAAF0AAAA6AAAAOgAAADoAAABeAAAAOgAAAF4AAABRAAACUQAAAEQAAABeAAAAXgAAAFEAAANRAAACUQAAA14AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAUQAAAFEAAANRAAABXgAAAF4AAABRAAADUQAAA1EAAAJeAAAAUQAAAlEAAAJRAAAAUQAAAVEAAAFRAAADXgAAAEQAAANEAAADRAAAAF4AAABeAAAAUQAAA1EAAABRAAABUQAAAlEAAANRAAAAUQAAAFEAAANRAAABUQAAAl4AAABEAAADRAAAAUQAAAJEAAADUQAAAVEAAAFRAAAAUQAAA14AAABRAAACUQAAAFEAAAFRAAAAUQAAA1EAAANeAAAARAAAAEQAAAJEAAADXgAAAF4AAABRAAACUQAAAFEAAABeAAAAUQAAA1EAAAFRAAABUQAAA1EAAAJRAAABXgAAAEQAAAFEAAADRAAAA14AAABeAAAAUQAAAFEAAANRAAADXgAAAFEAAABRAAABUQAAAlEAAAJRAAAAUQAAAF4AAABEAAACRAAAAkQAAABeAAAAXgAAAFEAAAFRAAABUQAAAV4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAARAAAAEQAAABEAAACXgAAAA==
       3,-3:
         ind: 3,-3
-        tiles: TgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAE4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAATgAAAF4AAABeAAAAXgAAAF4AAABeAAAATgAAAE4AAABOAAAATgAAAE4AAABOAAAATgAAAE4AAABOAAAATgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAE4AAABEAAABRAAAA0QAAABEAAABRAAAAkQAAANEAAAARAAAAEQAAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAEQAAANeAAAARAAAAV4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAUQAAAFEAAABRAAADUQAAA1EAAABRAAACUQAAAFEAAAJRAAABUQAAAVEAAANRAAAAUQAAA14AAABeAAAATgAAAFEAAABEAAACUQAAAkQAAABRAAAARAAAAlEAAAFEAAABUQAAAEQAAABRAAAARAAAA1EAAAFeAAAAXgAAAF4AAABRAAAAUQAAAVEAAANRAAACUQAAAlEAAAJRAAACUQAAAFEAAAJRAAADUQAAAlEAAAFRAAABXgAAAE4AAABeAAAAXgAAAF4AAABeAAAAFgAAA14AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAARAAAAl4AAABEAAACXgAAABYAAAMWAAACFgAAAxYAAAEWAAABFgAAAhYAAAFeAAAARAAAAUQAAAJEAAAARAAAAUQAAANeAAAARAAAAl4AAABbAAABWwAAAVsAAABbAAAAWwAAA1sAAABbAAAAXgAAAEQAAANEAAACRAAAAEQAAANEAAADFgAAAEQAAAIWAAADWwAAAVsAAAJbAAADWwAAA1sAAAFbAAACWwAAAl4AAABRAAADUQAAAFEAAAFRAAACUQAAAF4AAABEAAABXgAAAFsAAAJbAAADWwAAAVsAAAJbAAACWwAAA1sAAABeAAAAUQAAA1EAAANRAAADUQAAAlEAAABeAAAARAAAAV4AAABbAAADWwAAAlsAAABbAAABWwAAAFsAAABbAAABXgAAAEQAAAJEAAAARAAAAUQAAANEAAAAXgAAAE4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAA==
+        tiles: TgAAAF4AAABeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE4AAABeAAAAXgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABOAAAAXgAAAF4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATgAAAF4AAABeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF4AAABeAAAAXgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAEQAAANeAAAARAAAAV4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAUQAAAFEAAABRAAADUQAAA1EAAABRAAACUQAAAFEAAAJRAAABUQAAAVEAAANRAAAAUQAAA14AAABeAAAATgAAAFEAAABEAAACUQAAAkQAAABRAAAARAAAAlEAAAFEAAABUQAAAEQAAABRAAAARAAAA1EAAAFeAAAAXgAAAF4AAABRAAAAUQAAAVEAAANRAAACUQAAAlEAAAJRAAACUQAAAFEAAAJRAAADUQAAAlEAAAFRAAABXgAAAE4AAABeAAAAXgAAAF4AAABeAAAAFgAAA14AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAARAAAAl4AAABEAAACXgAAABYAAAMWAAACFgAAAxYAAAEWAAABFgAAAhYAAAFeAAAARAAAAUQAAAJEAAAARAAAAUQAAANeAAAARAAAAl4AAABbAAABWwAAAVsAAABbAAAAWwAAA1sAAABbAAAAXgAAAEQAAANEAAACRAAAAEQAAANEAAADFgAAAEQAAAIWAAADWwAAAVsAAAJbAAADWwAAA1sAAAFbAAACWwAAAl4AAABRAAADUQAAAFEAAAFRAAACUQAAAF4AAABEAAABXgAAAFsAAAJbAAADWwAAAVsAAAJbAAACWwAAA1sAAABeAAAAUQAAA1EAAANRAAADUQAAAlEAAABeAAAARAAAAV4AAABbAAADWwAAAlsAAABbAAABWwAAAFsAAABbAAABXgAAAEQAAAJEAAAARAAAAUQAAANEAAAAXgAAAE4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAA==
       4,-4:
         ind: 4,-4
         tiles: XgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAATgAAAF4AAABOAAAAXgAAAE4AAABeAAAAXgAAAE4AAABeAAAATgAAAE4AAABOAAAAXgAAAAAAAAAAAAAAXgAAAE4AAABeAAAATgAAAF4AAABeAAAAXgAAAF4AAABOAAAAXgAAAE4AAABOAAAATgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAE4AAABOAAAATgAAAE4AAABOAAAAXgAAAE4AAABOAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAAXgAAAE4AAABeAAAAXgAAAF4AAABOAAAAXgAAAE4AAAAvAAAARwAAAF4AAAAWAAABFgAAARYAAANeAAAATgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAC8AAABeAAAAFgAAAxYAAAEWAAACXgAAAE4AAABeAAAATgAAAE4AAABeAAAATgAAAF4AAABeAAAARwAAAC8AAAAvAAAAXgAAABYAAAAWAAADFgAAAV4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAAAWAAACFgAAAxYAAAIWAAAAFgAAAxYAAAAWAAACFgAAAl4AAABEAAABRAAAA0QAAAFEAAABRAAAAUQAAABeAAAAFgAAARYAAAMWAAADFgAAABYAAAAWAAACFgAAAxYAAANeAAAARAAAA0QAAABEAAADRAAAA0QAAAFEAAADFgAAAxYAAAIWAAADFgAAAhYAAAAWAAACFgAAABYAAAEWAAACXgAAAEQAAAJEAAADRAAAAkQAAANEAAADRAAAABYAAAMWAAABFgAAAhYAAAFPAAAATwAAAE8AAAAWAAABFgAAA14AAABEAAAARAAAAUQAAAFEAAAARAAAAUQAAAEWAAAAFgAAABYAAAMWAAADTwAAAE8AAABPAAAAFgAAAxYAAANeAAAAXgAAAEQAAABeAAAAXgAAAE8AAABPAAAATwAAAE8AAABPAAAATwAAAE8AAABPAAAATwAAAE8AAABPAAAAXgAAAFEAAANRAAABUQAAAl4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAA==
@@ -55457,7 +55291,7 @@ entities:
         tiles: XgAAAF4AAABOAAAAXgAAAAAAAAAAAAAAXQAAAF0AAAAAAAAAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF4AAABeAAAAXgAAAF4AAAAAAAAAXQAAAF0AAABdAAAAXQAAAF0AAABdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABOAAAAXgAAAE4AAABeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAAAAAAAAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF4AAABeAAAAXgAAAF4AAABOAAAATgAAAE4AAABeAAAAAAAAAF0AAABdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABOAAAAXgAAAF4AAABeAAAATgAAAE4AAABOAAAAXgAAAF4AAABeAAAAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAATgAAAF0AAABdAAAAXQAAAF0AAABdAAAAXQAAAE4AAABeAAAAXgAAAF4AAABOAAAATgAAAE4AAABeAAAAXgAAAF4AAABdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeAAAAXgAAAF4AAABeAAAATgAAAE4AAABOAAAAXgAAAF0AAABdAAAAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFgAAAl4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYAAAFeAAAAXgAAAF4AAABOAAAATgAAAE4AAABeAAAAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWAAACXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF0AAABdAAAAXQAAAF0AAAAAAAAAAAAAAAAAAAAAAAAAFgAAAF4AAABeAAAAXgAAAE4AAABOAAAATgAAAF4AAABdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYAAAJeAAAAXgAAAE4AAABOAAAATgAAAE4AAABeAAAAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABPAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF0AAABdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXgAAAF4AAABeAAAAXgAAAE4AAABeAAAATgAAAF4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
       3,-4:
         ind: 3,-4
-        tiles: XgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAATgAAAE4AAABOAAAATgAAAE4AAABeAAAATgAAAE4AAABOAAAATgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAAAAAAAAAAAAXQAAAAAAAAAAAAAAXQAAAF4AAABdAAAAAAAAAAAAAABdAAAAAAAAAAAAAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAAXgAAAF4AAABeAAAAXgAAAEQAAABEAAADRAAAAkQAAABEAAACRAAAAUQAAAJEAAADRAAAAl4AAABeAAAATgAAAF4AAABeAAAAXgAAAF4AAABEAAACRAAAA0QAAABEAAACRAAAAkQAAANEAAADRAAAAkQAAANeAAAAXgAAAE4AAABeAAAAXgAAAF4AAABeAAAARAAAA0QAAANEAAADRAAAAUQAAABEAAAARAAAAUQAAAFEAAADXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAARAAAAl4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF0AAABdAAAAXQAAAF0AAABdAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAE4AAABeAAAAXgAAAF4AAABdAAAAXgAAAF4AAABeAAAAXQAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAAXgAAAF4AAABeAAAAXQAAAF4AAABeAAAAXgAAAF0AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAATgAAAF4AAABeAAAAXgAAAF0AAABeAAAAXgAAAF4AAABdAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAE4AAABeAAAAXgAAAF4AAABdAAAAXgAAAF4AAABeAAAAXQAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAAXgAAAF4AAABeAAAAXQAAAF0AAABdAAAAXQAAAF0AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAA==
+        tiles: XgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAATgAAAE4AAABOAAAATgAAAE4AAABeAAAATgAAAE4AAABOAAAATgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAAAAAAAAAAAAXQAAAAAAAAAAAAAAXQAAAF4AAABdAAAAAAAAAAAAAABdAAAAAAAAAAAAAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABOAAAAXgAAAF4AAABeAAAAXgAAAEQAAABEAAADRAAAAkQAAABEAAACRAAAAUQAAAJEAAADRAAAAl4AAABeAAAATgAAAF4AAABeAAAAXgAAAF4AAABEAAACRAAAA0QAAABEAAACRAAAAkQAAANEAAADRAAAAkQAAANeAAAAXgAAAE4AAABeAAAAXgAAAF4AAABeAAAARAAAA0QAAANEAAADRAAAAUQAAABEAAAARAAAAUQAAAFEAAADXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAARAAAAl4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeAAAAXgAAAF4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXgAAAF4AAABeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF4AAABeAAAAXgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeAAAAXgAAAF4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXgAAAF4AAABeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
       4,-1:
         ind: 4,-1
         tiles: RAAAAkQAAAFEAAADRAAAAkQAAANEAAAARAAAAUQAAANeAAAAXgAAAF4AAABeAAAARAAAAUQAAANEAAADRAAAA0QAAAFEAAACRAAAA0QAAABEAAAARAAAAUQAAAFEAAACRAAAAkQAAAJEAAADRAAAAEQAAAFEAAADRAAAAEQAAAFEAAAARAAAAEQAAAJEAAADRAAAAUQAAAFEAAACRAAAAkQAAAJEAAABRAAAAUQAAABEAAADRAAAAUQAAAJEAAABRAAAAEQAAABEAAAARAAAAUQAAABEAAABRAAAAkQAAAJEAAABRAAAA0QAAABEAAABRAAAA0QAAANEAAABRAAAAl4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAARAAAAUQAAAJEAAACRAAAAUQAAABeAAAAFgAAAhYAAAIWAAACFgAAAhYAAAMWAAADFgAAARYAAAIWAAACXgAAAEQAAAJEAAAARAAAAEQAAAFEAAADFgAAARYAAAIWAAABFgAAAxYAAAMWAAACFgAAAhYAAAEWAAACFgAAARYAAAFEAAADRAAAA0QAAAJEAAADXgAAABYAAAMWAAAAFgAAAxYAAAMWAAADFgAAAxYAAAIWAAADFgAAAxYAAAAWAAACRAAAAkQAAAJEAAABRAAAA14AAABeAAAAFgAAAEQAAABEAAADFgAAABYAAAEWAAACRAAAAUQAAAAWAAAAXgAAAEQAAANEAAACRAAAAkQAAABeAAAAXgAAABYAAAFEAAAARAAAAxYAAAAWAAABFgAAAUQAAAFEAAABFgAAAV4AAABEAAADRAAAAUQAAABEAAABRAAAAF4AAAAWAAABRAAAA0QAAAEWAAAAFgAAABYAAANEAAACRAAAARYAAAFeAAAARAAAAUQAAAJEAAACRAAAAkQAAAJeAAAAFgAAAUQAAAJEAAADFgAAAxYAAAAWAAAARAAAA0QAAABeAAAAXgAAAF4AAABeAAAARAAAAF4AAABeAAAAXgAAABYAAANEAAABRAAAAhYAAAMWAAAAFgAAAEQAAABEAAABFgAAARYAAABeAAAARAAAAEQAAABEAAACRAAAA14AAAAWAAACRAAAAUQAAAIWAAABFgAAAxYAAABEAAAARAAAAV4AAABeAAAAXgAAAEQAAAJEAAABRAAAAUQAAAJeAAAAXgAAABYAAABeAAAAFgAAAxYAAAAWAAABFgAAAhYAAAMWAAAAFgAAAV4AAABEAAACRAAAA0QAAABEAAADMQAAADEAAAAxAAAAXgAAAF4AAAAWAAACXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAF4AAABeAAAAXgAAAA==
@@ -62681,16 +62515,6 @@ entities:
         - 0
       chunkSize: 4
     type: GridAtmosphere
-  - joints:
-      docking46345: !type:WeldJoint
-        bodyB: 11906
-        bodyA: 8364
-        id: docking46345
-        localAnchorB: -0.5,-1
-        localAnchorA: -66.5,22
-        damping: 42.40074
-        stiffness: 380.58817
-    type: Joint
   - type: OccluderTree
   - type: Shuttle
   - nextUpdate: 5417.8279988
@@ -89349,56 +89173,6 @@ entities:
   - pos: -65.5,19.5
     parent: 8364
     type: Transform
-- uid: 11906
-  components:
-  - type: MetaData
-  - pos: -65.477554,25.17142
-    parent: 780
-    type: Transform
-  - chunks:
-      -1,-1:
-        ind: -1,-1
-        tiles: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXgAAAA==
-      -1,0:
-        ind: -1,0
-        tiles: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABdAAAAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-      0,0:
-        ind: 0,0
-        tiles: XQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-    index: 1
-    type: MapGrid
-  - type: Broadphase
-  - angularDamping: 0.05
-    linearDamping: 0.05
-    fixedRotation: False
-    bodyType: Dynamic
-    type: Physics
-  - fixtures: []
-    type: Fixtures
-  - gravityShakeSound: !type:SoundPathSpecifier
-      path: /Audio/Effects/alert.ogg
-    type: Gravity
-  - chunkCollection:
-      version: 2
-      nodes: []
-    type: DecalGrid
-  - joints:
-      docking46345: !type:WeldJoint
-        bodyB: 11906
-        bodyA: 8364
-        id: docking46345
-        localAnchorB: -0.5,-1
-        localAnchorA: -66.5,22
-        damping: 42.40074
-        stiffness: 380.58817
-    type: Joint
-  - type: OccluderTree
-  - type: Shuttle
-  - nextUpdate: 47.0665638
-    type: GridPathfinding
-  - type: RadiationGridResistance
-  - nextUpdate: 0
-    type: SpreaderGrid
 - uid: 11907
   type: ReinforcedWindow
   components:
@@ -99780,14 +99554,6 @@ entities:
   - pos: 52.5,-61.5
     parent: 8364
     type: Transform
-- uid: 13349
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-47.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 13350
   type: TableWood
   components:
@@ -133336,12 +133102,6 @@ entities:
   - pos: -18.434252,12.34062
     parent: 8364
     type: Transform
-- uid: 17759
-  type: filingCabinet
-  components:
-  - pos: -30.5,-31.5
-    parent: 8364
-    type: Transform
 - uid: 17760
   type: DonkpocketBoxSpawner
   components:
@@ -139179,14 +138939,6 @@ entities:
   - pos: -7.5,46.5
     parent: 8364
     type: Transform
-- uid: 18572
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-53.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 18573
   type: PoweredSmallLight
   components:
@@ -148902,14 +148654,6 @@ entities:
     pos: 37.5,-17.5
     parent: 8364
     type: Transform
-- uid: 19866
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-46.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 19867
   type: Catwalk
   components:
@@ -151925,14 +151669,6 @@ entities:
     type: AtmosPipeColor
   - bodyType: Static
     type: Physics
-- uid: 20187
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-52.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 20188
   type: ComputerCriminalRecords
   components:
@@ -152190,12 +151926,6 @@ entities:
     currentReceiving: 10.019571
     currentSupply: 10
     type: PowerNetworkBattery
-- uid: 20219
-  type: Catwalk
-  components:
-  - pos: 55.5,-51.5
-    parent: 8364
-    type: Transform
 - uid: 20220
   type: WallReinforced
   components:
@@ -152530,18 +152260,6 @@ entities:
   type: CableApcExtension
   components:
   - pos: 60.5,-41.5
-    parent: 8364
-    type: Transform
-- uid: 20274
-  type: Catwalk
-  components:
-  - pos: 55.5,-50.5
-    parent: 8364
-    type: Transform
-- uid: 20275
-  type: Table
-  components:
-  - pos: 62.5,-43.5
     parent: 8364
     type: Transform
 - uid: 20276
@@ -153105,36 +152823,6 @@ entities:
   - pos: 62.5,-55.5
     parent: 8364
     type: Transform
-- uid: 20366
-  type: GasPipeBend
-  components:
-  - pos: 62.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20367
-  type: GasPressurePump
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 57.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20368
-  type: GasVentPump
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 55.5,-45.5
-    parent: 8364
-    type: Transform
-  - color: '#0335FCFF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
 - uid: 20369
   type: WallReinforced
   components:
@@ -153147,24 +152835,6 @@ entities:
   - pos: 55.5,-42.5
     parent: 8364
     type: Transform
-- uid: 20371
-  type: GasPressurePump
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 52.5,-43.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20372
-  type: GasPressurePump
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 52.5,-44.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
 - uid: 20373
   type: Windoor
   components:
@@ -153192,85 +152862,12 @@ entities:
     pos: 64.5,-23.5
     parent: 8364
     type: Transform
-- uid: 20376
-  type: GasPipeStraight
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 56.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20377
-  type: GasPipeStraight
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 55.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20378
-  type: Catwalk
-  components:
-  - pos: 53.5,-48.5
-    parent: 8364
-    type: Transform
-- uid: 20379
-  type: Table
-  components:
-  - pos: 60.5,-43.5
-    parent: 8364
-    type: Transform
-- uid: 20380
-  type: Table
-  components:
-  - pos: 61.5,-43.5
-    parent: 8364
-    type: Transform
 - uid: 20381
   type: CableMV
   components:
   - pos: 60.5,-42.5
     parent: 8364
     type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20382
-  type: GasPipeStraight
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 54.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20383
-  type: GasPipeBend
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 62.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20384
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 60.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
   - enabled: True
     type: AmbientSound
 - uid: 20385
@@ -153285,24 +152882,6 @@ entities:
   - pos: 63.5,-42.5
     parent: 8364
     type: Transform
-- uid: 20387
-  type: GasPressurePump
-  components:
-  - pos: 53.5,-46.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20388
-  type: GasPipeBend
-  components:
-  - pos: 53.5,-43.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 20389
   type: TableReinforced
   components:
@@ -154603,31 +154182,6 @@ entities:
   - pos: 60.5,-35.5
     parent: 8364
     type: Transform
-- uid: 20595
-  type: GasMixer
-  components:
-  - pos: 53.5,-44.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20596
-  type: GasMixer
-  components:
-  - pos: 53.5,-45.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20597
-  type: GasPort
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 59.5,-53.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
 - uid: 20598
   type: CableApcExtension
   components:
@@ -154826,140 +154380,10 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 20630
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-43.5
-    parent: 8364
-    type: Transform
-- uid: 20631
-  type: GasPipeStraight
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 59.5,-52.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20632
-  type: GasPipeStraight
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 61.5,-52.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20633
-  type: GasPort
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 59.5,-46.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20634
-  type: GasPort
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 59.5,-47.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20635
-  type: GasPort
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 59.5,-49.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20636
-  type: GasPipeTJunction
-  components:
-  - pos: 60.5,-46.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20637
-  type: GasPipeTJunction
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 60.5,-47.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20638
-  type: GasPipeTJunction
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 60.5,-49.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20639
-  type: GasPipeTJunction
-  components:
-  - pos: 62.5,-46.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20640
-  type: GasPipeBend
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 63.5,-48.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 20641
   type: AirlockExternalGlassLocked
   components:
   - pos: 54.5,-56.5
-    parent: 8364
-    type: Transform
-- uid: 20642
-  type: CableApcExtension
-  components:
-  - pos: 61.5,-50.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20643
-  type: CableApcExtension
-  components:
-  - pos: 62.5,-52.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20644
-  type: Grille
-  components:
-  - pos: 57.5,-42.5
     parent: 8364
     type: Transform
 - uid: 20645
@@ -154994,43 +154418,10 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 20649
-  type: GasPipeBend
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 63.5,-46.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 20650
   type: CableApcExtension
   components:
   - pos: 57.5,-56.5
-    parent: 8364
-    type: Transform
-- uid: 20651
-  type: CableApcExtension
-  components:
-  - pos: 59.5,-50.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20652
-  type: CableApcExtension
-  components:
-  - pos: 62.5,-47.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20653
-  type: ReinforcedWindow
-  components:
-  - pos: 57.5,-42.5
     parent: 8364
     type: Transform
 - uid: 20654
@@ -155049,37 +154440,6 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 20656
-  type: GasOutletInjector
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 53.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20657
-  type: GasPipeStraight
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 58.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20658
-  type: GasVentScrubber
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 59.5,-45.5
-    parent: 8364
-    type: Transform
-  - color: '#FF1212FF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
 - uid: 20659
   type: CableApcExtension
   components:
@@ -155094,71 +154454,6 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 20661
-  type: Grille
-  components:
-  - pos: 53.5,-49.5
-    parent: 8364
-    type: Transform
-- uid: 20662
-  type: ReinforcedPlasmaWindow
-  components:
-  - pos: 54.5,-50.5
-    parent: 8364
-    type: Transform
-- uid: 20663
-  type: GasPassiveVent
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 55.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20664
-  type: GasPassiveVent
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 53.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20665
-  type: Grille
-  components:
-  - pos: 56.5,-49.5
-    parent: 8364
-    type: Transform
-- uid: 20666
-  type: Grille
-  components:
-  - pos: 54.5,-50.5
-    parent: 8364
-    type: Transform
-- uid: 20667
-  type: BlastDoor
-  components:
-  - pos: 53.5,-52.5
-    parent: 8364
-    type: Transform
-  - inputs:
-      Open: []
-      Close: []
-      Toggle:
-      - port: Pressed
-        uid: 20866
-    type: SignalReceiver
-- uid: 20668
-  type: GasValve
-  components:
-  - pos: 60.5,-48.5
-    parent: 8364
-    type: Transform
-  - open: False
-    type: GasValve
-  - bodyType: Static
-    type: Physics
 - uid: 20669
   type: CableApcExtension
   components:
@@ -155167,163 +154462,6 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 20670
-  type: CableApcExtension
-  components:
-  - pos: 60.5,-44.5
-    parent: 8364
-    type: Transform
-- uid: 20671
-  type: CableApcExtension
-  components:
-  - pos: 61.5,-47.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20672
-  type: AirlockScienceGlassLocked
-  components:
-  - name: Atmos Sci Test Lab
-    type: MetaData
-  - pos: 58.5,-42.5
-    parent: 8364
-    type: Transform
-- uid: 20673
-  type: GasPipeTJunction
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 62.5,-48.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20674
-  type: AirlockAtmosphericsGlassLocked
-  components:
-  - name: Atmos Sci Test Room
-    type: MetaData
-  - pos: 57.5,-54.5
-    parent: 8364
-    type: Transform
-- uid: 20675
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-49.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20676
-  type: CableApcExtension
-  components:
-  - pos: 58.5,-47.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20677
-  type: CableApcExtension
-  components:
-  - pos: 62.5,-51.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20678
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 59.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 20679
-  type: GasPressurePump
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 52.5,-45.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 20680
-  type: ReinforcedWindow
-  components:
-  - pos: 56.5,-50.5
-    parent: 8364
-    type: Transform
-- uid: 20681
-  type: ReinforcedPlasmaWindow
-  components:
-  - pos: 52.5,-51.5
-    parent: 8364
-    type: Transform
-- uid: 20682
-  type: WallReinforced
-  components:
-  - pos: 54.5,-52.5
-    parent: 8364
-    type: Transform
-- uid: 20683
-  type: ReinforcedWindow
-  components:
-  - pos: 56.5,-48.5
-    parent: 8364
-    type: Transform
-- uid: 20684
-  type: WallReinforced
-  components:
-  - pos: 56.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 20685
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-45.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20686
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-51.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20687
-  type: CableApcExtension
-  components:
-  - pos: 53.5,-44.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20688
-  type: CableApcExtension
-  components:
-  - pos: 62.5,-44.5
-    parent: 8364
-    type: Transform
-- uid: 20689
-  type: Grille
-  components:
-  - pos: 56.5,-53.5
-    parent: 8364
-    type: Transform
-- uid: 20690
-  type: Grille
-  components:
-  - pos: 55.5,-47.5
-    parent: 8364
-    type: Transform
 - uid: 20691
   type: Table
   components:
@@ -155336,23 +154474,6 @@ entities:
   - pos: 56.5,-38.5
     parent: 8364
     type: Transform
-- uid: 20693
-  type: CableApcExtension
-  components:
-  - pos: 60.5,-50.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20694
-  type: Poweredlight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 63.5,-45.5
-    parent: 8364
-    type: Transform
-  - powerLoad: 0
-    type: ApcPowerReceiver
 - uid: 20695
   type: Grille
   components:
@@ -155373,20 +154494,6 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 20698
-  type: CableApcExtension
-  components:
-  - pos: 53.5,-52.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20699
-  type: AtmosFixBlockerMarker
-  components:
-  - pos: 53.5,-50.5
-    parent: 8364
-    type: Transform
 - uid: 20700
   type: CableApcExtension
   components:
@@ -156019,23 +155126,6 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 20800
-  type: WeldingFuelTankFull
-  components:
-  - pos: 63.5,-43.5
-    parent: 8364
-    type: Transform
-- uid: 20801
-  type: GasPipeStraight
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 53.5,-48.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 20802
   type: WindowReinforcedDirectional
   components:
@@ -156262,12 +155352,6 @@ entities:
       friction: 0.4
       id: docking
     type: Fixtures
-- uid: 20825
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-44.5
-    parent: 8364
-    type: Transform
 - uid: 20826
   type: Poweredlight
   components:
@@ -156521,56 +155605,10 @@ entities:
   - pos: 68.5,-35.5
     parent: 8364
     type: Transform
-- uid: 20854
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-48.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20855
-  type: CableApcExtension
-  components:
-  - pos: 57.5,-50.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 20856
-  type: CableApcExtension
-  components:
-  - pos: 54.5,-44.5
-    parent: 8364
-    type: Transform
-- uid: 20857
-  type: CableApcExtension
-  components:
-  - pos: 59.5,-44.5
-    parent: 8364
-    type: Transform
-- uid: 20858
-  type: CableApcExtension
-  components:
-  - pos: 61.5,-44.5
-    parent: 8364
-    type: Transform
 - uid: 20859
   type: Catwalk
   components:
   - pos: 53.5,-56.5
-    parent: 8364
-    type: Transform
-- uid: 20860
-  type: GasAnalyzer
-  components:
-  - pos: 61.54493,-43.505928
-    parent: 8364
-    type: Transform
-- uid: 20861
-  type: GasAnalyzer
-  components:
-  - pos: 61.35743,-43.380928
     parent: 8364
     type: Transform
 - uid: 20862
@@ -156590,58 +155628,6 @@ entities:
   components:
   - rot: -1.5707963267948966 rad
     pos: -43.5,-17.5
-    parent: 8364
-    type: Transform
-- uid: 20865
-  type: GasVentScrubber
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 58.5,-45.5
-    parent: 8364
-    type: Transform
-  - color: '#FF1212FF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
-- uid: 20866
-  type: SignalButton
-  components:
-  - pos: 56.5,-47.5
-    parent: 8364
-    type: Transform
-  - outputs:
-      Pressed:
-      - port: Toggle
-        uid: 20667
-    type: SignalTransmitter
-- uid: 20867
-  type: Grille
-  components:
-  - pos: 56.5,-48.5
-    parent: 8364
-    type: Transform
-- uid: 20868
-  type: Grille
-  components:
-  - pos: 56.5,-50.5
-    parent: 8364
-    type: Transform
-- uid: 20869
-  type: ReinforcedWindow
-  components:
-  - pos: 51.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 20870
-  type: ReinforcedWindow
-  components:
-  - pos: 56.5,-49.5
-    parent: 8364
-    type: Transform
-- uid: 20871
-  type: ReinforcedWindow
-  components:
-  - pos: 56.5,-51.5
     parent: 8364
     type: Transform
 - uid: 20872
@@ -157135,12 +156121,6 @@ entities:
   - pos: 73.5,-37.5
     parent: 8364
     type: Transform
-- uid: 20939
-  type: StorageCanister
-  components:
-  - pos: 63.5,-52.5
-    parent: 8364
-    type: Transform
 - uid: 20940
   type: DisposalUnit
   components:
@@ -157414,18 +156394,6 @@ entities:
   components:
   - rot: -1.5707963267948966 rad
     pos: 50.5,-40.5
-    parent: 8364
-    type: Transform
-- uid: 20984
-  type: StorageCanister
-  components:
-  - pos: 63.5,-51.5
-    parent: 8364
-    type: Transform
-- uid: 20985
-  type: StorageCanister
-  components:
-  - pos: 63.5,-53.5
     parent: 8364
     type: Transform
 - uid: 20986
@@ -158483,17 +157451,6 @@ entities:
   - pos: 57.5,-31.5
     parent: 8364
     type: Transform
-- uid: 21144
-  type: GasPipeStraight
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 53.5,-47.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 21145
   type: ClothingMaskBreath
   components:
@@ -159928,12 +158885,6 @@ entities:
     type: Transform
   - nextAttack: 4442.2490056
     type: MeleeWeapon
-- uid: 21343
-  type: BagpipeInstrument
-  components:
-  - pos: 57.44085,-57.432228
-    parent: 8364
-    type: Transform
 - uid: 21344
   type: WallReinforced
   components:
@@ -159964,53 +158915,12 @@ entities:
   - pos: 54.5,-54.5
     parent: 8364
     type: Transform
-- uid: 21349
-  type: GasThermoMachineFreezer
-  components:
-  - pos: 63.5,-45.5
-    parent: 8364
-    type: Transform
-- uid: 21350
-  type: GasPort
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 51.5,-43.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 21351
-  type: GasPipeTJunction
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 56.5,-44.5
-    parent: 8364
-    type: Transform
-  - color: '#0335FCFF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
 - uid: 21352
   type: APCBasic
   components:
   - pos: 60.5,-42.5
     parent: 8364
     type: Transform
-- uid: 21353
-  type: Rack
-  components:
-  - pos: 55.5,-43.5
-    parent: 8364
-    type: Transform
-- uid: 21354
-  type: GasFilter
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 59.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
 - uid: 21355
   type: Window
   components:
@@ -160023,109 +158933,22 @@ entities:
   - pos: 53.5,-55.5
     parent: 8364
     type: Transform
-- uid: 21357
-  type: GasFilter
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 61.5,-51.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 21358
-  type: GasPipeTJunction
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 58.5,-44.5
-    parent: 8364
-    type: Transform
-  - color: '#FF1212FF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
-- uid: 21359
-  type: GasPort
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 51.5,-44.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 21360
-  type: GasThermoMachineHeater
-  components:
-  - pos: 63.5,-47.5
-    parent: 8364
-    type: Transform
 - uid: 21361
   type: WallReinforced
   components:
   - pos: 59.5,-42.5
     parent: 8364
     type: Transform
-- uid: 21362
-  type: ReinforcedPlasmaWindow
-  components:
-  - pos: 53.5,-49.5
-    parent: 8364
-    type: Transform
-- uid: 21363
-  type: Grille
-  components:
-  - pos: 54.5,-51.5
-    parent: 8364
-    type: Transform
-- uid: 21364
-  type: Grille
-  components:
-  - pos: 52.5,-50.5
-    parent: 8364
-    type: Transform
-- uid: 21365
-  type: CableApcExtension
-  components:
-  - pos: 60.5,-47.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 21366
-  type: CableApcExtension
-  components:
-  - pos: 62.5,-50.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
 - uid: 21367
   type: AirlockExternalGlassLocked
   components:
   - pos: 53.5,-54.5
     parent: 8364
     type: Transform
-- uid: 21368
-  type: CableApcExtension
-  components:
-  - pos: 55.5,-44.5
-    parent: 8364
-    type: Transform
 - uid: 21369
   type: Window
   components:
   - pos: 51.5,-38.5
-    parent: 8364
-    type: Transform
-- uid: 21370
-  type: Grille
-  components:
-  - pos: 51.5,-47.5
-    parent: 8364
-    type: Transform
-- uid: 21371
-  type: ReinforcedWindow
-  components:
-  - pos: 52.5,-47.5
     parent: 8364
     type: Transform
 - uid: 21372
@@ -160152,48 +158975,11 @@ entities:
   - pos: 67.5,-75.5
     parent: 8364
     type: Transform
-- uid: 21376
-  type: CableApcExtension
-  components:
-  - pos: 53.5,-51.5
-    parent: 8364
-    type: Transform
-  - enabled: True
-    type: AmbientSound
-- uid: 21377
-  type: GasPipeStraight
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 53.5,-49.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 21378
   type: PoweredSmallLight
   components:
   - rot: 1.5707963267948966 rad
     pos: 52.5,-56.5
-    parent: 8364
-    type: Transform
-  - powerLoad: 0
-    type: ApcPowerReceiver
-- uid: 21379
-  type: Poweredlight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 63.5,-51.5
-    parent: 8364
-    type: Transform
-  - powerLoad: 0
-    type: ApcPowerReceiver
-- uid: 21380
-  type: Poweredlight
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 51.5,-45.5
     parent: 8364
     type: Transform
   - powerLoad: 0
@@ -160239,27 +159025,6 @@ entities:
     type: AtmosPipeColor
   - bodyType: Static
     type: Physics
-- uid: 21385
-  type: GasPipeStraight
-  components:
-  - pos: 62.5,-47.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 21386
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 61.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 21387
   type: SignAnomaly2
   components:
@@ -163411,55 +162176,6 @@ entities:
   - pos: -23.5,10.5
     parent: 8364
     type: Transform
-- uid: 21828
-  type: AirlockGlassShuttle
-  components:
-  - pos: -0.5,-0.5
-    parent: 11906
-    type: Transform
-  - dockJointId: docking46345
-    dockedWith: 562
-    type: Docking
-  - SecondsUntilStateChange: -31218.441
-    changeAirtight: False
-    state: Opening
-    type: Door
-  - fixtures:
-    - shape: !type:PolygonShape
-        radius: 0.01
-        vertices:
-        - 0.49,-0.49
-        - 0.49,0.49
-        - -0.49,0.49
-        - -0.49,-0.49
-      mask:
-      - Impassable
-      - MidImpassable
-      - HighImpassable
-      - LowImpassable
-      - InteractImpassable
-      layer:
-      - MidImpassable
-      - HighImpassable
-      - BulletImpassable
-      - InteractImpassable
-      - Opaque
-      density: 1
-      hard: True
-      restitution: 0
-      friction: 0.4
-      id: null
-    - shape: !type:PhysShapeCircle
-        radius: 0.2
-        position: 0,-0.5
-      mask: []
-      layer: []
-      density: 1
-      hard: False
-      restitution: 0
-      friction: 0.4
-      id: docking
-    type: Fixtures
 - uid: 21829
   type: FirelockGlass
   components:
@@ -167766,89 +166482,6 @@ entities:
     pos: -0.5,-0.5
     parent: 8364
     type: Transform
-- uid: 22450
-  type: GasPipeStraight
-  components:
-  - pos: 61.5,-47.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 22451
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 60.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 22452
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 58.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 22453
-  type: GasFilter
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 61.5,-46.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 22454
-  type: GasMixerFlipped
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 61.5,-48.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 22455
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 57.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 22456
-  type: GasPipeBend
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 61.5,-49.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
-- uid: 22457
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: 56.5,-50.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-  - enabled: True
-    type: AmbientSound
 - uid: 22458
   type: GasVentPump
   components:
@@ -168375,15 +167008,6 @@ entities:
     type: Transform
   - enabled: True
     type: AmbientSound
-- uid: 22542
-  type: Poweredlight
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 55.5,-49.5
-    parent: 8364
-    type: Transform
-  - powerLoad: 0
-    type: ApcPowerReceiver
 - uid: 22543
   type: DisposalPipe
   components:
@@ -184761,17 +183385,6 @@ entities:
     type: Physics
   - enabled: True
     type: AmbientSound
-- uid: 24050
-  type: GasPipeStraight
-  components:
-  - rot: -1.5707963267948966 rad
-    pos: -30.5,-31.5
-    parent: 8364
-    type: Transform
-  - color: '#FF1212FF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
 - uid: 24051
   type: GasVentScrubber
   components:
@@ -197317,30 +195930,10 @@ entities:
     type: AtmosPipeColor
   - bodyType: Static
     type: Physics
-- uid: 25230
-  type: GasPipeStraight
-  components:
-  - pos: 56.5,-43.5
-    parent: 8364
-    type: Transform
-  - color: '#0335FCFF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
 - uid: 25231
   type: GasPipeStraight
   components:
   - pos: 58.5,-42.5
-    parent: 8364
-    type: Transform
-  - color: '#FF1212FF'
-    type: AtmosPipeColor
-  - bodyType: Static
-    type: Physics
-- uid: 25232
-  type: GasPipeStraight
-  components:
-  - pos: 58.5,-43.5
     parent: 8364
     type: Transform
   - color: '#FF1212FF'
@@ -203935,22 +202528,6 @@ entities:
     - 5879
     - 6211
     type: DeviceList
-- uid: 25892
-  type: Poweredlight
-  components:
-  - pos: 54.5,-43.5
-    parent: 8364
-    type: Transform
-  - powerLoad: 0
-    type: ApcPowerReceiver
-- uid: 25893
-  type: Poweredlight
-  components:
-  - pos: 61.5,-43.5
-    parent: 8364
-    type: Transform
-  - powerLoad: 0
-    type: ApcPowerReceiver
 - uid: 25894
   type: CableHV
   components:
@@ -209987,40 +208564,6 @@ entities:
   - pos: 59.539406,-39.454147
     parent: 8364
     type: Transform
-- uid: 26875
-  type: GasMixer
-  components:
-  - pos: 58.5,-48.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 26876
-  type: GasPort
-  components:
-  - pos: 58.5,-47.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 26877
-  type: GasPort
-  components:
-  - rot: 3.141592653589793 rad
-    pos: 58.5,-49.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
-- uid: 26878
-  type: GasPort
-  components:
-  - rot: 1.5707963267948966 rad
-    pos: 57.5,-48.5
-    parent: 8364
-    type: Transform
-  - bodyType: Static
-    type: Physics
 - uid: 26880
   type: Grille
   components:
