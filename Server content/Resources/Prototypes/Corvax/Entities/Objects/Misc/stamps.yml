@@ -22,3 +22,14 @@
     sprite: Objects/Misc/bureaucracy.rsi
     state: stamp-psychologist
     
+- type: entity
+  name: admin's rubber stamp
+  parent: RubberStampMime
+  id: RubberStampAdmin
+  components:
+  - type: Stamp
+    stampedName: stamp-component-stamped-name-admin
+    stampState: "paper_stamp-iaa"
+  - type: Sprite
+    sprite: Objects/Misc/bureaucracy.rsi
+    state: stamp-iaa
