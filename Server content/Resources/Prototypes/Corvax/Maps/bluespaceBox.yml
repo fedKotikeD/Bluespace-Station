@@ -1,5 +1,5 @@
 - type: gameMap
-  id: BlespaceBox
+  id: BluespaceBox
   mapName: 'Bluespace Station'
   mapPath: /Maps/BluespaceBox.yml
   minPlayers: 1
