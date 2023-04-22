@@ -1,11 +1,14 @@
 "File: PNG/JPG":
-- '*.png/*.jpg'
+- '**/*.png/*.jpg'
 
 "File: MOV/MP4":
-- '*.mp4/*.mov'
+- '**/*.mp4/*.mov'
 
 "File: MP3":
-- '*.mp3'
+- '**/*.mp3/*.ogg'
 
 "File: TXT":
-- '*.txt'
+- '**/*.txt'
+
+"File: github":
+- '.github/**
