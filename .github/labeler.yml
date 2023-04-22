@@ -11,4 +11,7 @@
 - '**/*.txt'
 
 "File: github":
-- '.github/**
+- '.github/**'
+
+"Status: Needs Review":
+- '*'
