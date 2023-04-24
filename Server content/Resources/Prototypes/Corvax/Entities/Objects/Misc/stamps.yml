@@ -29,7 +29,7 @@
   components:
   - type: Stamp
     stampedName: stamp-component-stamped-name-admin
-    stampState: "paper_stamp-iaa"
+    stampState: "paper_stamp-admin"
   - type: Sprite
     sprite: Objects/Misc/bureaucracy.rsi
     state: stamp-iaa
@@ -41,7 +41,7 @@
   components:
   - type: Stamp
     stampedName: stamp-component-stamped-name-out_of_shape
-    stampState: "paper_stamp-deny"
+    stampState: "paper_stamp-out_of_shape"
   - type: Sprite
     sprite: Objects/Misc/bureaucracy.rsi
-    state: stamp-deny
+    state: stamp-out_of_shape
