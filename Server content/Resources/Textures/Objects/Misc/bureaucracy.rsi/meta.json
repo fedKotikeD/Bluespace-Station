@@ -153,8 +153,14 @@
     {
       "name": "paper_stamp-generic"
     },
-	{
+	  {
       "name": "paper_stamp-psychologist"
+    },
+    {
+      "name": "paper_stamp-admin"
+    },
+    {
+      "name": "paper_stamp-out_of_shape"
     },
     {
       "name": "paper_talisman"
@@ -299,8 +305,11 @@
     {
       "name": "stamp-warden"
     },
-	{
+	  {
       "name": "stamp-psychologist"
+    },
+    {
+      "name": "stamp-out_of_shape"
     },
     {
       "name": "clipboard-equipped-BELT",
