@@ -1,8 +1,8 @@
-"File: PNG/JPG":
+"File: Picture":
 - '**/*.png'
 - '**/*.jpg'
 
-"File: MOV/MP4":
+"File: Video":
 - '**/*.mp4'
 - '**/*.mov'
 
