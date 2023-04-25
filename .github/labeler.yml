@@ -1,18 +1,22 @@
 "File: PNG/JPG":
-- '**/*.png/*.jpg'
+- '**/*.png'
+- '**/*.jpg'
 
 "File: MOV/MP4":
-- '**/*.mp4/*.mov'
+- '**/*.mp4'
+- '**/*.mov'
 
 "File: Audio":
-- '**/*.mp3/*.ogg
+- '**/*.mp3'
+- '**/*.ogg'
 - 'Server content/Resources/Audio/**'
 
 "File: Text":
-- '**/*.txt/'
+- '**/*.txt'
 
 "File: Textures":
 - 'Server content/Resources/Textures/**'
+- '**/meta.json'
 
 "File: github":
 - '.github/**'
