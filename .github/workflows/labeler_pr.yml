@@ -5,7 +5,6 @@ name: "Labels: PR"
   
  jobs: 
    labeler: 
-     if: github.actor != 'IanComradeBot' 
      runs-on: ubuntu-latest 
      steps: 
      - uses: actions/labeler@v3 
