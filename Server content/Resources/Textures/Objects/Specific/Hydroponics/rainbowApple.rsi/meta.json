@@ -9,6 +9,30 @@
   "states": [
     {
       "name": "produce"
+    },
+    {
+      "name": "dead"
+    },
+    {
+      "name": "harvest"
+    },
+    {
+      "name": "seed"
+    },
+    {
+      "name": "stage-1"
+    },
+    {
+      "name": "stage-2"
+    },
+    {
+      "name": "stage-3"
+    },{
+      "name": "stage-4"
+    },{
+      "name": "stage-5"
+    },{
+      "name": "stage-6"
     }
   ]
 }
