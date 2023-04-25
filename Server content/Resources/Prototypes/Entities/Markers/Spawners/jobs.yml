@@ -329,6 +329,18 @@
         - state: green
         - state: atmospherics
 
+- type: entity
+  id: SpawnPointBuilder
+  parent: SpawnPointJobBase
+  name: builder
+  components:
+  - type: SpawnPoint
+    job_id: Builder
+  - type: Sprite
+    layers:
+    - state: green
+    - state: engineer
+
 # Medical
 
 - type: entity
