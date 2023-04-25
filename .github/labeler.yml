@@ -1,17 +1,28 @@
-"File: PNG/JPG":
-- '**/*.png/*.jpg'
+"File: Picture":
+- '**/*.png'
+- '**/*.jpg'
 
-"File: MOV/MP4":
-- '**/*.mp4/*.mov'
+"File: Video":
+- '**/*.mp4'
+- '**/*.mov'
 
-"File: MP3":
-- '**/*.mp3/*.ogg'
+"File: Audio":
+- '**/*.mp3'
+- '**/*.ogg'
+- 'Server content/Resources/Audio/**'
 
-"File: TXT":
+"File: Text":
 - '**/*.txt'
+
+"File: Textures":
+- 'Server content/Resources/Textures/**'
+- '**/meta.json'
 
 "File: github":
 - '.github/**'
 
 "Status: Needs Review":
-- '*'
+- 'Server content/**'
+- '.github/**'
+- 'INFO/**'
+- 'other/**'
