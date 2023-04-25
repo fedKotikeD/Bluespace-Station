@@ -89,6 +89,7 @@
       - id: RubberStampHop
       - id: BoxEncryptionKeyPassenger
       - id: BoxEncryptionKeyService
+      - id: RubberStampOutOfShape
 
 - type: entity
   id: LockerChiefEngineerFilled
