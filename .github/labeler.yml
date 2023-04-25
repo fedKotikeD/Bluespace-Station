@@ -5,7 +5,7 @@
 - '**/*.mp4/*.mov'
 
 "File: Audio":
-- '**/*.mp3/*.off
+- '**/*.mp3/*.ogg
 - 'Server content/Resources/Audio/**'
 
 "File: Text":
