@@ -1137,3 +1137,26 @@
       reagents:
       - ReagentId: JuiceGrape
         Quantity: 10
+
+- type: entity
+  name: rainbow apple
+  parent: FoodApple
+  id: FoodRainbowApple
+  description: enjoy the taste of the rainbow.
+  components:
+  - type: FlavorProfile
+    flavors:
+      - rainbowApple
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 24
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 10
+        - ReagentId: Vitamin
+          Quantity: 4
+        - ReagentId: Omnizin
+          Quantity: 10
+  - type: Sprite
+    sprite: Objects/Specific/Hydroponics/rainbowApple.rsi
