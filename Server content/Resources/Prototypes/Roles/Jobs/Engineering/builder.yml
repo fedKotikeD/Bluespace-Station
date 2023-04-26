@@ -20,11 +20,11 @@
   id: BuilderGear
   equipment:
     head: ClothingHeadHatHardhatYellow
-    jumpsuit: ClothingUniformJumpsuitBuilder #work: code(+), sprite(-), localization(-)
-    back: ClothingBackpackBuilderFilled #work: code(+), sprite(-), localization(-)
+    jumpsuit: ClothingUniformJumpsuitBuilder #work: code(+), sprite(+), localization(-)
+    back: ClothingBackpackBuilderFilled #work: code(+), sprite(+), localization(-)
     shoes: ClothingShoesBootsWork
     outerClothing: ClothingOuterVestHazard
-    id: BuilderPDA #work: code(+), sprite(-), localization(-)
+    id: BuilderPDA #work: code(+), sprite(+), localization(-)
     eyes: ClothingEyesGlassesMeson
     belt: ClothingBeltUtilityFilled
     ears: ClothingHeadsetEngineering
