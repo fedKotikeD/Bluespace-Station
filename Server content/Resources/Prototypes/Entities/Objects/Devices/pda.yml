@@ -761,3 +761,14 @@
         - Write
   - type: Unremoveable
 
+- type: entity
+  parent: BasePDA
+  id: BuilderPDA
+  name: builder PDA
+  description: It smells like construction dust.
+  components:
+  - type: PDA
+    id: BuilderIDCard
+    state: pda-builder
+  - type: Icon
+    state: pda-builder

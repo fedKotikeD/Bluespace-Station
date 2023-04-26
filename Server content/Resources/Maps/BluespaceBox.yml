@@ -210428,4 +210428,16 @@ entities:
   - pos: -8.5061,-50.749557
     parent: 8364
     type: Transform
+- uid: 27358
+  type: SpawnPointBuilder
+  components:
+  - pos: 2, -65
+    parent: 8364
+    type: Transform
+- uid: 27359
+  type: SpawnPointBuilder
+  components:
+  - pos: 3, -65
+    parent: 8364
+    type: Transform
 ...

@@ -224,3 +224,14 @@
   - type: Sprite
     sprite: Clothing/Back/Backpacks/cluwne.rsi
   - type: Unremoveable
+
+- type: entity
+  parent: ClothingBackpack
+  id: ClothingBackpackBuilder
+  name: builder backpack
+  description: All the materials will fit here.
+  components:
+  - type: Sprite
+    sprite: Clothing/Back/Backpacks/builder.rsi
+  - type: Storage
+    capacity: 250
