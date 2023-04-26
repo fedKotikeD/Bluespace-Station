@@ -26,5 +26,5 @@
     outerClothing: ClothingOuterVestHazard
     id: BuilderPDA 
     eyes: ClothingEyesGlassesMeson
-    belt: ClothingBeltUtilityFilled
+    belt: ClothingBeltChiefEngineerFilled
     ears: ClothingHeadsetEngineering
