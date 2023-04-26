@@ -1,6 +1,6 @@
 - type: job
   id: Builder
-  name: job-name-builder
+  name: Builder
   description: job-description-builder
   playTimeTracker: JobBuilder
   requirements:
