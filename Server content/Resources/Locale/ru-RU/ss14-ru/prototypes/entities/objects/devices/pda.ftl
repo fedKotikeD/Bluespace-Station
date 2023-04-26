@@ -89,3 +89,5 @@ ent-BrigmedPDA = КПК бригмедика
 ent-CluwnePDA = КПК клувеня
     .desc = Проклятый КПК клувеня.
     .suffix = Неснимаемый
+ent-BuilderPDA = КПК строителя
+    .desc = Пахнет монтажной пеной.
