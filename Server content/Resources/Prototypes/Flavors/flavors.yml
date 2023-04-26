@@ -673,8 +673,3 @@
   id: bottledlightning
   flavorType: Complex
   description: flavor-complex-bottledlightning
-
-- type: flavor
-  id: rainbowApple
-  flavorType: Complex
-  description: flavor-complex-rainbowapple
