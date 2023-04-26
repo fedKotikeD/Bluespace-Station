@@ -8,7 +8,7 @@
       department: Engineering
       time: 21000 # Corvax-RoleTime
   startingGear: BuilderGear
-  icon: "StationBuilder"
+  icon: "StationEngineer"
   supervisors: job-supervisors-ce
   access:
   - Maintenance
@@ -28,8 +28,3 @@
     eyes: ClothingEyesGlassesMeson
     belt: ClothingBeltUtilityFilled
     ears: ClothingHeadsetEngineering
-  innerclothingskirt: ClothingUniformJumpskirtEngineering
-  satchel: ClothingBackpackSatchelEngineeringFilled
-  duffelbag: ClothingBackpackDuffelEngineeringFilled
-
-#сделал для вас роль строителя dopoi16-txt. Спрайты рисовала Verysa2
