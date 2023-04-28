@@ -213,6 +213,8 @@
   - type: StorageFill
     contents:
       - id: BoxSurvivalEngineering
+      - id: RCD
+      - id: RCDAmmo
 
 # ERT
 
