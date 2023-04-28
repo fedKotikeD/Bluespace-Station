@@ -163,7 +163,7 @@
     visuals:
     - type: StorageVisualizer
       state: bui
-      state_open: bui__open
+      state_open: bui_open
       state_closed: bui_door
   - type: AccessReader
     access: [ [ "Engineering" ] ]
