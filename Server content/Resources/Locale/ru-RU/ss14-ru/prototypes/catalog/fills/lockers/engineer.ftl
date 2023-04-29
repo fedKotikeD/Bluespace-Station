@@ -18,4 +18,4 @@ ent-ClosetRadiationSuitFilled = { ent-ClosetRadiationSuit }
     .desc = { ent-ClosetRadiationSuit.desc }
 ent-LockerBuilderFilled = { ent-LockerBuilder }
     .suffix = Заполненный
-    .desc = { ent-LockerEngineer.desc }
+    .desc = { ent-LockerBuilder.desc }
