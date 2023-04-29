@@ -5,11 +5,11 @@
   minPlayers: 1
   stations:
     Boxstation:
-      mapNameTemplate: '{0} Box Station {1}'
+      mapNameTemplate: '{0} Bluespace Box Station {1}'
       emergencyShuttlePath: /Maps/Shuttles/emergency_bluespace.yml
       nameGenerator:
         !type:NanotrasenNameGenerator
-        prefixCreator: 'dopoi16'
+        prefixCreator: 'TG'
       overflowJobs:
         - Passenger
       availableJobs:
