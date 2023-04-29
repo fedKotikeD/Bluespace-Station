@@ -153,6 +153,21 @@
   - type: AccessReader
     access: [ [ "Engineering" ] ]
 
+#Builder
+- type: entity
+  id: LockerBuilder
+  parent: LockerBase
+  name: builder's locker
+  components:
+  - type: Appearance
+    visuals:
+    - type: StorageVisualizer
+      state: bui
+      state_open: bui_open
+      state_closed: bui_door
+  - type: AccessReader
+    access: [ [ "Engineering" ] ]
+
 # Freezer
 - type: entity
   id: LockerFreezer

@@ -51,3 +51,5 @@ ent-LockerSyndicatePersonal = оружейный шкаф
 ent-LockerBluespaceStation = блюспейс шкаф
     .desc = Передовая технология шкафчикостроения.
     .suffix = once to station
+ent-LockerBuilder = шкаф строителя
+    .desc = { ent-LockerBase.desc }
