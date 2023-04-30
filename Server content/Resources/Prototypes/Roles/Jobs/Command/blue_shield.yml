@@ -1,8 +1,8 @@
 - type: job
   id: Blueshield
-  name: job-name-blueshield #localize (-)
-  description: job-description-blueshield #localize (-)
-  playTimeTracker: JobBlueshield #code (+)
+  name: job-name-blueshield  
+  description: job-description-blueshield  
+  playTimeTracker: JobBlueshield  
   requirements:
     - !type:DepartmentTimeRequirement
       department: Engineering
@@ -20,7 +20,7 @@
       time: 54000
   weight: 20
   startingGear: BlueshieldGear
-  icon: "Blueshield" #sprite (-)
+  icon: "Blueshield" #sprite 
   requireAdminNotify: true
   joinNotifyCrew: true
   supervisors: job-supervisors-centcom
@@ -31,13 +31,13 @@
 - type: startingGear
   id: BlueshieldGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitBlueshield #code (+), sprite (+), localize (+)
-    back: ClothingBackpackBlueshieldFilled #code (+), sprite (+), localize (+)
+    jumpsuit: ClothingUniformJumpsuitBlueshield 
+    back: ClothingBackpackBlueshieldFilled 
     shoes: ClothingShoesColorBlack
     head: ClothingHeadHatCaptain
     eyes: ClothingEyesGlassesSunglasses
-    gloves: ClothingHandsGlovesBlueshield #code (+), sprite (+), localize (+)
+    gloves: ClothingHandsGlovesBlueshield 
     outerClothing: ClothingOuterVestArmorSec 
-    id: BlueshieldPDA #code (+), sprite (+), localize (+)
-    ears: ClothingHeadsetBlueshield #code (+), sprite (+), localize (+)
-  innerclothingskirt: ClothingUniformJumpskirtBlueshield #code (+), sprite (+), localize (+)
+    id: BlueshieldPDA 
+    ears: ClothingHeadsetBlueshield 
+  innerclothingskirt: ClothingUniformJumpskirtBlueshield 
