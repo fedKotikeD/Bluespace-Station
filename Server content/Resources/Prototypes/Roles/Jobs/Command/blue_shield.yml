@@ -14,7 +14,7 @@
       department: Security
       time: 54000 # Corvax-RoleTime
     - !type:OverallPlaytimeRequirement
-      time: 324000 # Corvax-RoleTime
+      time: 648000 # Corvax-RoleTime
     - !type:DepartmentTimeRequirement
       department: Command
       time: 54000
