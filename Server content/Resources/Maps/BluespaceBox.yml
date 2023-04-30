@@ -210431,13 +210431,13 @@ entities:
 - uid: 27358
   type: SpawnPointBuilder
   components:
-  - pos: 2, -65
+  - pos: 2, -66
     parent: 8364
     type: Transform
 - uid: 27359
   type: SpawnPointBuilder
   components:
-  - pos: 3, -65
+  - pos: 3, -66
     parent: 8364
     type: Transform
 ...
