@@ -617,7 +617,7 @@
   - type: Unremoveable
 
 - type: entity
-  parent: IDCardStandard
+  parent: CentcomIDCard
   id: BlueshieldIDCard
   name: blue shield ID card
   components:
