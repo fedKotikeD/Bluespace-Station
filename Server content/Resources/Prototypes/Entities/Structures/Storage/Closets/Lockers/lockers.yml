@@ -86,9 +86,9 @@
   - type: Appearance
     visuals:
     - type: StorageVisualizer
-      state: blue
-      state_open: blue_open
-      state_closed: blue_door
+      state: blueshield
+      state_open: blueshield_open
+      state_closed: blueshield_door
   - type: AccessReader
     access: [["Captain"]]
 
