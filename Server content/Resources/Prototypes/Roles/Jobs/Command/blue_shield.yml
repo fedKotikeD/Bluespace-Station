@@ -31,15 +31,13 @@
 - type: startingGear
   id: BlueshieldGear
   equipment:
-    jumpsuit: ClothingUniformBlueshield #code (-), sprite (-), localize (-)
-    back: ClothingBackpackBlueshieldFilled #code (-), sprite (-), localize (-)
+    jumpsuit: ClothingUniformJumpsuitBlueshield #code (+), sprite (-), localize (-)
+    back: ClothingBackpackBlueshieldFilled #code (+), sprite (-), localize (-)
     shoes: ClothingShoesColorBlack
     head: ClothingHeadHatCaptain
     eyes: ClothingEyesGlassesSunglasses
-    gloves: ClothingHandsGlovesBlueshield #code (-), sprite (-), localize (-)
+    gloves: ClothingHandsGlovesBlueshield #code (+), sprite (-), localize (-)
     outerClothing: ClothingOuterVestArmorSec 
-    id: BlueshieldPDA #code (-), sprite (-), localize (-)
-    ears: ClothingHeadsetBlueshield #code (-), sprite (-), localize (-)
-  innerclothingskirt: ClothingUniformJumpskirtBlueshield #code (-), sprite (-), localize (-)
-  satchel: ClothingBackpackSatchelBlueshieldFilled #code (-), sprite (-), localize (-)
-  duffelbag: ClothingBackpackDuffelBlueshieldFilled #code (-), sprite (-), localize (-)
+    id: BlueshieldPDA #code (+), sprite (-), localize (-)
+    ears: ClothingHeadsetBlueshield #code (+), sprite (-), localize (-)
+  innerclothingskirt: ClothingUniformJumpskirtBlueshield #code (+), sprite (-), localize (-)
