@@ -87,3 +87,4 @@ JobTechnicalAssistant = Технический ассистент
 JobWarden = Смотритель
 JobBoxer = Боксёр
 JobZookeeper = Зоотехник
+JobBuilder = Строитель
