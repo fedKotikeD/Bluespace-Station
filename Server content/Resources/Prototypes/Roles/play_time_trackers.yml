@@ -138,3 +138,6 @@
 
 - type: playTimeTracker
   id: JobBuilder
+
+- type: playTimeTracker
+  id: JobBlueshield
