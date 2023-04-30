@@ -623,9 +623,7 @@
   components:
   - type: Sprite
     layers:
-    - state: gold
+    - state: default
     - state: idblueshield
-  - type: Item
-    heldPrefix: gold
   - type: PresetIdCard
     job: Blueshield
