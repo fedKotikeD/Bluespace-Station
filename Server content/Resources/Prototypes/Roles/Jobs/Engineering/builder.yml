@@ -1,7 +1,7 @@
 - type: job
-  id: Builder
-  name: Builder
-  description: Build, build, build!
+  id: builder
+  name: job-name-builder
+  description: job-description-builder
   playTimeTracker: JobBuilder
   requirements:
     - !type:DepartmentTimeRequirement
