@@ -43,3 +43,5 @@ ent-ClothingBackpackCluwne = проклятый хихишкин фон хонк
     .suffix = Неснимаемый
 ent-ClothingBackpackBuilder = рюкзак строителя
     .desc = Для всякого хлама по типу стали.
+ent-ClothingBackpackBlueshield = рюкзак офицера синего щита
+    .desc = Это специальный рюкзак, изготовленный исключительно для офицеров Nanotrasen.

@@ -96,3 +96,5 @@ ent-CluwneIDCard = ID карта клувеня
     .desc = { ent-IDCardStandard.desc }
 ent-BuilderIDCard = ID карта инженера
     .desc = { ent-IDCardStandard.desc }
+ent-BlueshieldIDCard = ID карта офицера синего щита
+    .desc = { ent-IDCardStandard.desc }
