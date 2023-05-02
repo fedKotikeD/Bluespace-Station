@@ -507,6 +507,15 @@
     },
     {
       "name": "bui_open"
+    },
+    {
+      "name": "blueshield"
+    },
+    {
+      "name": "blueshield_door"
+    },
+    {
+      "name": "blueshield_open"
     }
   ]
 }

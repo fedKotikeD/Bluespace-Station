@@ -615,3 +615,15 @@
   - type: IdCard
     jobTitle: Cluwne
   - type: Unremoveable
+
+- type: entity
+  parent: CentcomIDCard
+  id: BlueshieldIDCard
+  name: blue shield ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: default
+    - state: idblueshield
+  - type: PresetIdCard
+    job: Blueshield

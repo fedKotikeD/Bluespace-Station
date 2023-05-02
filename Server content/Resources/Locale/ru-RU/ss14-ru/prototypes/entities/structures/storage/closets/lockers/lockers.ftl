@@ -53,3 +53,5 @@ ent-LockerBluespaceStation = блюспейс шкаф
     .suffix = once to station
 ent-LockerBuilder = шкаф строителя
     .desc = { ent-LockerBase.desc }
+ent-LockerBlueshield = шкаф офицера синего щита
+    .desc = { ent-LockerBaseSecure.desc }

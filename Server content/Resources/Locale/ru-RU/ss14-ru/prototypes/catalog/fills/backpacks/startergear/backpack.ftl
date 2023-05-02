@@ -56,3 +56,5 @@ ent-ClothingBackpackPirateFilled = { ent-ClothingBackpackSatchelLeather }
 ent-ClothingBackpackBuilderFilled = { ent-ClothingBackpackBuilder }
     .desc = { ent-ClothingBackpackBuilder.desc }
     .suffix = Заполненный
+ent-ClothingBackpackBlueshieldFilled = { ent-ClothingBackpackBlueshield }
+    .desc = { ent-ClothingBackpackBlueshield.desc }
