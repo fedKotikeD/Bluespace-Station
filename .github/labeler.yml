@@ -25,9 +25,3 @@
 
 "File: Entity":
 - 'Server content/Resources/Prototyes/Entities/**'
-
-"Status: Needs Review":
-- 'Server content/**'
-- '.github/**'
-- 'INFO/**'
-- 'other/**'
