@@ -20,7 +20,7 @@
       time: 54000
   weight: 20
   startingGear: BlueshieldGear
-  icon: "Captain" #временно, сделано исью с изменением
+  icon: "Blueshield"
   requireAdminNotify: true
   joinNotifyCrew: true
   supervisors: job-supervisors-centcom
