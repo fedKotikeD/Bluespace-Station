@@ -1,5 +1,5 @@
 - type: job
-  id: builder
+  id: Builder
   name: job-name-builder
   description: job-description-builder
   playTimeTracker: JobBuilder
