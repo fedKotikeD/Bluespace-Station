@@ -52,3 +52,11 @@
   components:
   - type: CartridgeAmmo
     proto: BulletPistolRubber
+
+- type: entity
+  id: AnnihilatorPistol
+  name: cartridge (.35 auto annihilator)
+  parent: BaseCartridgePistol
+  components:
+  - type: CartridgeAmmo
+    proto: AniPistol

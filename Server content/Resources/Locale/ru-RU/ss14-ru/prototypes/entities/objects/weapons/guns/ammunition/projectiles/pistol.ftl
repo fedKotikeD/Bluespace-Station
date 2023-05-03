@@ -6,3 +6,5 @@ ent-BulletPistolPractice = пуля (.35 авто учебная)
     .desc = { ent-BaseBulletPractice.desc }
 ent-BulletPistolRubber = пуля (.35 авто резиновая)
     .desc = { ent-BaseBulletRubber.desc }
+ent-AniPistol = пуля (.35 авто аннигилятор)
+    .desc = Уникальный вид пуль который помимо большого разрыва предоставляет клеточные проблемы.

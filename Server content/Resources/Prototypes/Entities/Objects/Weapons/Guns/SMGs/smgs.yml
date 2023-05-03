@@ -76,7 +76,7 @@
   - type: Appearance
 
 - type: entity
-  name: Atreides
+  name: Annihilator
   parent: BaseWeaponSubMachineGun
   id: WeaponSubMachineGunAnnihilator
   description: Kill! Kill! Kill! Uses annihilator ammo.
@@ -97,6 +97,24 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolAnnihilator
+        insertSound: /Audio/Weapons/Guns/MagIn/smg_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/smg_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazinePistolAnnihilator
+      gun_chamber:
+        name: Chamber
+        startingItem: AnnihilatorPistol
+        priority: 1
+        whitelist:
+          tags:
+            - AnnihilatorPistol
 
 - type: entity
   name: C-20r sub machine gun

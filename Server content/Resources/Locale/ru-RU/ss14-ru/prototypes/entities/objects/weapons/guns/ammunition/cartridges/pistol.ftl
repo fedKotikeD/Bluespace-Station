@@ -8,3 +8,5 @@ ent-CartridgePistolPractice = патрон (.35 пистолетный учеб�
     .desc = { ent-BaseCartridgePistol.desc }
 ent-CartridgePistolRubber = патрон (.35 пистолетный резиновый)
     .desc = { ent-BaseCartridgePistol.desc }
+ent-AnnihilatorPistol = патрон (.35 пистолетный аннигилятор)
+    .desc = { ent-AniPistol.desc }
