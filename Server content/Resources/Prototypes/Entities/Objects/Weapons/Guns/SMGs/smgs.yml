@@ -76,6 +76,29 @@
   - type: Appearance
 
 - type: entity
+  name: Atreides
+  parent: BaseWeaponSubMachineGun
+  id: WeaponSubMachineGunAnnihilator
+  description: Kill! Kill! Kill! Uses annihilator ammo.
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/SMGs/annihilator.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Gun
+    fireRate: 10
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/atreides.ogg
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+
+- type: entity
   name: C-20r sub machine gun
   parent: BaseWeaponSubMachineGun
   id: WeaponSubMachineGunC20r
