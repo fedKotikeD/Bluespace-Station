@@ -24,4 +24,4 @@
 - '**/*.ftl'
 
 "File: Entity":
-- 'Server content/Resources/Prototyes/Entities/**'
+- 'Server content/Resources/Prototypes/Entities/**'
