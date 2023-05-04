@@ -1,0 +1,70 @@
+- type: entity
+  name: Annihilator
+  parent: BaseWeaponSubMachineGun
+  id: WeaponSubMachineGunAnnihilator
+  description: Kill! Kill! Kill! Uses annihilator ammo.
+  components:
+  - type: Sprite
+    sprite: Bluespace-content/annihilator.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Gun
+    fireRate: 10
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/atreides.ogg
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: MagazinePistolAnnihilator
+        insertSound: /Audio/Weapons/Guns/MagIn/smg_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/smg_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+            - MagazinePistolAnnihilator
+      gun_chamber:
+        name: Chamber
+        startingItem: AnnihilatorPistol
+        priority: 1
+        whitelist:
+          tags:
+            - AnnihilatorPistol
+
+- type: entity
+  id: MagazinePistolAnnihilator
+  name: annihilator magazine (.35 auto)
+  parent: BaseMagazinePistolSubMachineGun
+  components:
+  - type: BallisticAmmoProvider
+    capacity: 250
+    proto: AnnihilatorPistol
+    whitelist:
+      tags:
+        - AnnihilatorPistol
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/bullet_insert.ogg
+  - type: Sprite
+    netsync: false
+    sprite: Objects/Weapons/Guns/Ammunition/Magazine/Pistol/pistol_mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+
+- type: entity
+  id: AnnihilatorPistol
+  name: cartridge (.35 auto annihilator)
+  parent: BaseCartridgePistol
+  components:
+  - type: CartridgeAmmo
+    proto: AniPistol
