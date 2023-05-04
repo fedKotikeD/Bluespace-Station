@@ -135,9 +135,3 @@
 
 - type: playTimeTracker
   id: JobZookeeper
-
-- type: playTimeTracker
-  id: JobBuilder
-
-- type: playTimeTracker
-  id: JobBlueshield
