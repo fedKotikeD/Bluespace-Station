@@ -15,6 +15,4 @@ ent-WeaponSubMachineGunVectorRubber = Вектор
 ent-WeaponSubMachineGunWt550 = WT550
     .desc = Отличный пистолет-пулемёт, производства NanoTrasen's Small Arms Division. Использует патроны калибра .35 авто.
     .suffix = Пистолет-пулемёт
-ent-WeaponSubMachineGunAnnihilator = Аннигилятор
-    .desc = Мощный аннигилирующий пистолет-пулемёт который поможет в битве. Использует патроны аннигилятора.
-    .suffix = Пистолет-пулемёт, Полуадмем
+    

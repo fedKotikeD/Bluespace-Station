@@ -41,15 +41,3 @@
     damage:
       types:
         Blunt: 3
-
-- type: entity
-  id: AniPistol
-  name: bullet (.35 auto annihilator)
-  parent: BaseBullet
-  noSpawn: true
-  components:
-  - type: Projectile
-    damage:
-      types:
-        Piercing: 32
-        Cellular: 10
