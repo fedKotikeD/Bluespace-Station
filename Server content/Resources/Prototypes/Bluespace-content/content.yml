@@ -99,7 +99,7 @@
       department: Engineering
       time: 21000 # Corvax-RoleTime
   startingGear: BuilderGear
-  icon: "Builder" #y
+  icon: "Builder" #n
   supervisors: job-supervisors-ce
   access:
   - Maintenance
