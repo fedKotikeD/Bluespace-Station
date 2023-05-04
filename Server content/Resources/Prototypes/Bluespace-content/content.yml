@@ -80,3 +80,97 @@
       types:
         Piercing: 32
         Cellular: 10
+
+- type: playTimeTracker
+  id: JobBuilder
+
+- type: playTimeTracker
+  id: JobBlueshield
+
+############Также в департамент вручную добавить builder и blueshield
+
+- type: job
+  id: Builder
+  name: job-name-builder
+  description: job-description-builder
+  playTimeTracker: JobBuilder
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: Engineering
+      time: 21000 # Corvax-RoleTime
+  startingGear: BuilderGear
+  icon: "Builder" #y
+  supervisors: job-supervisors-ce
+  access:
+  - Maintenance
+  - Engineering
+  - External
+  - Atmospherics
+
+- type: startingGear
+  id: BuilderGear
+  equipment:
+    head: ClothingHeadHatHardhatYellow
+    jumpsuit: ClothingUniformJumpsuitBuilder #y
+    back: ClothingBackpackBuilderFilled #n
+    shoes: ClothingShoesBootsWork
+    outerClothing: ClothingOuterVestHazard
+    id: BuilderPDA #n
+    eyes: ClothingEyesGlassesMeson
+    belt: ClothingBeltChiefEngineerFilled
+    ears: ClothingHeadsetEngineering
+
+- type: job
+  id: Blueshield
+  name: job-name-blueshield  
+  description: job-description-blueshield  
+  playTimeTracker: JobBlueshield  
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: Engineering
+      time: 54000 # Corvax-RoleTime
+    - !type:DepartmentTimeRequirement
+      department: Medical
+      time: 54000 # Corvax-RoleTime
+    - !type:DepartmentTimeRequirement
+      department: Security
+      time: 54000 # Corvax-RoleTime
+    - !type:OverallPlaytimeRequirement
+      time: 648000 # Corvax-RoleTime
+    - !type:DepartmentTimeRequirement
+      department: Command
+      time: 54000
+  weight: 20
+  startingGear: BlueshieldGear
+  icon: "Blueshield" #n
+  requireAdminNotify: true
+  joinNotifyCrew: true
+  supervisors: job-supervisors-centcom
+  canBeAntag: false
+  accessGroups:
+  - AllAccess
+
+- type: startingGear
+  id: BlueshieldGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitBlueshield #n
+    back: ClothingBackpackBlueshieldFilled #n
+    shoes: ClothingShoesColorBlack
+    head: ClothingHeadHatCaptain
+    eyes: ClothingEyesGlassesSunglasses
+    gloves: ClothingHandsGlovesBlueshield #n
+    outerClothing: ClothingOuterVestArmorSec 
+    id: BlueshieldPDA #n
+    ears: ClothingHeadsetBlueshield #n
+  innerclothingskirt: ClothingUniformJumpskirtBlueshield #n
+
+- type: entity
+  parent: ClothingUniformBase
+  id: ClothingUniformJumpsuitBuilder
+  name: builder jumpsuit
+  description: Covered in dust and construction foam.
+  components:
+  - type: Sprite
+    sprite: Clothing/Uniforms/Jumpsuit/builder.rsi #n
+  - type: Clothing
+    sprite: Clothing/Uniforms/Jumpsuit/builder.rsi #n
