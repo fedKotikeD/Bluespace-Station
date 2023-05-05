@@ -25,3 +25,7 @@
 
 "File: Entity":
 - 'Server content/Resources/Prototypes/Entities/**'
+
+"File: PROJECT EXCLUSIVE":
+- 'Server content/**/mark'
+- 'Server content/**/Bluespace-content/**'
