@@ -17,7 +17,6 @@ job-name-engineer = Инженер
 job-name-atmostech = Атмосферный техник
 job-name-hop = Глава персонала
 job-name-captain = Капитан
-job-name-blueshield = Офицер синего щита
 job-name-serviceworker = Сервисный работник
 job-name-centcomoff = Представитель Центком
 job-name-reporter = Репортёр
@@ -88,8 +87,3 @@ JobTechnicalAssistant = Технический ассистент
 JobWarden = Смотритель
 JobBoxer = Боксёр
 JobZookeeper = Зоотехник
-
-JobBlueshield = Офицер синего щита
-
-JobBuilder = Строитель
-
