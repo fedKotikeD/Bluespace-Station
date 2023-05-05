@@ -189,7 +189,6 @@
     sprite: Bluespace-content/Jumpsuits/blueshield.rsi
 
 - type: entity
-  noSpawn: true
   parent: ClothingBackpackBuilder
   id: ClothingBackpackBuilderFilled
   components:
@@ -211,7 +210,6 @@
     capacity: 250
 
 - type: entity
-  noSpawn: true
   parent: ClothingBackpackBlueshield
   id: ClothingBackpackBlueshieldFilled
   components:
