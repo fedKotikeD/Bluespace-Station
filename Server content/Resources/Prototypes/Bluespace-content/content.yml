@@ -423,3 +423,44 @@
     damageCoefficient: 0.5
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitBlue
+
+- type: reagent
+  id: GeneticKiller
+  name: reagent-name-geneticKiller
+  group: Medicine
+  desc: reagent-desc-geneticKiller
+  physicalDesc: reagent-physical-desc-geneticKiller
+  flavor: medicine
+  color: "#d2fffa"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:HealthChange
+        damage:
+          Cellular: 5
+      - !type:HealthChange
+        conditions:
+        - !type:ReagentThreshold
+          min: 30
+        damage:
+          types:
+            Asphyxiation: -2.5
+            Poison: -1
+      - !type:Jitter
+        conditions:
+        - !type:ReagentThreshold
+          min: 30
+
+
+- type: reaction
+  id: GeneticKiller
+  reactants:
+    Dylovene:
+      amount: 20
+    Plasma:
+      amount: 1
+      catalyst: true
+    Oxygen:
+      amount: 5
+  product:
+    GeneticKiller: 10

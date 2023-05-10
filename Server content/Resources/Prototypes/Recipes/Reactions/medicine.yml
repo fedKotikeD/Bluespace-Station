@@ -372,16 +372,3 @@
       amount: 1
   products:
     Sigynate: 4
-
-- type: reaction
-  id: GeneticKiller
-  reactants:
-    Dylovene:
-      amount: 20
-    Plasma:
-      amount: 1
-      catalyst: true
-    Oxygen:
-      amount: 5
-  product:
-    GeneticKiller: 10
