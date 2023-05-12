@@ -3,19 +3,23 @@
 #fedKotikeD's part
 .github/** @fedKotikeD #github
 INFO/** @fedKotikeD #INFO
-**/Resources/Locale/Bluespace-content/** @fedKotikeD #project translate
-**/Resources/Textures/**/meta.json @fedKotikeD #meta
-**/Resources/Prototypes/Bluespace-content/** @fedKotikeD #project proto
-**/Resources/Prototypes/Entities/** @fedKotikeD #entities
-**/Resources/Textures/Bluespace-content/** @fedKotikeD #project textures
+./Resources/Locale/Bluespace-content/** @fedKotikeD #project translate
+./Resources/Textures/**/meta.json @fedKotikeD #meta
+./Resources/Prototypes/Bluespace-content/** @fedKotikeD #project proto
+./Resources/Prototypes/Entities/** @fedKotikeD #entities
+./Resources/Textures/Bluespace-content/** @fedKotikeD #project textures
+./CHANGES.md @fedKotikeD
+./SECURITY.md @fedKotikeD
+./LICENSE.txt @fedKotikeD
 
 #OMGazk88's part
-**/Resources/Textures/Bluespace-content/Clothing/** @OMGazk88 #project textures clothing
-**/Resources/Audio/** @OMGazk88 #music & sounds
-**/Resources/Maps/** @OMGazk88 #maps
-**/Resources/Locale/** @OMGazk88 #translate
+./Resources/Textures/Bluespace-content/Clothing/** @OMGazk88 #project textures clothing
+./Resources/Audio/** @OMGazk88 #music & sounds
+./Resources/Maps/** @OMGazk88 #maps
+./Resources/Locale/** @OMGazk88 #translate
 
 #both
 other/** @fedKotikeD @OMGazk88 #other
-**/mark @fedKotikeD @OMGazk88 #marks
-**/Bluespace-content/** @fedKotikeD @OMGazk88 #all exclusive
+./mark @fedKotikeD @OMGazk88 #marks
+./Bluespace-content/** @fedKotikeD @OMGazk88 #all exclusive
+./README.md @fedKotikeD @OMGazk88
