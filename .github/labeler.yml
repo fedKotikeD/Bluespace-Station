@@ -29,3 +29,7 @@
 "File: PROJECT EXCLUSIVE":
 - 'Server content/**/mark'
 - 'Server content/**/Bluespace-content/**'
+
+"NOT TO MERGE":
+- '**/SECURITY.md'
+- '**/LICENSE.txt'
