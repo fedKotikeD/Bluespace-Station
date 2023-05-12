@@ -28,7 +28,7 @@ public sealed class ResPathSerializer : ITypeSerializer<ResPath, ValueDataNode>,
 
         if (!path.CanonPath.Split('/').First().Equals("Textures", StringComparison.InvariantCultureIgnoreCase))
         {
-            path = SharedSpriteComponent.TextureRoot / path;
+            path = SpriteSpecifierSerializer.TextureRoot / path;
         }
 
         path = path.ToRootedPath();
@@ -72,8 +72,7 @@ public sealed class ResPathSerializer : ITypeSerializer<ResPath, ValueDataNode>,
     }
 
     public ResPath CreateCopy(ISerializationManager serializationManager, ResPath source,
-        SerializationHookContext hookCtx,
-        ISerializationContext? context = null)
+        IDependencyCollection dependencies, SerializationHookContext hookCtx, ISerializationContext? context = null)
     {
         return new ResPath(source.ToString());
     }
