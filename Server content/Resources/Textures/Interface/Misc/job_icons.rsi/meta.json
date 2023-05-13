@@ -107,6 +107,9 @@
             "name": "MedicalDoctor"
         },
         {
+            "name": "Paramedic"
+        },
+        {
             "name": "Chef"
         },
         {
@@ -144,12 +147,6 @@
         },
         {
             "name": "Zookeeper"
-        },
-        {
-            "name": "Builder"
-        },
-        {
-            "name": "Blueshield"
         }
     ]
 }

@@ -244,12 +244,6 @@
     {
       "name": "blue-inhand-right",
       "directions": 4
-    },
-    {
-      "name": "idbuilder"
-    },
-    {
-      "name": "idblueshield"
     }
   ]
 }
