@@ -472,6 +472,31 @@ public abstract partial class SharedTransformSystem
                     QueueDel(uid);
                     throw new InvalidOperationException($"Attempted to re-parent to a terminating object. Entity: {ToPrettyString(uid)}, new parent: {ToPrettyString(value.EntityId)}");
                 }
+
+                if (xform.MapUid == newParent.MapUid)
+                {
+                    var recursiveUid = value.EntityId;
+                    var recursiveXform = newParent;
+                    while (recursiveXform.ParentUid.IsValid())
+                    {
+                        if (recursiveXform.ParentUid == uid)
+                        {
+                            if (!_gameTiming.ApplyingState)
+                                throw new InvalidOperationException($"Attempted to parent an entity to one of its descendants! {ToPrettyString(uid)}");
+
+                            // Client is halfway through applying server state, which can sometimes lead to a temporarily circular transform hierarchy.
+                            // E.g., client is holding a foldable bed and predicts dropping & sitting in it -> reset to holding it -> bed is parent of player and vice versa.
+                            // Even though its temporary, this can still cause the client to get stuck in infinite loops while applying the game state.
+                            // So we will just break the loop by detaching to null and just trusting that the loop wasn't actually a real feature of the server state.
+                            Logger.Warning($"Encountered circular transform hierarchy while applying state for entity: {ToPrettyString(uid)}. Detaching child to null: {ToPrettyString(recursiveUid)}");
+                            DetachParentToNull(recursiveUid, recursiveXform);
+                            break;
+                        }
+
+                        recursiveUid = recursiveXform.ParentUid;
+                        recursiveXform = xformQuery.GetComponent(recursiveUid);
+                    }
+                }
             }
 
             if (xform._parent.IsValid())

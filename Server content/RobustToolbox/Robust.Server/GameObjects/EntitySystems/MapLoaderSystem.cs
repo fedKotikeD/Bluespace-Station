@@ -12,6 +12,7 @@ using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Map.Events;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -47,7 +48,7 @@ public sealed class MapLoaderSystem : EntitySystem
     private ISawmill _logLoader = default!;
 
     private static readonly MapLoadOptions DefaultLoadOptions = new();
-    private const int MapFormatVersion = 4;
+    private const int MapFormatVersion = 5;
     private const int BackwardsVersion = 2;
 
     private MapSerializationContext _context = default!;
@@ -256,19 +257,22 @@ public sealed class MapLoaderSystem : EntitySystem
 
     private bool Deserialize(MapData data)
     {
+        var ev = new BeforeEntityReadEvent();
+        RaiseLocalEvent(ev);
+
         // First we load map meta data like version.
         if (!ReadMetaSection(data))
             return false;
 
         // Verify that prototypes for all the entities exist
-        if (!VerifyEntitiesExist(data))
+        if (!VerifyEntitiesExist(data, ev))
             return false;
 
         // Tile map
         ReadTileMapSection(data);
 
         // Alloc entities
-        AllocEntities(data);
+        var toDelete = AllocEntities(data, ev);
 
         // Load the prototype data onto entities, e.g. transform parents, etc.
         LoadEntities(data);
@@ -286,50 +290,53 @@ public sealed class MapLoaderSystem : EntitySystem
         // Then, go hierarchically in order and do the entity things.
         StartupEntities(data);
 
+        // At the very end, delete entities belonging to removed prototypes. This is being done after startup just in
+        // case these entities have any children that somehow rely on startup in order to properly shut down.
+        // This is pretty cursed and might cause unexpected errors.
+        foreach (var uid in toDelete)
+        {
+           Del(uid);
+           data.Entities.Remove(uid);
+        }
+
         return true;
     }
 
-    private bool VerifyEntitiesExist(MapData data)
+    private bool VerifyEntitiesExist(MapData data, BeforeEntityReadEvent ev)
     {
         _stopwatch.Restart();
         var fail = false;
         var reportedError = new HashSet<string>();
+        var key = data.Version >= 4 ? "proto" : "type";
+        var entities = data.RootMappingNode.Get<SequenceDataNode>("entities");
 
-        if (data.Version >= 4)
+        foreach (var metaDef in entities.Cast<MappingDataNode>())
         {
-            var meta = data.RootMappingNode.Get<SequenceDataNode>("entities");
+            if (!metaDef.TryGet<ValueDataNode>(key, out var typeNode))
+                continue;
 
-            foreach (var metaDef in meta.Cast<MappingDataNode>())
-            {
-                if (metaDef.TryGet<ValueDataNode>("proto", out var typeNode))
-                {
-                    var type = typeNode.Value;
-                    if (type != string.Empty && !_prototypeManager.HasIndex<EntityPrototype>(type) && !reportedError.Contains(type))
-                    {
-                        Logger.ErrorS("map", "Missing prototype for map: {0}", type);
-                        fail = true;
-                        reportedError.Add(type);
-                    }
-                }
-            }
-        }
-        else
-        {
-            var entities = data.RootMappingNode.Get<SequenceDataNode>("entities");
+            var type = typeNode.Value;
+            if (string.IsNullOrWhiteSpace(type))
+                continue;
 
-            foreach (var entityDef in entities.Cast<MappingDataNode>())
+            if (ev.RenamedPrototypes.TryGetValue(type, out var newType))
+                type = newType;
+
+            if (_prototypeManager.HasIndex<EntityPrototype>(type))
+                continue;
+
+            if (!reportedError.Add(type))
+                continue;
+
+            if (ev.DeletedPrototypes.Contains(type))
             {
-                if (entityDef.TryGet<ValueDataNode>("type", out var typeNode))
-                {
-                    var type = typeNode.Value;
-                    if (!_prototypeManager.HasIndex<EntityPrototype>(type) && !reportedError.Contains(type))
-                    {
-                        Logger.ErrorS("map", "Missing prototype for map: {0}", type);
-                        fail = true;
-                        reportedError.Add(type);
-                    }
-                }
+                _logLoader.Warning("Map contains an obsolete/removed prototype: {0}. This may cause unexpected errors.", type);
+                continue;
             }
+
+            _logLoader.Error("Missing prototype for map: {0}", type);
+            fail = true;
+            reportedError.Add(type);
         }
 
         _logLoader.Debug($"Verified entities in {_stopwatch.Elapsed}");
@@ -385,12 +392,13 @@ public sealed class MapLoaderSystem : EntitySystem
         _logLoader.Debug($"Read tilemap in {_stopwatch.Elapsed}");
     }
 
-    private void AllocEntities(MapData data)
+    private HashSet<EntityUid> AllocEntities(MapData data, BeforeEntityReadEvent ev)
     {
         _stopwatch.Restart();
         var mapUid = _mapManager.GetMapEntityId(data.TargetMap);
         var pauseTime = mapUid.IsValid() ? _meta.GetPauseTime(mapUid) : TimeSpan.Zero;
-        _context.Set(data.UidEntityMap, new Dictionary<EntityUid, int>(), pauseTime, null);
+        _context.Set(data.UidEntityMap, new Dictionary<EntityUid, int>(), data.MapIsPostInit, pauseTime, null);
+        HashSet<EntityUid> deletedPrototypeUids = new();
 
         if (data.Version >= 4)
         {
@@ -399,9 +407,17 @@ public sealed class MapLoaderSystem : EntitySystem
             foreach (var metaDef in metaEntities.Cast<MappingDataNode>())
             {
                 string? type = null;
-                if (metaDef.TryGet<ValueDataNode>("proto", out var typeNode))
+                var deletedPrototype = false;
+                if (metaDef.TryGet<ValueDataNode>("proto", out var typeNode)
+                    && !string.IsNullOrWhiteSpace(typeNode.Value))
                 {
-                    type = typeNode.Value;
+
+                    if (ev.DeletedPrototypes.Contains(typeNode.Value))
+                        deletedPrototype = true;
+                    else if (ev.RenamedPrototypes.TryGetValue(typeNode.Value, out var newType))
+                        type = newType;
+                    else
+                        type = typeNode.Value;
                 }
 
                 var entities = (SequenceDataNode) metaDef["entities"];
@@ -415,7 +431,11 @@ public sealed class MapLoaderSystem : EntitySystem
                     data.UidEntityMap.Add(uid, entity);
                     data.EntitiesToDeserialize.Add(entity, entityDef);
 
-                    if (data.Options.StoreMapUids)
+                    if (deletedPrototype)
+                    {
+                        deletedPrototypeUids.Add(entity);
+                    }
+                    else if (data.Options.StoreMapUids)
                     {
                         var comp = _serverEntityManager.AddComponent<MapSaveIdComponent>(entity);
                         comp.Uid = uid;
@@ -429,15 +449,29 @@ public sealed class MapLoaderSystem : EntitySystem
 
             foreach (var entityDef in entities.Cast<MappingDataNode>())
             {
-                string? type = null;
+                EntityUid entity;
                 if (entityDef.TryGet<ValueDataNode>("type", out var typeNode))
                 {
-                    type = typeNode.Value;
+                    if (ev.DeletedPrototypes.Contains(typeNode.Value))
+                    {
+                        entity = _serverEntityManager.AllocEntity(null);
+                        deletedPrototypeUids.Add(entity);
+                    }
+                    else if (ev.RenamedPrototypes.TryGetValue(typeNode.Value, out var newType))
+                    {
+                        entity = _serverEntityManager.AllocEntity(newType);
+                    }
+                    else
+                    {
+                        entity = _serverEntityManager.AllocEntity(typeNode.Value);
+                    }
+                }
+                else
+                {
+                    entity = _serverEntityManager.AllocEntity(null);
                 }
 
                 var uid = entityDef.Get<ValueDataNode>("uid").AsInt();
-
-                var entity = _serverEntityManager.AllocEntity(type);
                 data.Entities.Add(entity);
                 data.UidEntityMap.Add(uid, entity);
                 data.EntitiesToDeserialize.Add(entity, entityDef);
@@ -451,6 +485,7 @@ public sealed class MapLoaderSystem : EntitySystem
         }
 
         _logLoader.Debug($"Allocated {data.Entities.Count} entities in {_stopwatch.Elapsed}");
+        return deletedPrototypeUids;
     }
 
     private void LoadEntities(MapData mapData)
@@ -480,7 +515,14 @@ public sealed class MapLoaderSystem : EntitySystem
                 var datanode = compData.Copy();
                 datanode.Remove("type");
                 var value = ((ValueDataNode)compData["type"]).Value;
-                var compType = _factory.GetRegistration(value).Type;
+                if (!_factory.TryGetRegistration(value, out var reg))
+                {
+                    if (!_factory.IsIgnored(value))
+                        _logLoader.Error($"Encountered unregistered component ({value}) while loading entity {ToPrettyString(uid)}");
+                    continue;
+                }
+
+                var compType = reg.Type;
                 if (prototype?.Components != null && prototype.Components.TryGetValue(value, out var protData))
                 {
                     datanode =
@@ -587,6 +629,7 @@ public sealed class MapLoaderSystem : EntitySystem
                     }
 
                     _mapManager.SetMapEntity(data.TargetMap, rootNode);
+                    EnsureComp<LoadedMapComponent>(rootNode);
                 }
                 // Otherwise just ignore the map in the file.
                 else
@@ -623,6 +666,7 @@ public sealed class MapLoaderSystem : EntitySystem
                 }
 
                 _mapManager.SetMapEntity(data.TargetMap, rootNode);
+                EnsureComp<LoadedMapComponent>(rootNode);
 
                 // Nothing should have invalid uid except for the root node.
             }
@@ -852,6 +896,9 @@ public sealed class MapLoaderSystem : EntitySystem
 
     private MappingDataNode GetSaveData(EntityUid uid)
     {
+        var ev = new BeforeSaveEvent(uid, Transform(uid).MapUid);
+        RaiseLocalEvent(ev);
+
         var data = new MappingDataNode();
         WriteMetaSection(data, uid);
 
@@ -864,10 +911,12 @@ public sealed class MapLoaderSystem : EntitySystem
         WriteTileMapSection(data, entities);
 
         _logLoader.Debug($"Populated entity list in {_stopwatch.Elapsed}");
-        var pauseTime = _meta.GetPauseTime(uid);
+        var metadata = Comp<MetaDataComponent>(uid);
+        var pauseTime = _meta.GetPauseTime(uid, metadata);
+        var postInit = metadata.EntityLifeStage >= EntityLifeStage.MapInitialized;
 
         var rootXform = _serverEntityManager.GetComponent<TransformComponent>(uid);
-        _context.Set(uidEntityMap, entityUidMap, pauseTime, rootXform.ParentUid);
+        _context.Set(uidEntityMap, entityUidMap, postInit, pauseTime, rootXform.ParentUid);
 
         _stopwatch.Restart();
         WriteEntitySection(data, uidEntityMap, entityUidMap);
@@ -882,9 +931,6 @@ public sealed class MapLoaderSystem : EntitySystem
         var meta = new MappingDataNode();
         rootNode.Add("meta", meta);
         meta.Add("format", MapFormatVersion.ToString(CultureInfo.InvariantCulture));
-        // TODO: Make these values configurable.
-        meta.Add("name", "DemoStation");
-        meta.Add("author", "Space-Wizards");
 
         var xform = Transform(uid);
         var isPostInit = _mapManager.IsMapInitialized(xform.MapID);
@@ -1063,6 +1109,7 @@ public sealed class MapLoaderSystem : EntitySystem
                     if (!prototypeCompCache.TryGetValue(prototype.ID, out cache))
                     {
                         prototypeCompCache[prototype.ID] = cache = new Dictionary<string, MappingDataNode>(prototype.Components.Count);
+                        _context.WritingReadingPrototypes = true;
 
                         foreach (var (compType, comp) in prototype.Components)
                         {
@@ -1071,6 +1118,7 @@ public sealed class MapLoaderSystem : EntitySystem
                         }
 
                         _context.CurrentComponent = null;
+                        _context.WritingReadingPrototypes = false;
                         cache.TryAdd(metaName, emptyMetaNode);
                         cache.TryAdd(xformName, emptyXformNode);
                     }
