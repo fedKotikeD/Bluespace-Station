@@ -495,3 +495,28 @@
     useSound:
       path: /Audio/Items/crowbar.ogg  
 
+- type: entity
+  id: PassportBase
+  suffix: "Passport"
+  parent: Paper
+  components:
+    - type:
+      stampState: paper_stamp-cent
+      stampedBy:
+        - CentComm
+
+- type: entity
+  id: PassportVerysa2
+  parent: PassportBase
+  name: Verysa2 passport
+  components:
+  - type: Paper
+    content: book-text-passport-Verysa2
+
+- type: entity
+  id: PassportfedKotikeD
+  parent: PassportBase
+  name: fedKotikeD passport
+  components:
+  - type: Paper
+    content: book-text-passport-fedKotikeD

@@ -9,3 +9,4 @@ Main changes of this downstream:
 - Sponsor rewards
 - Other roles
 - Custom alert levels
+- Custom RP-passports
