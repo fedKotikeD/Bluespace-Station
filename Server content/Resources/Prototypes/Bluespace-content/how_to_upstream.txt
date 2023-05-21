@@ -11,3 +11,4 @@
 * КПК
 * айди карты
 * код опасности в /Prototypes/alertLevels
+* ключ шифрования в HeadsetAlt
