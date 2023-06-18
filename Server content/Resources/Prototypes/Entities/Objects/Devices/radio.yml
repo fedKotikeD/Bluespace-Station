@@ -5,7 +5,10 @@
   id: RadioHandheld
   components:
   - type: RadioMicrophone
+    broadcastChannel: Handheld
   - type: RadioSpeaker
+    channels:
+    - Handheld
   - type: Speech
   - type: Sprite
     sprite: Objects/Devices/communication.rsi
@@ -19,3 +22,15 @@
   - type: Tag
     tags:
     - Radio
+
+- type: entity
+  name: command radio
+  description: A handy handheld radio.
+  parent: RadioHandheld
+  id: RadioHandheldCommand
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: Command
+  - type: RadioSpeaker
+    channels:
+    - Command
