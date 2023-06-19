@@ -12,14 +12,14 @@ INFO/** @fedKotikeD #INFO
 */SECURITY.md @fedKotikeD
 */LICENSE.txt @fedKotikeD
 
-#OMGazk88's part [banned]
-#*/Resources/Textures/Bluespace-content/Clothing/** @OMGazk88 #project textures clothing
-#*/Resources/Audio/** @OMGazk88 #music & sounds
-#*/Resources/Maps/** @OMGazk88 #maps
-#*/Resources/Locale/** @OMGazk88 #translate
+#dopoi16-txt's part
+*/Resources/Textures/Bluespace-content/Clothing/** @dopoi16-txt #project textures clothing
+*/Resources/Audio/** @dopoi16-txt #music & sounds
+*/Resources/Maps/** @dopoi16-txt #maps
+*/Resources/Locale/** @dopoi16-txt #translate
 
 #both
-other/** @fedKotikeD #@OMGazk88 #other
-*/mark @fedKotikeD #@OMGazk88 #marks
-*/Bluespace-content/** @fedKotikeD #@OMGazk88 #all exclusive
-*/README.md @fedKotikeD #@OMGazk88
+other/** @fedKotikeD @dopoi16-txt #other
+*/mark @fedKotikeD @dopoi16-txt #marks
+*/Bluespace-content/** @fedKotikeD @dopoi16-txt #all exclusive
+*/README.md @fedKotikeD @dopoi16-txt

@@ -1,3 +1,11 @@
+ent-RadioHandheldCommand = командная рация
+    .desc = Удобная портативная рация.
+ent-RadioHandheldAI = рация ИИ
+    .desc = Удобная портативная рация.
+ent-IntercomAI = { ent-Intercom }
+    .desc = { ent-Intercom.desc }
+ent-EncryptionKeyAI = ключ шифрования ИИ
+    .desc = Ключ шифрования для ИИ
 id-card-access-level-telecomm = Телекоммуникации
 ent-AirlockTelecommLocked = { ent-AirlockCommand }
     .suffix = Телекоммуникации, Закрыт
