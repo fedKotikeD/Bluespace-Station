@@ -22,15 +22,3 @@
   - type: Tag
     tags:
     - Radio
-
-- type: entity
-  name: command radio
-  description: A handy handheld radio.
-  parent: RadioHandheld
-  id: RadioHandheldCommand
-  components:
-  - type: RadioMicrophone
-    broadcastChannel: Command
-  - type: RadioSpeaker
-    channels:
-    - Command
