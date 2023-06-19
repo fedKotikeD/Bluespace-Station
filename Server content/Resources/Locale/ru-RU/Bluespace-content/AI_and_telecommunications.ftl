@@ -1,0 +1,10 @@
+id-card-access-level-telecomm = Телекоммуникации
+ent-AirlockTelecommLocked = { ent-AirlockCommand }
+    .suffix = Телекоммуникации, Закрыт
+    .desc = { ent-AirlockCommand.desc }
+ent-AirlockMaintTelecommLocked = { ent-AirlockMaint }
+    .suffix = Телекоммуникации, Закрыт
+    .desc = { ent-AirlockMaint.desc }
+ent-AirlockTelecommGlassLocked = { ent-AirlockCommandGlass }
+    .suffix = Телекоммуникации, Закрыт
+    .desc = { ent-AirlockCommandGlass.desc }
