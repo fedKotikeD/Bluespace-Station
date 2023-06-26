@@ -61,3 +61,10 @@
       emergencyLightColor: DarkViolet
       forceEnableEmergencyLights: true
       shuttleTime: 1200
+    brown:
+      announcement: alert-level-brown-announcement
+      selectable: false
+      sound:
+        path: /Audio/Bluespace-content/revolution.ogg
+      disableSelection: true
+      color: Brown

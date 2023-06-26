@@ -5,30 +5,26 @@
 "File: Audio":
 - '**/*.mp3'
 - '**/*.ogg'
-- 'Server content/Resources/Audio/**'
+- '**/Resources/Audio/**'
 
 "File: Text":
 - '**/*.txt'
 
 "File: Textures":
-- 'Server content/Resources/Textures/**'
+- '**/Resources/Textures/**'
 - '**/meta.json'
 
 "File: github":
 - '.github/**'
 
 "File: Role":
-- 'Server content/Resources/Prototypes/Roles/**'
+- '**/Resources/Prototypes/Roles/**'
 
 "File: Localization":
 - '**/*.ftl'
 
 "File: Entity":
-- 'Server content/Resources/Prototypes/Entities/**'
-
-"File: PROJECT EXCLUSIVE":
-- 'Server content/**/mark'
-- 'Server content/**/Bluespace-content/**'
+- '**/Resources/Prototypes/Entities/**'
 
 "NOT TO MERGE":
 - '**/SECURITY.md'
