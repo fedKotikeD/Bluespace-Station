@@ -48,6 +48,7 @@
   - ResearchDirector
   - Quartermaster
   - Blueshield
+  - TeleEngineer
 
 - type: department
   id: Engineering
@@ -59,6 +60,7 @@
   - StationEngineer
   - TechnicalAssistant
   - Builder
+  - TeleEngineer
 
 - type: department
   id: Medical
