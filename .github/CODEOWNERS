@@ -1,6 +1,6 @@
-# New CODEOWNER by maintainers
+#New CODEOWNER by maintainers
 
-#fedKotikeD's part
+#fedKotikeD part
 .github/** @fedKotikeD #github
 INFO/** @fedKotikeD #INFO
 */Resources/Locale/Bluespace-content/** @fedKotikeD #project translate
@@ -23,3 +23,4 @@ other/** @fedKotikeD @dopoi16-txt #other
 */mark @fedKotikeD @dopoi16-txt #marks
 */Bluespace-content/** @fedKotikeD @dopoi16-txt #all exclusive
 */README.md @fedKotikeD @dopoi16-txt
+
