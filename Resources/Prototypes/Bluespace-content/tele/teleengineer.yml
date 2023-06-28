@@ -38,7 +38,7 @@
     id: TeleEngineerPDA
     eyes: ClothingEyesGlassesMeson
     belt: ClothingBeltUtilityFilled
-    ears: ClothingHeadsetAltEngineering
+    ears: ClothingHeadsetAltTeleEngineer
   innerclothingskirt: ClothingUniformJumpskirtEngineering
   satchel: ClothingBackpackSatchelEngineeringFilled
   duffelbag: ClothingBackpackDuffelEngineeringFilled
@@ -69,3 +69,16 @@
 
 - type: playTimeTracker
   id: JobTeleEngineer
+
+- type: entity
+  parent: ClothingHeadsetAltEngineering
+  id: ClothingHeadsetTeleEngineer
+  name: tele engineer's over-ear headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyEngineering
+      - EncryptionKeyCommand
+      - EncryptionKeyCommon
+      - EncryptionKeyAI
