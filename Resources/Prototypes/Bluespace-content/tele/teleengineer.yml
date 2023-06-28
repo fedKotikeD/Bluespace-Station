@@ -38,7 +38,7 @@
     id: TeleEngineerPDA
     eyes: ClothingEyesGlassesMeson
     belt: ClothingBeltUtilityFilled
-    ears: ClothingHeadsetEngineering
+    ears: ClothingHeadsetAltEngineering
   innerclothingskirt: ClothingUniformJumpskirtEngineering
   satchel: ClothingBackpackSatchelEngineeringFilled
   duffelbag: ClothingBackpackDuffelEngineeringFilled
@@ -47,7 +47,7 @@
   parent: BasePDA
   id: TeleEngineerPDA
   name: TeleEngineer PDA
-  description: I don't hear you.
+  description: I dont hear you.
   components:
   - type: PDA
     id: TeleEngineerIDCard
