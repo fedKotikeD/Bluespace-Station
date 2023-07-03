@@ -1,7 +1,7 @@
 - type: radioChannel
   id: AI
   name: ИИ
-  keycode: 'а' 
+  keycode: 'ии' 
   frequency: 7778
   color: "#ffc0cb"
 
