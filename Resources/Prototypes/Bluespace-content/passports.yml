@@ -3,7 +3,7 @@
   suffix: "Passport"
   parent: Paper
   components:
-    - type:
+    - type: Paper
       stampState: paper_stamp-cent
       stampedBy:
         - CentComm
