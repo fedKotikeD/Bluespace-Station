@@ -209,10 +209,16 @@
       "name": "pda-cluwne"
     },
     {
-      "name": "pda-builder"
+      "name": "pda-seniorengineer"
     },
     {
-      "name": "pda-blueshield"
+      "name": "pda-seniorresearcher"
+    },
+    {
+      "name": "pda-seniorphysician"
+    },
+    {
+      "name": "pda-seniorofficer"
     }
   ]
 }
