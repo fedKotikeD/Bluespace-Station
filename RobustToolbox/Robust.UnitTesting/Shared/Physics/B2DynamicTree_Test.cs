@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Numerics;
 using NUnit.Framework;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics;

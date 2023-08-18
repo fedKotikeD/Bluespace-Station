@@ -1,7 +1,5 @@
-using System.IO;
 using Lidgren.Network;
 using Robust.Shared.Serialization;
-using Robust.Shared.Utility;
 
 #nullable disable
 
@@ -11,24 +9,17 @@ namespace Robust.Shared.Network.Messages
     {
         public override MsgGroups MsgGroup => MsgGroups.String;
 
-        public FormattedMessage Text { get; set; }
+        public string Text { get; set; }
         public bool Error { get; set; }
 
         public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
         {
-            int length = buffer.ReadVariableInt32();
-            using var stream = buffer.ReadAlignedMemory(length);
-            Text = serializer.Deserialize<FormattedMessage>(stream);
+            Text = buffer.ReadString();
         }
 
         public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
         {
-            var stream = new MemoryStream();
-
-            serializer.Serialize(stream, Text);
-
-            buffer.WriteVariableInt32((int)stream.Length);
-            buffer.Write(stream.AsSpan());
+            buffer.Write(Text);
         }
     }
 }

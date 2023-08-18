@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Shared;
 using Robust.Shared.Configuration;
@@ -48,7 +47,7 @@ namespace Robust.Client.UserInterface.CustomControls
 
         protected override Vector2 MeasureOverride(Vector2 availableSize)
         {
-            return new Vector2(TrackedFrames * FrameWidth, FrameHeight * 2);
+            return (TrackedFrames * FrameWidth, FrameHeight * 2);
         }
 
         protected override void FrameUpdate(FrameEventArgs args)
@@ -92,9 +91,9 @@ namespace Robust.Client.UserInterface.CustomControls
                 var gc = _gcMarkers[currentFrameIndex];
                 if (gc)
                 {
-                    triangle[0] = new Vector2(rect.Left, 0);
-                    triangle[1] = new Vector2(rect.Right, 0);
-                    triangle[2] = new Vector2(rect.Center.X, 5);
+                    triangle[0] = (rect.Left, 0);
+                    triangle[1] = (rect.Right, 0);
+                    triangle[2] = (rect.Center.X, 5);
 
                     handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, triangle, Color.LightBlue);
                 }

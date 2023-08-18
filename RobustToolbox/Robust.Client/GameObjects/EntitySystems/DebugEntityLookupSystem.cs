@@ -38,8 +38,7 @@ public sealed class DebugEntityLookupSystem : EntitySystem
                 IoCManager.Resolve<IOverlayManager>().AddOverlay(
                     new EntityLookupOverlay(
                         EntityManager,
-                        EntityManager.System<EntityLookupSystem>(),
-                        EntityManager.System<SharedTransformSystem>()));
+                        Get<EntityLookupSystem>()));
             }
             else
             {
@@ -53,35 +52,31 @@ public sealed class DebugEntityLookupSystem : EntitySystem
 
 public sealed class EntityLookupOverlay : Overlay
 {
-    private readonly IEntityManager _entityManager;
-    private readonly EntityLookupSystem _lookup;
-    private readonly SharedTransformSystem _transform;
-
-    private EntityQuery<TransformComponent> _xformQuery;
+    private IEntityManager _entityManager = default!;
+    private EntityLookupSystem _lookup = default!;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
-    public EntityLookupOverlay(IEntityManager entManager, EntityLookupSystem lookup, SharedTransformSystem transform)
+    public EntityLookupOverlay(IEntityManager entManager, EntityLookupSystem lookup)
     {
         _entityManager = entManager;
         _lookup = lookup;
-        _xformQuery = entManager.GetEntityQuery<TransformComponent>();
-        _transform = transform;
     }
 
     protected internal override void Draw(in OverlayDrawArgs args)
     {
         var worldHandle = args.WorldHandle;
-        var worldBounds = args.WorldBounds;
+        var xformQuery = _entityManager.GetEntityQuery<TransformComponent>();
 
-        // TODO: Static version
-        _lookup.FindLookupsIntersecting(args.MapId, worldBounds, (uid, lookup) =>
+        foreach (var lookup in _lookup.FindLookupsIntersecting(args.MapId, args.WorldBounds))
         {
-            var (_, rotation, matrix, invMatrix) = _transform.GetWorldPositionRotationMatrixWithInv(uid);
+            var lookupXform = xformQuery.GetComponent(lookup.Owner);
+
+            var (_, rotation, matrix, invMatrix) = lookupXform.GetWorldPositionRotationMatrixWithInv();
 
             worldHandle.SetTransform(matrix);
 
-            var lookupAABB = invMatrix.TransformBox(worldBounds);
+            var lookupAABB = invMatrix.TransformBox(args.WorldBounds);
             var ents = new List<EntityUid>();
 
             lookup.DynamicTree.QueryAabb(ref ents, static (ref List<EntityUid> state, in FixtureProxy value) =>
@@ -110,22 +105,20 @@ public sealed class EntityLookupOverlay : Overlay
 
             foreach (var ent in ents)
             {
-                if (_entityManager.Deleted(ent))
-                    continue;
-
-                var xform = _xformQuery.GetComponent(ent);
+                if (_entityManager.Deleted(ent)) continue;
+                var xform = xformQuery.GetComponent(ent);
 
                 //DebugTools.Assert(!ent.IsInContainer(_entityManager));
-                var (entPos, entRot) = _transform.GetWorldPositionRotation(ent);
+                var (entPos, entRot) = xform.GetWorldPositionRotation();
 
                 var lookupPos = invMatrix.Transform(entPos);
                 var lookupRot = entRot - rotation;
 
-                var aabb = _lookup.GetAABB(ent, lookupPos, lookupRot, xform, _xformQuery);
+                var aabb = _lookup.GetAABB(ent, lookupPos, lookupRot, xform, xformQuery);
 
                 worldHandle.DrawRect(aabb, Color.Blue.WithAlpha(0.2f));
             }
-        });
+        }
 
         worldHandle.SetTransform(Matrix3.Identity);
     }

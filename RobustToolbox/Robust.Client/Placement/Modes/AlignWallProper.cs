@@ -1,6 +1,6 @@
 using System.Linq;
 using Robust.Shared.Map;
-using Vector2 = System.Numerics.Vector2;
+using Vector2 = Robust.Shared.Maths.Vector2;
 
 namespace Robust.Client.Placement.Modes
 {
@@ -27,17 +27,16 @@ namespace Robust.Client.Placement.Modes
 
             var offsets = new Vector2[]
             {
-                new(0f, 0.5f),
-                new(0.5f, 0f),
-                new(0, -0.5f),
-                new(-0.5f, 0f)
+                (0f, 0.5f),
+                (0.5f, 0f),
+                (0, -0.5f),
+                (-0.5f, 0f)
             };
 
             var closestNode = offsets
                 .Select(o => tileCoordinates.Offset(o))
-                .MinBy(node => node.TryDistance(pManager.EntityManager, MouseCoords, out var distance) ?
-                    distance :
-                    (float?) null);
+                .OrderBy(node => node.TryDistance(pManager.EntityManager, MouseCoords, out var distance) ? distance : (float?) null)
+                .First();
 
             MouseCoords = closestNode;
         }

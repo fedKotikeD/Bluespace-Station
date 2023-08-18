@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Text;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;

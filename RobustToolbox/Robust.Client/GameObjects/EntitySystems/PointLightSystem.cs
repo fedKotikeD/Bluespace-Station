@@ -37,7 +37,7 @@ namespace Robust.Client.GameObjects
                 return;
 
             comp.ContainerOccluded = occluded;
-            Dirty(uid, comp);
+            Dirty(comp);
 
             if (comp.Enabled)
                 _lightTree.QueueTreeUpdate(uid, comp);
@@ -50,7 +50,7 @@ namespace Robust.Client.GameObjects
 
             comp._enabled = enabled;
             RaiseLocalEvent(uid, new PointLightToggleEvent(comp.Enabled));
-            Dirty(uid, comp);
+            Dirty(comp);
 
             var cast = (PointLightComponent)comp;
             if (!cast.ContainerOccluded)
@@ -63,7 +63,7 @@ namespace Robust.Client.GameObjects
                 return;
 
             comp._radius = radius;
-            Dirty(uid, comp);
+            Dirty(comp);
 
             var cast = (PointLightComponent)comp;
             if (cast.TreeUid != null)

@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Robust.Shared.Map;
+﻿using Robust.Shared.Map;
 
 namespace Robust.Client.Placement.Modes
 {
@@ -28,12 +27,12 @@ namespace Robust.Client.Placement.Modes
 
             if (pManager.CurrentPermission!.IsTile)
             {
-                MouseCoords = new EntityCoordinates(MouseCoords.EntityId, new Vector2(CurrentTile.X + tileSize / 2,
+                MouseCoords = new EntityCoordinates(MouseCoords.EntityId, (CurrentTile.X + tileSize / 2,
                     CurrentTile.Y + tileSize / 2));
             }
             else
             {
-                MouseCoords = new EntityCoordinates(MouseCoords.EntityId, new Vector2(CurrentTile.X + tileSize / 2 + pManager.PlacementOffset.X,
+                MouseCoords = new EntityCoordinates(MouseCoords.EntityId, (CurrentTile.X + tileSize / 2 + pManager.PlacementOffset.X,
                     CurrentTile.Y + tileSize / 2 + pManager.PlacementOffset.Y));
             }
         }

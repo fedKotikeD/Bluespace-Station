@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Numerics;
 using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -34,7 +33,7 @@ namespace Robust.Client.Placement.Modes
 
             var snapToEntities = EntitySystem.Get<EntityLookupSystem>().GetEntitiesInRange(MouseCoords, SnapToRange)
                 .Where(entity => pManager.EntityManager.GetComponent<MetaDataComponent>(entity).EntityPrototype == pManager.CurrentPrototype && pManager.EntityManager.GetComponent<TransformComponent>(entity).MapID == mapId)
-                .OrderBy(entity => (pManager.EntityManager.GetComponent<TransformComponent>(entity).WorldPosition - MouseCoords.ToMapPos(pManager.EntityManager)).LengthSquared())
+                .OrderBy(entity => (pManager.EntityManager.GetComponent<TransformComponent>(entity).WorldPosition - MouseCoords.ToMapPos(pManager.EntityManager)).LengthSquared)
                 .ToList();
 
             if (snapToEntities.Count == 0)
@@ -66,7 +65,7 @@ namespace Robust.Client.Placement.Modes
             };
 
             var closestSide =
-                (from Vector2 side in sides orderby (side - MouseCoords.Position).LengthSquared() select side).First();
+                (from Vector2 side in sides orderby (side - MouseCoords.Position).LengthSquared select side).First();
 
             MouseCoords = new EntityCoordinates(MouseCoords.EntityId, MouseCoords.Position);
         }

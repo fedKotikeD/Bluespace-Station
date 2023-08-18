@@ -1,6 +1,5 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Shared.Input;
 using Robust.Shared.Maths;
@@ -117,7 +116,7 @@ namespace Robust.Client.UserInterface.Controls
             var background = _getBackground();
             if (background != null)
             {
-                position -= background.GetContentOffset(Vector2.Zero, UIScale);
+                position -= background.GetContentOffset(Vector2.Zero);
             }
 
             var vOffset = -_scrollBar.Value;
@@ -126,7 +125,7 @@ namespace Robust.Client.UserInterface.Controls
             bool DoSearch(Item item, float hOffset)
             {
                 var itemHeight = font.GetHeight(UIScale);
-                var itemBox = UIBox2.FromDimensions(new(hOffset, vOffset), new(PixelWidth - hOffset, itemHeight));
+                var itemBox = UIBox2.FromDimensions((hOffset, vOffset), (PixelWidth - hOffset, itemHeight));
                 if (itemBox.Contains(position))
                 {
                     final = item;
@@ -187,8 +186,8 @@ namespace Robust.Client.UserInterface.Controls
 
             if (background != null)
             {
-                background.Draw(handle, PixelSizeBox, UIScale);
-                var (bho, bvo) = background.GetContentOffset(Vector2.Zero, UIScale);
+                background.Draw(handle, PixelSizeBox);
+                var (bho, bvo) = background.GetContentOffset(Vector2.Zero);
                 vOffset += bvo;
                 hOffset += bho;
             }
@@ -214,17 +213,16 @@ namespace Robust.Client.UserInterface.Controls
             var selected = item.Index == _selectedIndex;
             if (selected)
             {
-                var imageTarget = UIBox2.FromDimensions(hOffset, vOffset, PixelWidth - hOffset, itemHeight);
-                itemSelected.Draw(handle, imageTarget, UIScale);
+                itemSelected.Draw(handle, UIBox2.FromDimensions(hOffset, vOffset, PixelWidth - hOffset, itemHeight));
             }
 
             if (!string.IsNullOrWhiteSpace(item.Text))
             {
-                var offset = itemSelected.GetContentOffset(Vector2.Zero, UIScale);
-                var baseLine = offset + new Vector2(hOffset, vOffset + font.GetAscent(UIScale));
+                var offset = itemSelected.GetContentOffset(Vector2.Zero);
+                var baseLine = offset + (hOffset, vOffset + font.GetAscent(UIScale));
                 foreach (var rune in item.Text.EnumerateRunes())
                 {
-                    baseLine += new Vector2(font.DrawChar(handle, rune, baseLine, UIScale, Color.White), 0);
+                    baseLine += (font.DrawChar(handle, rune, baseLine, UIScale, Color.White), 0);
                 }
             }
 

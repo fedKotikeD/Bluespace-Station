@@ -36,16 +36,18 @@ public sealed class ResPathSerializer : ITypeSerializer<ResPath, ValueDataNode>,
         try
         {
             var resourceManager = dependencies.Resolve<IResourceManager>();
-            if (node.Value.EndsWith(ResPath.Separator))
+            if (resourceManager.ContentFileExists(path.CanonPath))
             {
-                if (resourceManager.ContentGetDirectoryEntries(path).Any())
-                    return new ValidatedValueNode(node);
-
-                return new ErrorNode(node, $"Folder not found. ({path})");
+                return new ValidatedValueNode(node);
             }
 
-            if (resourceManager.ContentFileExists(path))
+            if (node.Value.EndsWith(ResPath.SeparatorStr)
+                // Once Resource path is purged this will be
+                //  resourceManager.ContentGetDirectoryEntries(path).Any()
+                && resourceManager.ContentGetDirectoryEntries(new ResPath(path.CanonPath)).Any())
+            {
                 return new ValidatedValueNode(node);
+            }
 
             return new ErrorNode(node, $"File not found. ({path})");
         }

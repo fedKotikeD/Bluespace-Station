@@ -1,4 +1,3 @@
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;

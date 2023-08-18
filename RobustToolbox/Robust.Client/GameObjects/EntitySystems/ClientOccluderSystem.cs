@@ -40,7 +40,7 @@ internal sealed class ClientOccluderSystem : OccluderSystem
             return;
 
         comp.Enabled = enabled;
-        Dirty(uid, comp);
+        Dirty(comp);
 
         var xform = Transform(uid);
         QueueTreeUpdate(uid, comp, xform);

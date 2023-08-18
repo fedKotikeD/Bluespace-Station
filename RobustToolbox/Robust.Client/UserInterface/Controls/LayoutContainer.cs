@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using JetBrains.Annotations;
 using Robust.Client.Graphics;
 using Robust.Shared.Maths;
@@ -310,7 +309,7 @@ namespace Robust.Client.UserInterface.Controls
             LayoutPresetMode resizeMode = LayoutPresetMode.MinSize,
             int margin = 0)
         {
-            control.Measure(Vector2Helpers.Infinity);
+            control.Measure(Vector2.Infinity);
             var newSize = control.Size;
             var minSize = control.DesiredSize;
             if ((resizeMode & LayoutPresetMode.KeepWidth) == 0)
@@ -478,7 +477,7 @@ namespace Robust.Client.UserInterface.Controls
                     size.Y = anchorMargins.Height / uiScale;
 
                 child.Measure(size);
-                min = Vector2.Max(min, child.DesiredSize);
+                min = Vector2.ComponentMax(min, child.DesiredSize);
             }
 
             return InheritChildMeasure ? min : Vector2.Zero;
@@ -533,12 +532,12 @@ namespace Robust.Client.UserInterface.Controls
 
             void DrawVLine(float x, Color color)
             {
-                handle.DrawLine(new(x, 0), new(x, pSizeY), color);
+                handle.DrawLine((x, 0), (x, pSizeY), color);
             }
 
             void DrawHLine(float y, Color color)
             {
-                handle.DrawLine(new(0, y), new(pSizeX, y), color);
+                handle.DrawLine((0, y), (pSizeX, y), color);
             }
         }
 

@@ -18,9 +18,7 @@ namespace Robust.Client.ResourceManagement
 {
     internal partial class ResourceCache
     {
-        [field: Dependency] public IClyde Clyde { get; } = default!;
-        [field: Dependency] public IClydeAudio ClydeAudio { get; } = default!;
-        [field: Dependency] public IFontManager FontManager { get; } = default!;
+        [Dependency] private readonly IClyde _clyde = default!;
         [Dependency] private readonly ILogManager _logManager = default!;
         [Dependency] private readonly IConfigurationManager _configurationManager = default!;
 
@@ -72,7 +70,7 @@ namespace Robust.Client.ResourceManagement
 
                 try
                 {
-                    TextureResource.LoadTexture(Clyde, data);
+                    TextureResource.LoadTexture(_clyde, data);
                 }
                 catch (Exception e)
                 {
@@ -200,7 +198,7 @@ namespace Robust.Client.ResourceManagement
 
             void FinalizeMetaAtlas(int toIndex, Image<Rgba32> sheet)
             {
-                var atlas = Clyde.LoadTextureFromImage(sheet);
+                var atlas = _clyde.LoadTextureFromImage(sheet);
                 for (int i = finalized + 1; i <= toIndex; i++)
                 {
                     var rsi = rsiList[i];

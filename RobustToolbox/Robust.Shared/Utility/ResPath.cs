@@ -424,7 +424,7 @@ public readonly struct ResPath : IEquatable<ResPath>
         {
             var x = CanonPath[basePath.CanonPath.Length..]
                 .Trim('/');
-            relative = x == "" ? Self : new ResPath(x);
+            relative = new ResPath(x);
             return true;
         }
 

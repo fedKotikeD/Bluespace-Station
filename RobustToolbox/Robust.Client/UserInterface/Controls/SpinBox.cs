@@ -1,7 +1,6 @@
 using Robust.Shared.Maths;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 
 namespace Robust.Client.UserInterface.Controls
 {

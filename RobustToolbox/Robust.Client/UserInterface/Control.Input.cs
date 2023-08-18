@@ -3,7 +3,6 @@ using Robust.Shared.Input;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using System;
-using System.Numerics;
 
 namespace Robust.Client.UserInterface
 {

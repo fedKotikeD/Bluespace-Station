@@ -1,4 +1,3 @@
-using System.Numerics;
 using NUnit.Framework;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -15,7 +14,7 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
         [Test]
         public void TestMarginLayoutBasic()
         {
-            var control = new LayoutContainer {Size = new Vector2(100, 100)};
+            var control = new LayoutContainer {Size = (100, 100)};
             var child = new Control();
 
             LayoutContainer.SetMarginRight(child, 5);
@@ -108,7 +107,7 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
         public void TestGrowEnd()
         {
             var parent = new LayoutContainer();
-            var child = new Control {SetSize = new Vector2(100, 100)};
+            var child = new Control {SetSize = (100, 100)};
 
             LayoutContainer.SetAnchorRight(child, 1);
 
@@ -132,7 +131,7 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
         public void TestGrowBegin()
         {
             var parent = new LayoutContainer();
-            var child = new Control {SetSize = new Vector2(100, 100)};
+            var child = new Control {SetSize = (100, 100)};
 
             LayoutContainer.SetGrowHorizontal(child, LayoutContainer.GrowDirection.Begin);
             LayoutContainer.SetAnchorRight(child, 1);
@@ -156,8 +155,8 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
         [Test]
         public void TestGrowBoth()
         {
-            var parent = new LayoutContainer {MinSize = new Vector2(100, 100)};
-            var child = new Control {SetSize = new Vector2(100, 100)};
+            var parent = new LayoutContainer {MinSize = (100, 100)};
+            var child = new Control {SetSize = (100, 100)};
 
             LayoutContainer.SetGrowHorizontal(child, LayoutContainer.GrowDirection.Both);
             LayoutContainer.SetAnchorRight(child, 1);
@@ -181,7 +180,7 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
         [Test]
         public void TestGrowDirectionChange()
         {
-            var parent = new LayoutContainer {MinSize = new Vector2(100, 100)};
+            var parent = new LayoutContainer {MinSize = (100, 100)};
             var child = new Control();
             parent.AddChild(child);
             parent.Arrange(new UIBox2(0, 0, 100, 100));
@@ -189,7 +188,7 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
             // Child should be at -100,0.
             Assert.That(child.Position, Is.EqualTo(new Vector2(0, 0)));
 
-            child.MinSize = new Vector2(100, 100);
+            child.MinSize = (100, 100);
             parent.InvalidateMeasure();
             parent.Arrange(new UIBox2(0, 0, 100, 100));
 

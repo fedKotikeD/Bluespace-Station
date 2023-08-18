@@ -40,7 +40,7 @@ namespace Robust.Shared.GameObjects
             else if (TryComp(uid, out PhysicsComponent? physics))
                 _physics.SetCanCollide(uid, true, body: physics);
 
-            Dirty(uid, component);
+            Dirty(component);
         }
 
         private void OnHandleState(EntityUid uid, CollisionWakeComponent component, ref ComponentHandleState args)

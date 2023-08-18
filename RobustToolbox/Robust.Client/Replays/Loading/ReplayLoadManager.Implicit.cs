@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Robust.Client.GameStates;
-using Robust.Shared;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -66,18 +64,6 @@ public sealed partial class ReplayLoadManager
             }
         }
 
-        if (!entState.ComponentChanges.HasContents)
-        {
-            // This shouldn't be possible, yet it has happened?
-            // TODO this should probably also throw an exception.
-            _sawmill.Error($"Encountered blank entity state? Entity: {entState.Uid}. Last modified: {entState.EntityLastModified}. Attempting to continue.");
-            return null;
-        }
-
-        if (!_confMan.GetCVar(CVars.ReplayIgnoreErrors))
-            throw new MissingMetadataException(entState.Uid);
-
-        _sawmill.Error($"Missing metadata component. Entity: {entState.Uid}. Last modified: {entState.EntityLastModified}.");
-        return null;
+        throw new Exception("Missing metadata component");
     }
 }

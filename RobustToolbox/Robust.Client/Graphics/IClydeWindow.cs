@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 

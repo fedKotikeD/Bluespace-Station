@@ -46,11 +46,16 @@ namespace Robust.Shared.ContentPack
             public bool TryGetFile(ResPath relPath, [NotNullWhen(true)] out Stream? stream)
             {
                 var path = GetPath(relPath);
+                if (!File.Exists(path))
+                {
+                    stream = null;
+                    return false;
+                }
+
                 CheckPathCasing(relPath);
 
-                var ret = FileHelper.TryOpenFileRead(path, out var fStream);
-                stream = fStream;
-                return ret;
+                stream = File.OpenRead(path);
+                return true;
             }
 
             public bool FileExists(ResPath relPath)

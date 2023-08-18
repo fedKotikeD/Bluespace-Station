@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Robust.Client.UserInterface.Controls;
+﻿using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Maths;
 
 namespace Robust.Client.UserInterface
@@ -40,18 +39,18 @@ namespace Robust.Client.UserInterface
         {
             LayoutContainer.SetPosition(tooltip, screenPosition);
 
-            tooltip.Measure(Vector2Helpers.Infinity);
+            tooltip.Measure(Vector2.Infinity);
             var combinedMinSize = tooltip.DesiredSize;
             var (right, bottom) = tooltip.Position + combinedMinSize;
 
             if (right > screenBounds.X)
             {
-                LayoutContainer.SetPosition(tooltip, new(screenPosition.X - combinedMinSize.X, tooltip.Position.Y));
+                LayoutContainer.SetPosition(tooltip, (screenPosition.X - combinedMinSize.X, tooltip.Position.Y));
             }
 
             if (bottom > screenBounds.Y)
             {
-                LayoutContainer.SetPosition(tooltip, new(tooltip.Position.X, screenPosition.Y - combinedMinSize.Y));
+                LayoutContainer.SetPosition(tooltip, (tooltip.Position.X, screenPosition.Y - combinedMinSize.Y));
             }
         }
     }

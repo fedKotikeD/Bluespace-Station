@@ -12,22 +12,25 @@ namespace Robust.Client.Replays.Loading;
 [Virtual]
 public class LoadReplayJob : Job<bool>
 {
-    private readonly IReplayFileReader _fileReader;
+    private readonly IWritableDirProvider _dir;
+    private readonly ResPath _path;
     private readonly IReplayLoadManager _loadMan;
 
     public LoadReplayJob(
         float maxTime,
-        IReplayFileReader fileReader,
+        IWritableDirProvider dir,
+        ResPath path,
         IReplayLoadManager loadMan)
         : base(maxTime)
     {
-        _fileReader = fileReader;
+        _dir = dir;
+        _path = path;
         _loadMan = loadMan;
     }
 
     protected override async Task<bool> Process()
     {
-        await _loadMan.LoadAndStartReplayAsync(_fileReader, Yield);
+        await _loadMan.LoadAndStartReplayAsync(_dir, _path, Yield);
         return true;
     }
 

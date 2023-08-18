@@ -23,9 +23,9 @@ namespace Robust.Client.UserInterface.CustomControls
         /// <summary>
         /// Write a line with a specific color to the console window.
         /// </summary>
-        void AddLine(FormattedMessage text, Color color);
+        void AddLine(string text, Color color);
 
-        void AddLine(FormattedMessage text);
+        void AddLine(string text);
 
         void AddFormattedLine(FormattedMessage message);
 
@@ -108,7 +108,7 @@ namespace Robust.Client.UserInterface.CustomControls
 
         private Color DetermineColor(bool local, bool error)
         {
-            return error ? Color.Red : Color.White;
+            return Color.White;
         }
 
         protected override void FrameUpdate(FrameEventArgs args)
@@ -136,16 +136,16 @@ namespace Robust.Client.UserInterface.CustomControls
             _flushHistoryToDisk();
         }
 
-        public void AddLine(FormattedMessage text, Color color)
+        public void AddLine(string text, Color color)
         {
             var formatted = new FormattedMessage(3);
             formatted.PushColor(color);
-            formatted.AddMessage(text);
+            formatted.AddText(text);
             formatted.Pop();
             AddFormattedLine(formatted);
         }
 
-        public void AddLine(FormattedMessage text)
+        public void AddLine(string text)
         {
             AddLine(text, Color.White);
         }

@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
@@ -14,8 +13,6 @@ namespace Robust.Shared.Reflection
 {
     public abstract class ReflectionManager : IReflectionManager
     {
-        [Dependency] private readonly ILogManager _logMan = default!;
-
         /// <summary>
         /// Enumerable over prefixes that are added to the type provided to <see cref="GetType(string)"/>
         /// if the type can't be found in any assemblies.
@@ -42,12 +39,6 @@ namespace Robust.Shared.Reflection
         private readonly ReaderWriterLockSlim _yamlTypeTagCacheLock = new();
 
         private readonly List<Type> _getAllTypesCache = new();
-        private ISawmill _sawmill = default!;
-
-        public void Initialize()
-        {
-            _sawmill = _logMan.GetSawmill("Reflection");
-        }
 
         /// <inheritdoc />
         public IEnumerable<Type> GetAllChildren<T>(bool inclusive = false)
@@ -241,20 +232,21 @@ namespace Robust.Shared.Reflection
                     var name = fullName.Substring(dotIndex + 1);
                     reference = $"enum.{name}.{@enum}";
 
-                    if (_enumCache.TryAdd(reference, @enum))
+                    if (TryParseEnumReference(reference, out var resolvedEnum, false) && resolvedEnum == @enum)
                     {
-                        _reverseEnumCache.Add(@enum, reference);
+                        // TryParse will have filled in the cache already.
                         return reference;
                     }
                 }
 
                 // If that failed, just use the full name.
                 reference = $"enum.{fullName}.{@enum}";
-                _reverseEnumCache.Add(@enum, reference);
-                _enumCache.Add(reference, @enum);
+                _reverseEnumCache[@enum] = reference;
+                _enumCache[reference] = @enum;
                 return reference;
             }
         }
+
 
         /// <inheritdoc />
         public bool TryParseEnumReference(string reference, [NotNullWhen(true)] out Enum? @enum,
@@ -266,23 +258,19 @@ namespace Robust.Shared.Reflection
                 return false;
             }
 
+            reference = reference.Substring(5);
+
             using (_enumCacheLock.ReadGuard())
             {
                 if (_enumCache.TryGetValue(reference, out @enum))
                     return true;
             }
 
-            using var _ = _enumCacheLock.WriteGuard();
-            if (_enumCache.TryGetValue(reference, out @enum))
-                return true;
-
-            var cropped = reference.Substring(5);
-
             // Doesn't exist, add it.
-            var dotIndex = cropped.LastIndexOf('.');
-            var typeName = cropped.Substring(0, dotIndex);
+            var dotIndex = reference.LastIndexOf('.');
+            var typeName = reference.Substring(0, dotIndex);
 
-            var value = cropped.Substring(dotIndex + 1);
+            var value = reference.Substring(dotIndex + 1);
 
             foreach (var assembly in assemblies)
             {
@@ -296,12 +284,13 @@ namespace Robust.Shared.Reflection
                         continue;
                     }
 
-                    @enum = (Enum)Enum.Parse(type, value);
-                    if (!_reverseEnumCache.TryAdd(@enum, reference))
+                    using (_enumCacheLock.WriteGuard())
                     {
-                        _sawmill.Warning($"Conflicting enum references encountered. Enum: {@enum}. Existing: {_reverseEnumCache[@enum]}. New: {reference}");
+                        @enum = (Enum)Enum.Parse(type, value);
+                        _enumCache[reference] = @enum;
+                        _reverseEnumCache[@enum] = reference;
                     }
-                    _enumCache.Add(reference, @enum);
+
                     return true;
                 }
             }

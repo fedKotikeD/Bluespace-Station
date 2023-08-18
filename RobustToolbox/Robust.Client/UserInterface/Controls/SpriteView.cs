@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Shared.GameObjects;
@@ -164,10 +163,10 @@ namespace Robust.Client.UserInterface.Controls
 
             // This view will be centered on (0,0). If the sprite was shifted by (1,2) the actual size of the control
             // would need to be at least (2,4).
-            tr = Vector2.Max(tr, Vector2.Zero);
-            bl = Vector2.Min(bl, Vector2.Zero);
-            tr = Vector2.Max(tr, -bl);
-            bl = Vector2.Min(bl, -tr);
+            tr = Vector2.ComponentMax(tr, Vector2.Zero);
+            bl = Vector2.ComponentMin(bl, Vector2.Zero);
+            tr = Vector2.ComponentMax(tr, -bl);
+            bl = Vector2.ComponentMin(bl, -tr);
             var box = new Box2(bl, tr);
 
             DebugTools.Assert(box.Contains(Vector2.Zero));
@@ -205,7 +204,7 @@ namespace Robust.Client.UserInterface.Controls
 
             var stretchVec = Stretch switch
             {
-                StretchMode.Fit => Vector2.Min(Size / _spriteSize, Vector2.One),
+                StretchMode.Fit => Vector2.ComponentMin(Size / _spriteSize, Vector2.One),
                 StretchMode.Fill => Size / _spriteSize,
                 _ => Vector2.One,
             };
@@ -213,7 +212,7 @@ namespace Robust.Client.UserInterface.Controls
 
             var offset = SpriteOffset
                 ? Vector2.Zero
-                : - (-_eyeRotation).RotateVec(_sprite.Offset) * new Vector2(1, -1) * EyeManager.PixelsPerMeter;
+                : - (-_eyeRotation).RotateVec(_sprite.Offset) * (1, -1) * EyeManager.PixelsPerMeter;
 
             var position = PixelSize / 2 + offset * stretch * UIScale;
             var scale = Scale * UIScale * stretch;

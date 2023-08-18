@@ -1,4 +1,3 @@
-using System.Numerics;
 using NUnit.Framework;
 using Robust.Server.Physics;
 using Robust.Shared.Containers;

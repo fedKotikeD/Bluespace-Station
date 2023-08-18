@@ -1,12 +1,8 @@
 ﻿using Robust.Server.Player;
-using Robust.Shared.Map;
-using Robust.Shared.Players;
-using Robust.Shared.Toolshed;
-using Robust.Shared.Toolshed.Errors;
 
 namespace Robust.Server.Console
 {
-    internal sealed class ConGroupController : IConGroupController, IPermissionController
+    internal sealed class ConGroupController : IConGroupController
     {
         public IConGroupControllerImplementation? Implementation { get; set; }
 
@@ -33,12 +29,6 @@ namespace Robust.Server.Console
         public bool CanAdminReloadPrototypes(IPlayerSession session)
         {
             return Implementation?.CanAdminReloadPrototypes(session) ?? false;
-        }
-
-        public bool CheckInvokable(CommandSpec command, ICommonSession? user, out IConError? error)
-        {
-            error = null;
-            return Implementation?.CheckInvokable(command, user, out error) ?? false;
         }
     }
 }

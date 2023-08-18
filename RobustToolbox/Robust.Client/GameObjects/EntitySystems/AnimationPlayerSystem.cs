@@ -4,7 +4,6 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Utility;
-using TerraFX.Interop.Windows;
 
 namespace Robust.Client.GameObjects
 {
@@ -12,40 +11,18 @@ namespace Robust.Client.GameObjects
     {
         private readonly List<AnimationPlayerComponent> _activeAnimations = new();
 
-        private EntityQuery<MetaDataComponent> _metaQuery;
-
         [Dependency] private readonly IComponentFactory _compFact = default!;
         [Dependency] private readonly ILogManager _logManager = default!;
 
         private ISawmill _sawmill = default!;
 
-        public override void Initialize()
-        {
-            base.Initialize();
-            _metaQuery = GetEntityQuery<MetaDataComponent>();
-        }
-
         public override void FrameUpdate(float frameTime)
         {
-            // TODO: Active or something idk.
-            for (var i = 0; i < _activeAnimations.Count; i++)
+            for (var i = _activeAnimations.Count - 1; i >= 0; i--)
             {
                 var anim = _activeAnimations[i];
-                var uid = anim.Owner;
-
-                if (!_metaQuery.TryGetComponent(uid, out var metadata) ||
-                    metadata.EntityPaused)
-                {
-                    continue;
-                }
-
-                if (!Update(uid, anim, frameTime))
-                {
-                    continue;
-                }
-
+                if (!Update(anim, frameTime)) continue;
                 _activeAnimations.RemoveSwap(i);
-                i--;
                 anim.HasPlayingAnimation = false;
             }
         }
@@ -57,18 +34,16 @@ namespace Robust.Client.GameObjects
             component.HasPlayingAnimation = true;
         }
 
-        private bool Update(EntityUid uid, AnimationPlayerComponent component, float frameTime)
+        private bool Update(AnimationPlayerComponent component, float frameTime)
         {
             if (component.PlayingAnimationCount == 0 ||
                 component.Deleted)
-            {
                 return true;
-            }
 
             var remie = new RemQueue<string>();
             foreach (var (key, playback) in component.PlayingAnimations)
             {
-                var keep = AnimationPlaybackShared.UpdatePlayback(uid, playback, frameTime);
+                var keep = AnimationPlaybackShared.UpdatePlayback(component.Owner, playback, frameTime);
                 if (!keep)
                 {
                     remie.Add(key);
@@ -78,7 +53,7 @@ namespace Robust.Client.GameObjects
             foreach (var key in remie)
             {
                 component.PlayingAnimations.Remove(key);
-                EntityManager.EventBus.RaiseLocalEvent(uid, new AnimationCompletedEvent {Uid = uid, Key = key}, true);
+                EntityManager.EventBus.RaiseLocalEvent(component.Owner, new AnimationCompletedEvent {Uid = component.Owner, Key = key}, true);
                 component.AnimationComplete(key);
             }
 

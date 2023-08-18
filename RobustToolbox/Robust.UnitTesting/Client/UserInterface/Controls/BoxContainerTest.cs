@@ -1,4 +1,3 @@
-using System.Numerics;
 using NUnit.Framework;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -20,10 +19,10 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
             var boxContainer = new BoxContainer
             {
                 Orientation = LayoutOrientation.Vertical,
-                MinSize = new Vector2(50, 60)
+                MinSize = (50, 60)
             };
-            var control1 = new Control {MinSize = new Vector2(20, 20)};
-            var control2 = new Control {MinSize = new Vector2(30, 30)};
+            var control1 = new Control {MinSize = (20, 20)};
+            var control2 = new Control {MinSize = (30, 30)};
 
             root.AddChild(boxContainer);
 
@@ -46,13 +45,13 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
             var boxContainer = new BoxContainer
             {
                 Orientation = LayoutOrientation.Vertical,
-                MinSize = new Vector2(50, 60)
+                MinSize = (50, 60)
             };
             var control1 = new Control
             {
                 VerticalExpand = true
             };
-            var control2 = new Control {MinSize = new Vector2(30, 30)};
+            var control2 = new Control {MinSize = (30, 30)};
 
             boxContainer.AddChild(control1);
             boxContainer.AddChild(control2);
@@ -77,14 +76,14 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
             };
             var control1 = new Control
             {
-                MinSize = new Vector2(50, 30)
+                MinSize = (50, 30)
             };
-            var control2 = new Control {MinSize = new Vector2(30, 50)};
+            var control2 = new Control {MinSize = (30, 50)};
 
             boxContainer.AddChild(control1);
             boxContainer.AddChild(control2);
 
-            boxContainer.Measure(new Vector2(100, 100));
+            boxContainer.Measure((100, 100));
 
             Assert.That(boxContainer.DesiredSize, Is.EqualTo(new Vector2(50, 80)));
         }
@@ -96,7 +95,7 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
             var boxContainer = new BoxContainer
             {
                 Orientation = LayoutOrientation.Vertical,
-                MinSize = new Vector2(30, 80)
+                MinSize = (30, 80)
             };
             var control1 = new Control
             {
@@ -106,7 +105,7 @@ namespace Robust.UnitTesting.Client.UserInterface.Controls
             {
                 VerticalExpand = true,
             };
-            var control3 = new Control {MinSize = new Vector2(0, 50)};
+            var control3 = new Control {MinSize = (0, 50)};
 
             root.AddChild(boxContainer);
 

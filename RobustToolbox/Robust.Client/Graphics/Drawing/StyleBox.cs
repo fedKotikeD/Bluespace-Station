@@ -1,5 +1,4 @@
-using System;
-using System.Numerics;
+﻿using System;
 using JetBrains.Annotations;
 using Robust.Shared.Maths;
 
@@ -38,16 +37,10 @@ namespace Robust.Client.Graphics
             _paddingTop = other._paddingTop;
         }
 
-        /// <summary>
-        /// Minimum size, in virtual pixels.
-        /// </summary>
         public Vector2 MinimumSize =>
             new(GetContentMargin(Margin.Left) + GetContentMargin(Margin.Right),
                 GetContentMargin(Margin.Top) + GetContentMargin(Margin.Bottom));
 
-        /// <summary>
-        /// Left content margin, in virtual pixels.
-        /// </summary>
         public float? ContentMarginLeftOverride
         {
             get => _contentMarginLeftOverride;
@@ -62,9 +55,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Top content margin, in virtual pixels.
-        /// </summary>
         public float? ContentMarginTopOverride
         {
             get => _contentMarginTopOverride;
@@ -79,9 +69,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Right content margin, in virtual pixels.
-        /// </summary>
         public float? ContentMarginRightOverride
         {
             get => _contentMarginRightOverride;
@@ -96,9 +83,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Bottom content margin, in virtual pixels.
-        /// </summary>
         public float? ContentMarginBottomOverride
         {
             get => _contentMarginBottomOverride;
@@ -113,9 +97,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Left padding, in virtual pixels.
-        /// </summary>
         public float PaddingLeft
         {
             get => _paddingLeft;
@@ -130,9 +111,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Bottom padding, in virtual pixels.
-        /// </summary>
         public float PaddingBottom
         {
             get => _paddingBottom;
@@ -147,9 +125,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Right padding, in virtual pixels.
-        /// </summary>
         public float PaddingRight
         {
             get => _paddingRight;
@@ -164,9 +139,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Top padding, in virtual pixels.
-        /// </summary>
         public float PaddingTop
         {
             get => _paddingTop;
@@ -181,9 +153,6 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Padding, in virtual pixels.
-        /// </summary>
         public Thickness Padding
         {
             set
@@ -196,11 +165,11 @@ namespace Robust.Client.Graphics
         }
 
         /// <summary>
-        ///     Draw this style box to the screen at the specified coordinates. This is using physical pixels, not virtual pixels.
+        ///     Draw this style box to the screen at the specified coordinates.
         /// </summary>
         /// <param name="handle"></param>
         /// <param name="box"></param>
-        public void Draw(DrawingHandleScreen handle, UIBox2 box, float uiScale)
+        public void Draw(DrawingHandleScreen handle, UIBox2 box)
         {
             box = new UIBox2(
                 box.Left + PaddingLeft,
@@ -209,11 +178,11 @@ namespace Robust.Client.Graphics
                 box.Bottom - PaddingBottom
             );
 
-            DoDraw(handle, box, uiScale);
+            DoDraw(handle, box);
         }
 
         /// <summary>
-        ///     Gets the offset from a margin of the box to where content should actually be drawn. This is in virtual pixels.
+        ///     Gets the offset from a margin of the box to where content should actually be drawn.
         /// </summary>
         /// <exception cref="ArgumentException">
         ///     Thrown if <paramref name="margin"/> is a compound is not a single margin flag.
@@ -243,9 +212,6 @@ namespace Robust.Client.Graphics
             return contentMargin + GetPadding(margin);
         }
 
-        /// <summary>
-        ///     Gets the padding. This is in virtual pixels.
-        /// </summary>
         public float GetPadding(Margin margin)
         {
             switch (margin)
@@ -264,27 +230,26 @@ namespace Robust.Client.Graphics
         }
 
         /// <summary>
-        ///     Returns the offsets of the content region of this box when drawn from the given position. Input and
-        ///     output positions are in real pixels, though virtual pixels can also be used if the ui scale is set to 1.
+        ///     Returns the offsets of the content region of this box,
+        ///     if this box is drawn from the given position.
         /// </summary>
-        public Vector2 GetContentOffset(Vector2 basePosition, float uiScale)
+        public Vector2 GetContentOffset(Vector2 basePosition)
         {
-            return basePosition + uiScale * new Vector2(GetContentMargin(Margin.Left), GetContentMargin(Margin.Top));
+            return basePosition + (GetContentMargin(Margin.Left), GetContentMargin(Margin.Top));
         }
 
         /// <summary>
-        ///     Gets the box considered the "contents" of this style box, when drawn at a specific size. Input and output
-        ///     boxes are in virtual pixels, though virtual pixels can also be used if the ui scale is set to 1.
+        ///     Gets the box considered the "contents" of this style box, when drawn at a specific size.
         /// </summary>
         /// <exception cref="ArgumentException">
         ///     <paramref name="baseBox"/> is too small and the resultant box would have negative dimensions.
         /// </exception>
-        public UIBox2 GetContentBox(UIBox2 baseBox, float uiScale)
+        public UIBox2 GetContentBox(UIBox2 baseBox)
         {
-            var left = baseBox.Left + GetContentMargin(Margin.Left) * uiScale;
-            var top = baseBox.Top + GetContentMargin(Margin.Top) * uiScale;
-            var right = baseBox.Right - GetContentMargin(Margin.Right) * uiScale;
-            var bottom = baseBox.Bottom - GetContentMargin(Margin.Bottom) * uiScale;
+            var left = baseBox.Left + GetContentMargin(Margin.Left);
+            var top = baseBox.Top + GetContentMargin(Margin.Top);
+            var right = baseBox.Right - GetContentMargin(Margin.Right);
+            var bottom = baseBox.Bottom - GetContentMargin(Margin.Bottom);
 
             return new UIBox2(left, top, right, bottom);
         }
@@ -292,22 +257,19 @@ namespace Robust.Client.Graphics
         /// <summary>
         ///     Gets the draw box, positioned at <paramref name="position"/>,
         ///     that envelops a box with the given dimensions perfectly given this box's content margins.
-        ///     Input and output values are in physical pixels,  though virtual pixels can also be used if the ui scale
-        ///     is set to 1.
         /// </summary>
         /// <remarks>
         ///     It's basically a reverse <see cref="GetContentBox"/>.
         /// </remarks>
         /// <param name="position">The position at which the new box should be drawn.</param>
         /// <param name="dimensions">The dimensions of the content box inside this new box.</param>
-        /// <param name="uiScale">Scales the content margin border size</param>
         /// <returns>
         ///     A box that, when ran through <see cref="GetContentBox"/>,
         ///     has a content box of size <paramref name="dimensions"/>
         /// </returns>
-        public UIBox2 GetEnvelopBox(Vector2 position, Vector2 dimensions, float uiScale)
+        public UIBox2 GetEnvelopBox(Vector2 position, Vector2 dimensions)
         {
-            return UIBox2.FromDimensions(position, dimensions + MinimumSize * uiScale);
+            return UIBox2.FromDimensions(position, dimensions + MinimumSize);
         }
 
         public void SetContentMarginOverride(Margin margin, float value)
@@ -356,13 +318,7 @@ namespace Robust.Client.Graphics
             }
         }
 
-        /// <summary>
-        /// Draw the style box in the given UI Box.
-        /// </summary>
-        /// <param name="handle"></param>
-        /// <param name="box">The area to draw in, in physical pixels</param>
-        /// <param name="uiScale">The UI scale to use.</param>
-        protected abstract void DoDraw(DrawingHandleScreen handle, UIBox2 box, float uiScale);
+        protected abstract void DoDraw(DrawingHandleScreen handle, UIBox2 box);
 
         protected virtual float GetDefaultContentMargin(Margin margin)
         {

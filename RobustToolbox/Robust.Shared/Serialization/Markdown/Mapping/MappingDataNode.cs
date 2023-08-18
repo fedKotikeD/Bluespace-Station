@@ -128,9 +128,8 @@ namespace Robust.Shared.Serialization.Markdown.Mapping
         public bool TryGet<T>(DataNode key, [NotNullWhen(true)] out T? node) where T : DataNode
         {
             node = null;
-            if (!TryGet(key, out var rawNode) || rawNode is not T castNode)
-                return false;
-            node = castNode;
+            if (!TryGet(key, out var rawNode)) return false;
+            node = (T) rawNode;
             return true;
         }
 

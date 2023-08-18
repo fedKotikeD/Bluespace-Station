@@ -8,7 +8,7 @@ namespace Robust.Server.GameObjects
         // These methods are used by the map loader to do multi-stage entity construction during map load.
         // I would recommend you refer to the MapLoader for usage.
 
-        EntityUid AllocEntity(EntityPrototype? prototype, EntityUid uid = default);
+        EntityUid AllocEntity(string? prototypeName, EntityUid uid = default);
 
         void FinishEntityLoad(EntityUid entity, IEntityLoadContext? context = null);
 

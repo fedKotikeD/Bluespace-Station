@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Text;
 using Robust.Client.Graphics;
 using Robust.Shared.Animations;
@@ -210,7 +209,7 @@ namespace Robust.Client.UserInterface.Controls
                         throw new ArgumentOutOfRangeException();
                 }
 
-                return new Vector2(hOffset, font.GetAscent(UIScale) + font.GetLineHeight(UIScale) * newlines + vOffset);
+                return (hOffset, font.GetAscent(UIScale) + font.GetLineHeight(UIScale) * newlines + vOffset);
             }
 
             var baseLine = CalcBaseline();
@@ -224,7 +223,7 @@ namespace Robust.Client.UserInterface.Controls
                 }
 
                 var advance = font.DrawChar(handle, rune, baseLine, UIScale, actualFontColor);
-                baseLine += new Vector2(advance, 0);
+                baseLine += (advance, 0);
             }
         }
 
@@ -254,7 +253,7 @@ namespace Robust.Client.UserInterface.Controls
 
             if (ClipText)
             {
-                return new Vector2(0, _cachedTextHeight / UIScale);
+                return (0, _cachedTextHeight / UIScale);
             }
 
             var totalWidth = 0;
@@ -263,7 +262,7 @@ namespace Robust.Client.UserInterface.Controls
                 totalWidth = Math.Max(totalWidth, width);
             }
 
-            return new Vector2(totalWidth / UIScale, _cachedTextHeight / UIScale);
+            return (totalWidth / UIScale, _cachedTextHeight / UIScale);
         }
 
         protected internal override void UIScaleChanged()

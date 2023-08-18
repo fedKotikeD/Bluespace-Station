@@ -12,13 +12,10 @@ public abstract class MetaDataSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
-    private EntityPausedEvent _pausedEvent;
-
-    private EntityQuery<MetaDataComponent> _metaQuery;
+    private EntityPausedEvent _pausedEvent = new();
 
     public override void Initialize()
     {
-        _metaQuery = GetEntityQuery<MetaDataComponent>();
         SubscribeLocalEvent<MetaDataComponent, ComponentHandleState>(OnMetaDataHandle);
         SubscribeLocalEvent<MetaDataComponent, ComponentGetState>(OnMetaDataGetState);
     }
@@ -44,25 +41,25 @@ public abstract class MetaDataSystem : EntitySystem
 
     public void SetEntityName(EntityUid uid, string value, MetaDataComponent? metadata = null)
     {
-        if (!_metaQuery.Resolve(uid, ref metadata) || value.Equals(metadata.EntityName))
+        if (!Resolve(uid, ref metadata) || value.Equals(metadata.EntityName))
             return;
 
         metadata._entityName = value;
-        Dirty(uid, metadata);
+        Dirty(metadata);
     }
 
     public void SetEntityDescription(EntityUid uid, string value, MetaDataComponent? metadata = null)
     {
-        if (!_metaQuery.Resolve(uid, ref metadata) || value.Equals(metadata.EntityDescription))
+        if (!Resolve(uid, ref metadata) || value.Equals(metadata.EntityDescription))
             return;
 
         metadata._entityDescription = value;
-        Dirty(uid, metadata);
+        Dirty(metadata);
     }
 
     internal void SetEntityPrototype(EntityUid uid, EntityPrototype? value, MetaDataComponent? metadata = null)
     {
-        if (!_metaQuery.Resolve(uid, ref metadata) || value?.Equals(metadata._entityPrototype) == true)
+        if (!Resolve(uid, ref metadata) || value?.Equals(metadata._entityPrototype) == true)
             return;
 
         // The ID string should never change after an entity has been created.
@@ -74,7 +71,7 @@ public abstract class MetaDataSystem : EntitySystem
 
     public bool EntityPaused(EntityUid uid, MetaDataComponent? metadata = null)
     {
-        if (!_metaQuery.Resolve(uid, ref metadata))
+        if (!Resolve(uid, ref metadata))
             return true;
 
         return metadata.EntityPaused;
@@ -82,7 +79,7 @@ public abstract class MetaDataSystem : EntitySystem
 
     public void SetEntityPaused(EntityUid uid, bool value, MetaDataComponent? metadata = null)
     {
-        if (!_metaQuery.Resolve(uid, ref metadata)) return;
+        if (!Resolve(uid, ref metadata)) return;
 
         if (metadata.EntityPaused == value) return;
 
@@ -100,7 +97,7 @@ public abstract class MetaDataSystem : EntitySystem
             RaiseLocalEvent(uid, ref ev);
         }
 
-        Dirty(uid, metadata);
+        Dirty(metadata);
     }
 
     /// <summary>
@@ -108,7 +105,7 @@ public abstract class MetaDataSystem : EntitySystem
     /// </summary>
     public TimeSpan GetPauseTime(EntityUid uid, MetaDataComponent? metadata = null)
     {
-        if (!_metaQuery.Resolve(uid, ref metadata))
+        if (!Resolve(uid, ref metadata))
             return TimeSpan.Zero;
 
         return (_timing.CurTime - metadata.PauseTime) ?? TimeSpan.Zero;
@@ -125,7 +122,7 @@ public abstract class MetaDataSystem : EntitySystem
 
     public void AddFlag(EntityUid uid, MetaDataFlags flags, MetaDataComponent? component = null)
     {
-        if (!_metaQuery.Resolve(uid, ref component)) return;
+        if (!Resolve(uid, ref component)) return;
 
         component.Flags |= flags;
     }
@@ -136,7 +133,7 @@ public abstract class MetaDataSystem : EntitySystem
     /// </summary>
     public void RemoveFlag(EntityUid uid, MetaDataFlags flags, MetaDataComponent? component = null)
     {
-        if (!_metaQuery.Resolve(uid, ref component))
+        if (!Resolve(uid, ref component))
             return;
 
         var toRemove = component.Flags & flags;
@@ -144,7 +141,7 @@ public abstract class MetaDataSystem : EntitySystem
             return;
 
         var ev = new MetaFlagRemoveAttemptEvent(toRemove);
-        RaiseLocalEvent(uid, ref ev, true);
+        EntityManager.EventBus.RaiseLocalEvent(component.Owner, ref ev, true);
 
         component.Flags &= ~ev.ToRemove;
     }

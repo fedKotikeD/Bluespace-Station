@@ -24,10 +24,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using Robust.Shared.Maths;
+using Robust.Shared.Physics.Dynamics;
 using Robust.Shared.Utility;
+using Vector2 = Robust.Shared.Maths.Vector2;
 
 namespace Robust.Shared.Physics
 {
@@ -103,7 +104,7 @@ namespace Robust.Shared.Physics
 
         public int MaxBalance
         {
-            [MethodImpl(MethodImplOptions.NoInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
             get
             {
                 var maxBal = 0;
@@ -129,7 +130,7 @@ namespace Robust.Shared.Physics
 
         public float AreaRatio
         {
-            [MethodImpl(MethodImplOptions.NoInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
             get
             {
                 if (_root == Proxy.Free)
@@ -337,8 +338,8 @@ namespace Robust.Shared.Physics
                 // Perhaps the object was moving fast but has since gone to sleep.
                 // The huge AABB is larger than the new fat AABB.
                 var hugeAabb = new Box2(
-                    fatAabb.BottomLeft - new Vector2(4, 4) * ext,
-                    fatAabb.TopRight + new Vector2(4, 4) * ext);
+                    fatAabb.BottomLeft - (4, 4) * ext,
+                    fatAabb.TopRight + (4, 4) * ext);
 
                 if (hugeAabb.Contains(treeAabb))
                 {
@@ -386,7 +387,7 @@ namespace Robust.Shared.Physics
             return _nodes[proxy].Aabb;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
         private void RemoveLeaf(Proxy leaf)
         {
             if (leaf == _root)
@@ -561,7 +562,7 @@ namespace Robust.Shared.Physics
             return cost;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
         private void Balance(Proxy index)
         {
             while (index != Proxy.Free)
@@ -754,7 +755,7 @@ namespace Robust.Shared.Physics
         /// <summary>
         ///     Compute the height of a sub-tree.
         /// </summary>
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
         private int ComputeHeight(Proxy proxy)
         {
             ref var node = ref _nodes[proxy];
@@ -769,7 +770,7 @@ namespace Robust.Shared.Physics
             ) + 1;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.NoInlining)]
         public void RebuildBottomUp(int free = 0)
         {
             var proxies = new Proxy[NodeCount + free];
@@ -908,6 +909,7 @@ namespace Robust.Shared.Physics
 
         public delegate void FastQueryCallback(ref T userData);
 
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public void FastQuery(ref Box2 aabb, FastQueryCallback callback)
         {
             var stack = new GrowableStack<Proxy>(stackalloc Proxy[256]);

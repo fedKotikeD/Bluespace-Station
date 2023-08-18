@@ -1,19 +1,104 @@
 using System;
 using System.Collections.Generic;
+using Robust.Client.Player;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Reflection;
+using Robust.Shared.Serialization;
 using Robust.Shared.ViewVariables;
 
 namespace Robust.Client.GameObjects
 {
     [RegisterComponent, ComponentReference(typeof(SharedUserInterfaceComponent))]
-    public sealed class ClientUserInterfaceComponent : SharedUserInterfaceComponent
+    public sealed class ClientUserInterfaceComponent : SharedUserInterfaceComponent, ISerializationHooks
     {
-        [ViewVariables]
+        [Dependency] private readonly IReflectionManager _reflectionManager = default!;
+        [Dependency] private readonly IDynamicTypeFactory _dynamicTypeFactory = default!;
+        [Dependency] private readonly IPlayerManager _playerManager = default!;
+        [Dependency] private readonly IEntityManager _entityManager = default!;
+        [Dependency] private readonly IEntityNetworkManager _netMan = default!;
+
+        internal readonly Dictionary<Enum, BoundUserInterface> _openInterfaces =
+            new();
+
         internal readonly Dictionary<Enum, PrototypeData> _interfaces = new();
 
         [ViewVariables]
-        public readonly Dictionary<Enum, BoundUserInterface> OpenInterfaces = new();
+        public IEnumerable<BoundUserInterface> Interfaces => _openInterfaces.Values;
+
+        void ISerializationHooks.AfterDeserialization()
+        {
+            _interfaces.Clear();
+
+            foreach (var data in _interfaceData)
+            {
+                _interfaces[data.UiKey] = data;
+            }
+        }
+
+        internal void MessageReceived(BoundUIWrapMessage msg)
+        {
+            switch (msg.Message)
+            {
+                case OpenBoundInterfaceMessage _:
+                    if (_openInterfaces.ContainsKey(msg.UiKey))
+                    {
+                        return;
+                    }
+
+                    OpenInterface(msg);
+                    break;
+
+                case CloseBoundInterfaceMessage _:
+                    Close(msg.UiKey, true);
+                    break;
+
+                default:
+                    if (_openInterfaces.TryGetValue(msg.UiKey, out var bi))
+                    {
+                        bi.InternalReceiveMessage(msg.Message);
+                    }
+
+                    break;
+            }
+        }
+
+        private void OpenInterface(BoundUIWrapMessage wrapped)
+        {
+            var data = _interfaces[wrapped.UiKey];
+            // TODO: This type should be cached, but I'm too lazy.
+            var type = _reflectionManager.LooseGetType(data.ClientType);
+            var boundInterface =
+                (BoundUserInterface) _dynamicTypeFactory.CreateInstance(type, new object[] {this, wrapped.UiKey});
+            boundInterface.Open();
+            _openInterfaces[wrapped.UiKey] = boundInterface;
+
+            var playerSession = _playerManager.LocalPlayer?.Session;
+            if(playerSession != null)
+                _entityManager.EventBus.RaiseLocalEvent(Owner, new BoundUIOpenedEvent(wrapped.UiKey, Owner, playerSession), true);
+        }
+
+        internal void Close(Enum uiKey, bool remoteCall)
+        {
+            if (!_openInterfaces.TryGetValue(uiKey, out var boundUserInterface))
+            {
+                return;
+            }
+
+            if (!remoteCall)
+                SendMessage(new CloseBoundInterfaceMessage(), uiKey);
+            _openInterfaces.Remove(uiKey);
+            boundUserInterface.Dispose();
+
+            var playerSession = _playerManager.LocalPlayer?.Session;
+            if(playerSession != null)
+                _entityManager.EventBus.RaiseLocalEvent(Owner, new BoundUIClosedEvent(uiKey, Owner, playerSession), true);
+        }
+
+        internal void SendMessage(BoundUserInterfaceMessage message, Enum uiKey)
+        {
+            _netMan.SendSystemNetworkMessage(new BoundUIWrapMessage(Owner, message, uiKey));
+        }
     }
 
     /// <summary>
@@ -21,22 +106,17 @@ namespace Robust.Client.GameObjects
     /// </summary>
     public abstract class BoundUserInterface : IDisposable
     {
-        [Dependency] protected readonly IEntityManager EntMan = default!;
-        protected readonly UserInterfaceSystem UiSystem = default!;
+        protected ClientUserInterfaceComponent Owner { get; }
 
         public readonly Enum UiKey;
-        public EntityUid Owner { get; }
 
         /// <summary>
         ///     The last received state object sent from the server.
         /// </summary>
         protected BoundUserInterfaceState? State { get; private set; }
 
-        protected BoundUserInterface(EntityUid owner, Enum uiKey)
+        protected BoundUserInterface(ClientUserInterfaceComponent owner, Enum uiKey)
         {
-            IoCManager.InjectDependencies(this);
-            UiSystem = EntMan.System<UserInterfaceSystem>();
-
             Owner = owner;
             UiKey = uiKey;
         }
@@ -68,7 +148,7 @@ namespace Robust.Client.GameObjects
         /// </summary>
         public void Close()
         {
-            UiSystem.TryCloseUi(Owner, UiKey);
+            Owner.Close(UiKey, false);
         }
 
         /// <summary>
@@ -76,7 +156,7 @@ namespace Robust.Client.GameObjects
         /// </summary>
         public void SendMessage(BoundUserInterfaceMessage message)
         {
-            UiSystem.SendUiMessage(this, message);
+            Owner.SendMessage(message, UiKey);
         }
 
         internal void InternalReceiveMessage(BoundUserInterfaceMessage message)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using Robust.Shared.Utility;
 
 namespace Robust.Shared.Maths

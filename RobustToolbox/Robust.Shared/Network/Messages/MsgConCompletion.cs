@@ -12,8 +12,6 @@ public sealed class MsgConCompletion : NetMessage
     public int Seq { get; set; }
     public string[] Args { get; set; }
 
-    public string ArgString { get; set; }
-
     public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer serializer)
     {
         Seq = buffer.ReadInt32();
@@ -24,8 +22,6 @@ public sealed class MsgConCompletion : NetMessage
         {
             Args[i] = buffer.ReadString();
         }
-
-        ArgString = buffer.ReadString();
     }
 
     public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer serializer)
@@ -37,7 +33,5 @@ public sealed class MsgConCompletion : NetMessage
         {
             buffer.Write(arg);
         }
-
-        buffer.Write(ArgString);
     }
 }

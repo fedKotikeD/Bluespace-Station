@@ -11,6 +11,7 @@ using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using Robust.Shared.IoC;
+using Robust.Shared.Log;
 using Robust.Shared.Utility;
 
 namespace Robust.Shared.ContentPack
@@ -18,9 +19,10 @@ namespace Robust.Shared.ContentPack
     /// <summary>
     ///     Class for managing the loading of assemblies into the engine.
     /// </summary>
-    internal sealed class ModLoader : BaseModLoader, IModLoaderInternal, IDisposable
+    internal sealed class ModLoader : BaseModLoader, IModLoaderInternal, IDisposable, IPostInjectInit
     {
         [Dependency] private readonly IResourceManagerInternal _res = default!;
+        [Dependency] private readonly ILogManager _logManager = default!;
 
         // List of extra assemblies side-loaded from the /Assemblies/ mounted path.
         private readonly List<Assembly> _sideModules = new();
@@ -36,6 +38,8 @@ namespace Robust.Shared.ContentPack
 
         private readonly List<string> _engineModuleDirectories = new();
         private readonly List<ExtraModuleLoad> _extraModuleLoads = new();
+
+        private ISawmill _sawmillResMod = default!;
 
         public event ExtraModuleLoad ExtraModuleLoaders
         {
@@ -53,16 +57,21 @@ namespace Robust.Shared.ContentPack
             AssemblyLoadContext.Default.Resolving += DefaultOnResolving;
         }
 
+        void IPostInjectInit.PostInject()
+        {
+            _sawmillResMod = _logManager.GetSawmill("res.mod");
+        }
+
         public void SetUseLoadContext(bool useLoadContext)
         {
             _useLoadContext = useLoadContext;
-            Sawmill.Debug("{0} assembly load context", useLoadContext ? "ENABLING" : "DISABLING");
+            Logger.DebugS("res", "{0} assembly load context", useLoadContext ? "ENABLING" : "DISABLING");
         }
 
         public void SetEnableSandboxing(bool sandboxing)
         {
             _sandboxingEnabled = sandboxing;
-            Sawmill.Debug("{0} sandboxing", sandboxing ? "ENABLING" : "DISABLING");
+            Logger.DebugS("res", "{0} sandboxing", sandboxing ? "ENABLING" : "DISABLING");
         }
 
         public Func<string, Stream?>? VerifierExtraLoadHandler { get; set; }
@@ -81,7 +90,7 @@ namespace Robust.Shared.ContentPack
                                      p.Extension == "dll"))
             {
                 var fullPath = mountPath / filePath;
-                Sawmill.Debug($"Found module '{fullPath}'");
+                _sawmillResMod.Debug($"Found module '{fullPath}'");
 
                 paths.Add(fullPath);
             }
@@ -92,7 +101,7 @@ namespace Robust.Shared.ContentPack
         public bool TryLoadModules(IEnumerable<ResPath> paths)
         {
             var sw = Stopwatch.StartNew();
-            Sawmill.Debug("LOADING modules");
+            Logger.DebugS("res.mod", "LOADING modules");
             var files = new Dictionary<string, (ResPath Path, string[] references)>();
 
             // Find all modules we want to load.
@@ -107,8 +116,8 @@ namespace Robust.Shared.ContentPack
 
                 if (!files.TryAdd(asmName, (fullPath, asmRefs)))
                 {
-                    Sawmill.Error("Found multiple modules with the same assembly name " +
-                                  $"'{asmName}', A: {files[asmName].Path}, B: {fullPath}.");
+                    Logger.ErrorS("res.mod", "Found multiple modules with the same assembly name " +
+                                             $"'{asmName}', A: {files[asmName].Path}, B: {fullPath}.");
                     return false;
                 }
             }
@@ -118,20 +127,19 @@ namespace Robust.Shared.ContentPack
                 var checkerSw = Stopwatch.StartNew();
 
                 var typeChecker = MakeTypeChecker();
-                var resolver = typeChecker.CreateResolver();
 
                 Parallel.ForEach(files, pair =>
                 {
                     var (name, (path, _)) = pair;
 
                     using var stream = _res.ContentFileRead(path);
-                    if (!typeChecker.CheckAssembly(stream, resolver))
+                    if (!typeChecker.CheckAssembly(stream))
                     {
                         throw new TypeCheckFailedException($"Assembly {name} failed type checks.");
                     }
                 });
 
-                Sawmill.Debug($"Verified assemblies in {checkerSw.ElapsedMilliseconds}ms");
+                Logger.DebugS("res.mod", $"Verified assemblies in {checkerSw.ElapsedMilliseconds}ms");
             }
 
             var nodes = TopologicalSort.FromBeforeAfter(
@@ -145,7 +153,7 @@ namespace Robust.Shared.ContentPack
             // Actually load them in the order they depend on each other.
             foreach (var path in TopologicalSort.Sort(nodes))
             {
-                Sawmill.Debug($"Loading module: '{path}'");
+                Logger.DebugS("res.mod", $"Loading module: '{path}'");
                 try
                 {
                     // If possible, load from disk path instead.
@@ -163,11 +171,11 @@ namespace Robust.Shared.ContentPack
                 }
                 catch (Exception e)
                 {
-                    Sawmill.Error($"Exception loading module '{path}':\n{e.ToStringBetter()}");
+                    Logger.ErrorS("srv", $"Exception loading module '{path}':\n{e.ToStringBetter()}");
                     return false;
                 }
             }
-            Sawmill.Debug($"DONE loading modules: {sw.Elapsed}");
+            Logger.DebugS("res.mod", $"DONE loading modules: {sw.Elapsed}");
 
             return true;
         }
@@ -183,7 +191,7 @@ namespace Robust.Shared.ContentPack
 
             if (_sandboxingEnabled && TryFindSkipIfSandboxed(metaReader))
             {
-                Sawmill.Debug("Module {ModuleName} has SkipIfSandboxedAttribute, ignoring.", name);
+                Logger.DebugS("res.mod", "Module {ModuleName} has SkipIfSandboxedAttribute, ignoring.", name);
                 return null;
             }
 
@@ -262,7 +270,7 @@ namespace Robust.Shared.ContentPack
             // To prevent breaking debugging on Rider, try to load from disk if possible.
             if (_res.TryGetDiskFilePath(dllPath, out var path))
             {
-                Sawmill.Debug( $"Loading {assemblyName} DLL");
+                Logger.DebugS("srv", $"Loading {assemblyName} DLL");
                 try
                 {
                     LoadGameAssembly(path, skipVerify: false);
@@ -270,7 +278,7 @@ namespace Robust.Shared.ContentPack
                 }
                 catch (Exception e)
                 {
-                    Sawmill.Error($"Exception loading DLL {assemblyName}.dll: {e.ToStringBetter()}");
+                    Logger.ErrorS("srv", $"Exception loading DLL {assemblyName}.dll: {e.ToStringBetter()}");
                     return false;
                 }
             }
@@ -279,7 +287,7 @@ namespace Robust.Shared.ContentPack
             {
                 using (gameDll)
                 {
-                    Sawmill.Debug($"Loading {assemblyName} DLL");
+                    Logger.DebugS("srv", $"Loading {assemblyName} DLL");
 
                     // see if debug info is present
                     if (_res.TryContentFileRead(new ResPath($@"/Assemblies/{assemblyName}.pdb"),
@@ -295,7 +303,7 @@ namespace Robust.Shared.ContentPack
                             }
                             catch (Exception e)
                             {
-                                Sawmill.Error($"Exception loading DLL {assemblyName}.dll: {e.ToStringBetter()}");
+                                Logger.ErrorS("srv", $"Exception loading DLL {assemblyName}.dll: {e.ToStringBetter()}");
                                 return false;
                             }
                         }
@@ -309,13 +317,13 @@ namespace Robust.Shared.ContentPack
                     }
                     catch (Exception e)
                     {
-                        Sawmill.Error($"Exception loading DLL {assemblyName}.dll: {e.ToStringBetter()}");
+                        Logger.ErrorS("srv", $"Exception loading DLL {assemblyName}.dll: {e.ToStringBetter()}");
                         return false;
                     }
                 }
             }
 
-            Sawmill.Warning($"Could not load {assemblyName} DLL: {dllPath} does not exist in the VFS.");
+            Logger.WarningS("eng", $"Could not load {assemblyName} DLL: {dllPath} does not exist in the VFS.");
             return false;
         }
 
@@ -325,7 +333,7 @@ namespace Robust.Shared.ContentPack
             {
                 lock (_lock)
                 {
-                    Sawmill.Debug("ResolvingAssembly {0}", name);
+                    _logManager.GetSawmill("res").Debug("ResolvingAssembly {0}", name);
 
                     // Try main modules.
                     foreach (var mod in Mods)
@@ -364,7 +372,7 @@ namespace Robust.Shared.ContentPack
             }
             catch (Exception e)
             {
-                Sawmill.Error("Exception in ResolvingAssembly: {0}", e);
+                _logManager.GetSawmill("res").Error("Exception in ResolvingAssembly: {0}", e);
                 ExceptionDispatchInfo.Capture(e).Throw();
                 throw null; // Unreachable.
             }
@@ -381,7 +389,7 @@ namespace Robust.Shared.ContentPack
             // Otherwise it would load the assemblies a second time which is an amazing way to have everything break.
             if (_useLoadContext)
             {
-                Sawmill.Debug($"RESOLVING DEFAULT: {name}");
+                _logManager.GetSawmill("res.mod").Debug($"RESOLVING DEFAULT: {name}");
                 foreach (var module in LoadedModules)
                 {
                     if (module.GetName().Name == name.Name)
@@ -418,7 +426,7 @@ namespace Robust.Shared.ContentPack
 
         private AssemblyTypeChecker MakeTypeChecker()
         {
-            return new(_res, LogManager.GetSawmill("res.typecheck"))
+            return new(_res, Logger.GetSawmill("res.typecheck"))
             {
                 VerifyIL = _sandboxingEnabled,
                 DisableTypeCheck = !_sandboxingEnabled,
@@ -427,15 +435,12 @@ namespace Robust.Shared.ContentPack
             };
         }
 
-        internal static PEReader MakePEReader(Stream stream, bool leaveOpen=false, PEStreamOptions options=PEStreamOptions.Default)
+        internal static PEReader MakePEReader(Stream stream, bool leaveOpen=false)
         {
             if (!stream.CanSeek)
                 stream = leaveOpen ? stream.CopyToMemoryStream() : stream.ConsumeToMemoryStream();
 
-            if (leaveOpen)
-                options |= PEStreamOptions.LeaveOpen;
-
-            return new PEReader(stream, options);
+            return new PEReader(stream, leaveOpen ? PEStreamOptions.LeaveOpen : default);
         }
     }
 }

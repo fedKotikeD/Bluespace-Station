@@ -6,7 +6,6 @@ using Robust.Shared;
 using Robust.Shared.Configuration;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
-using Robust.Shared.Network;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -72,12 +71,12 @@ internal sealed class HubManager
         _interval = TimeSpan.FromSeconds(interval);
         _httpClient?.Dispose();
 
-        var socketsHandler = HappyEyeballsHttp.CreateHttpHandler();
-        // Keep-alive connections stay open for longer than the advertise interval.
-        // This way the same HTTPS connection can be re-used.
-        socketsHandler.PooledConnectionIdleTimeout = _interval + TimeSpan.FromSeconds(10);
-
-        _httpClient = new HttpClient(socketsHandler);
+        _httpClient = new HttpClient(new SocketsHttpHandler
+        {
+            // Keep-alive connections stay open for longer than the advertise interval.
+            // This way the same HTTPS connection can be re-used.
+            PooledConnectionIdleTimeout = _interval + TimeSpan.FromSeconds(10),
+        });
 
         HttpClientUserAgent.AddUserAgent(_httpClient);
     }

@@ -621,7 +621,6 @@ namespace Robust.Client.Console.Commands
 
     internal sealed class ChunkInfoCommand : LocalizedCommands
     {
-        [Dependency] private readonly IEntityManager _entManager = default!;
         [Dependency] private readonly IMapManager _map = default!;
         [Dependency] private readonly IEyeManager _eye = default!;
         [Dependency] private readonly IInputManager _input = default!;
@@ -632,17 +631,16 @@ namespace Robust.Client.Console.Commands
         {
             var mousePos = _eye.ScreenToMap(_input.MouseScreenPosition);
 
-            if (!_map.TryFindGridAt(mousePos, out var gridUid, out var grid))
+            if (!_map.TryFindGridAt(mousePos, out _, out var grid))
             {
                 shell.WriteLine("No grid under your mouse cursor.");
                 return;
             }
 
-            var mapSystem = _entManager.System<SharedMapSystem>();
-            var chunkIndex = mapSystem.LocalToChunkIndices(gridUid, grid, grid.MapToGrid(mousePos));
-            var chunk = mapSystem.GetOrAddChunk(gridUid, grid, chunkIndex);
+            var chunkIndex = grid.LocalToChunkIndices(grid.MapToGrid(mousePos));
+            var chunk = grid.GetOrAddChunk(chunkIndex);
 
-            shell.WriteLine($"worldBounds: {mapSystem.CalcWorldAABB(gridUid, grid, chunk)} localBounds: {chunk.CachedBounds}");
+            shell.WriteLine($"worldBounds: {grid.CalcWorldAABB(chunk)} localBounds: {chunk.CachedBounds}");
         }
     }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Dynamics;
@@ -109,7 +108,7 @@ namespace Robust.Shared.Physics.Systems
 	                    var e1 = poly.Vertices[i] - s;
 	                    var e2 = i + 1 < count ? poly.Vertices[i+1] - s : poly.Vertices[0] - s;
 
-	                    var D = Vector2Helpers.Cross(e1, e2);
+	                    var D = Vector2.Cross(e1, e2);
 
 	                    var triangleArea = 0.5f * D;
 	                    area += triangleArea;
@@ -213,7 +212,7 @@ namespace Robust.Shared.Physics.Systems
 	                    var e1 = poly.Vertices[i] - s;
 	                    var e2 = i + 1 < count ? poly.Vertices[i+1] - s : poly.Vertices[0] - s;
 
-	                    float D = Vector2Helpers.Cross(e1, e2);
+	                    float D = Vector2.Cross(e1, e2);
 
 	                    float triangleArea = 0.5f * D;
 	                    area += triangleArea;

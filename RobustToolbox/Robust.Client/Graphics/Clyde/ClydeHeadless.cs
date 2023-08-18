@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Numerics;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Robust.Client.Audio;
@@ -14,8 +13,6 @@ using Robust.Shared.Timing;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Color = Robust.Shared.Maths.Color;
-using Vector3 = Robust.Shared.Maths.Vector3;
-using Vector4 = Robust.Shared.Maths.Vector4;
 
 namespace Robust.Client.Graphics.Clyde
 {
@@ -29,7 +26,7 @@ namespace Robust.Client.Graphics.Clyde
         public IClydeWindow MainWindow { get; }
         public Vector2i ScreenSize => (1280, 720);
         public IEnumerable<IClydeWindow> AllWindows => _windows;
-        public Vector2 DefaultWindowScale => new Vector2(1, 1);
+        public Vector2 DefaultWindowScale => (1, 1);
         public bool IsFocused => true;
         private readonly List<IClydeWindow> _windows = new();
         private int _nextWindowId = 2;
@@ -86,11 +83,6 @@ namespace Robust.Client.Graphics.Clyde
         public void RegisterGridEcsEvents()
         {
             // Nada.
-        }
-
-        public void ShutdownGridEcsEvents()
-        {
-
         }
 
         public void SetWindowTitle(string title)

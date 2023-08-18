@@ -1,4 +1,3 @@
-using System.Numerics;
 using NUnit.Framework;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.GameObjects;

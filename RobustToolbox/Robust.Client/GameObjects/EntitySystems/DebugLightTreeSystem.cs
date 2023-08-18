@@ -66,11 +66,11 @@ namespace Robust.Client.GameObjects
                 var map = _eyeManager.CurrentMap;
                 if (map == MapId.Nullspace) return;
 
-                foreach (var (_, treeComp) in _trees.GetIntersectingTrees(map, args.WorldBounds))
+                foreach (var treeComp in _trees.GetIntersectingTrees(map, args.WorldBounds))
                 {
-                    foreach (var entry in treeComp.Tree)
+                    foreach (var (light, xform) in treeComp.Tree)
                     {
-                        var aabb = _lookup.GetWorldAABB(entry.Uid, entry.Transform);
+                        var aabb = _lookup.GetWorldAABB(light.Owner, xform);
                         if (!aabb.Intersects(args.WorldAABB)) continue;
 
                         args.WorldHandle.DrawRect(aabb, Color.Green.WithAlpha(0.1f));

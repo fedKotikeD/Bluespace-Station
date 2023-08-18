@@ -11,7 +11,6 @@ using Robust.Shared.Utility;
 using Robust.Shared.ViewVariables;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Robust.Shared.Map.Components;
 
 namespace Robust.Shared.Containers
@@ -116,7 +115,7 @@ namespace Robust.Shared.Containers
             // Remove the entity and any children from broadphases.
             // This is done before changing can collide to avoid unecceary updates.
             // TODO maybe combine with RecursivelyUpdatePhysics to avoid fetching components and iterating parents twice?
-            lookupSys.RemoveFromEntityTree(toinsert, transform);
+            lookupSys.RemoveFromEntityTree(toinsert, transform, transformQuery);
             DebugTools.Assert(transform.Broadphase == null || !transform.Broadphase.Value.IsValid());
 
             // Avoid unnecessary broadphase updates while unanchoring, changing physics collision, and re-parenting.
@@ -314,7 +313,7 @@ namespace Robust.Shared.Containers
             if (xform.ParentUid == oldParent // move event should already have handled it
                 && xform.Broadphase == null) // broadphase explicitly invalid?
             {
-                entMan.EntitySysManager.GetEntitySystem<EntityLookupSystem>().FindAndAddToEntityTree(toRemove, xform: xform);
+                entMan.EntitySysManager.GetEntitySystem<EntityLookupSystem>().FindAndAddToEntityTree(toRemove, xform);
             }
 
             if (entMan.TryGetComponent<JointComponent>(toRemove, out var jointComp))

@@ -13,7 +13,7 @@ namespace Robust.Shared.ContentPack
 {
     internal sealed partial class AssemblyTypeChecker
     {
-        private static SandboxConfig LoadConfig(ISawmill sawmill)
+        private static SandboxConfig LoadConfig()
         {
             using var stream = typeof(AssemblyTypeChecker).Assembly
                 .GetManifestResourceStream("Robust.Shared.ContentPack.Sandbox.yml")!;
@@ -22,13 +22,13 @@ namespace Robust.Shared.ContentPack
             var cfg = new Deserializer().Deserialize<SandboxConfig>(new StreamReader(stream, Encoding.UTF8));
             foreach (var typeCfg in cfg.Types.Values.SelectMany(p => p.Values))
             {
-                ParseTypeConfig(typeCfg, sawmill);
+                ParseTypeConfig(typeCfg);
             }
 
             return cfg;
         }
 
-        private static void ParseTypeConfig(TypeConfig cfg, ISawmill sawmill)
+        private static void ParseTypeConfig(TypeConfig cfg)
         {
             if (cfg.Methods != null)
             {
@@ -41,7 +41,7 @@ namespace Robust.Shared.ContentPack
                     }
                     catch (ParseException e)
                     {
-                        sawmill.Error($"Parse exception for '{m}': {e}");
+                        Logger.ErrorS("res.typecheck", $"Parse exception for '{m}': {e}");
                     }
                 }
 
@@ -63,7 +63,7 @@ namespace Robust.Shared.ContentPack
                     }
                     catch (ParseException e)
                     {
-                        sawmill.Error($"Parse exception for '{f}': {e}");
+                        Logger.ErrorS("res.typecheck", $"Parse exception for '{f}': {e}");
                     }
                 }
 
@@ -78,7 +78,7 @@ namespace Robust.Shared.ContentPack
             {
                 foreach (var nested in cfg.NestedTypes.Values)
                 {
-                    ParseTypeConfig(nested, sawmill);
+                    ParseTypeConfig(nested);
                 }
             }
         }

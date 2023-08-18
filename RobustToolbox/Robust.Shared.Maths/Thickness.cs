@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using JetBrains.Annotations;
 using Robust.Shared.Utility;
 
@@ -40,11 +39,6 @@ namespace Robust.Shared.Maths
             Right = right;
             Bottom = bottom;
         }
-        
-        public Thickness Scale(float scale)
-        {
-            return new Thickness(Left * scale, Top * scale, Right * scale, Bottom * scale);
-        }
 
         [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
         public readonly bool Equals(Thickness other)
@@ -63,7 +57,7 @@ namespace Robust.Shared.Maths
 
         public readonly Vector2 Inflate(in Vector2 size)
         {
-            return new(size.X + SumHorizontal, size.Y + SumVertical);
+            return (size.X + SumHorizontal, size.Y + SumVertical);
         }
 
         public readonly UIBox2 Deflate(in UIBox2 box)
@@ -80,9 +74,9 @@ namespace Robust.Shared.Maths
 
         public readonly Vector2 Deflate(in Vector2 size)
         {
-            return Vector2.Max(
+            return Vector2.ComponentMax(
                 Vector2.Zero,
-                new(size.X - SumHorizontal, size.Y - SumVertical));
+                (size.X - SumHorizontal, size.Y - SumVertical));
         }
 
         [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
@@ -94,13 +88,13 @@ namespace Robust.Shared.Maths
                    Bottom == other.Bottom;
         }
 
-        public readonly override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is Thickness other && Equals(other);
         }
 
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-        public readonly override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(Left, Top, Right, Bottom);
         }

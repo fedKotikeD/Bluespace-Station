@@ -30,7 +30,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Microsoft.Extensions.ObjectPool;
@@ -164,21 +163,6 @@ public abstract partial class SharedPhysicsSystem
             4096);
 
         InitializePool();
-        EntityManager.EntityQueueDeleted += OnContactEntityQueueDel;
-    }
-
-    private void ShutdownContacts()
-    {
-        EntityManager.EntityQueueDeleted -= OnContactEntityQueueDel;
-    }
-
-    private void OnContactEntityQueueDel(EntityUid obj)
-    {
-        // If an entity is queuedeleted then we want to purge its contacts before SimulateWorld runs in the same tick.
-        if (!TryComp<PhysicsComponent>(obj, out var physicsComp))
-            return;
-
-        DestroyContacts(physicsComp);
     }
 
     private void InitializePool()
@@ -240,11 +224,8 @@ public abstract partial class SharedPhysicsSystem
 
         DebugTools.Assert(!fixtureB.Contacts.ContainsKey(fixtureA));
 
-        var xformA = _xformQuery.GetComponent(uidA);
-        var xformB = _xformQuery.GetComponent(uidB);
-
         // Does a joint override collision? Is at least one body dynamic?
-        if (!ShouldCollide(uidA, uidB, bodyA, bodyB, fixtureA, fixtureB, xformA, xformB))
+        if (!ShouldCollide(uidA, uidB, bodyA, bodyB, fixtureA, fixtureB))
             return;
 
         // Call the factory.
@@ -343,6 +324,9 @@ public abstract partial class SharedPhysicsSystem
         // TODO: check for null instead?
         // Work out which contacts are still valid before we decide to update manifolds.
         var node = _activeContacts.First;
+        var metaQuery = GetEntityQuery<MetaDataComponent>();
+        var bodyQuery = GetEntityQuery<PhysicsComponent>();
+        var xformQuery = GetEntityQuery<TransformComponent>();
 
         while (node != null)
         {
@@ -366,15 +350,12 @@ public abstract partial class SharedPhysicsSystem
                 continue;
             }
 
-            var xformA = _xformQuery.GetComponent(uidA);
-            var xformB = _xformQuery.GetComponent(uidB);
-
             // Is this contact flagged for filtering?
             if ((contact.Flags & ContactFlags.Filter) != 0x0)
             {
                 // Check default filtering
                 if (!ShouldCollide(fixtureA, fixtureB) ||
-                    !ShouldCollide(uidA, uidB, bodyA, bodyB, fixtureA, fixtureB, xformA, xformB))
+                    !ShouldCollide(uidA, uidB, bodyA, bodyB, fixtureA, fixtureB))
                 {
                     DestroyContact(contact);
                     continue;
@@ -393,6 +374,8 @@ public abstract partial class SharedPhysicsSystem
                 continue;
             }
 
+            var xformA = xformQuery.GetComponent(uidA);
+            var xformB = xformQuery.GetComponent(uidB);
 
             if (xformA.MapUid == null || xformA.MapUid != xformB.MapUid)
             {
@@ -403,8 +386,8 @@ public abstract partial class SharedPhysicsSystem
             // Special-case grid contacts.
             if ((contact.Flags & ContactFlags.Grid) != 0x0)
             {
-                var gridABounds = fixtureA.Shape.ComputeAABB(GetPhysicsTransform(uidA, xformA, _xformQuery), 0);
-                var gridBBounds = fixtureB.Shape.ComputeAABB(GetPhysicsTransform(uidB, xformB, _xformQuery), 0);
+                var gridABounds = fixtureA.Shape.ComputeAABB(GetPhysicsTransform(uidA, xformA, xformQuery), 0);
+                var gridBBounds = fixtureB.Shape.ComputeAABB(GetPhysicsTransform(uidB, xformB, xformQuery), 0);
 
                 if (!gridABounds.Intersects(gridBBounds))
                 {
@@ -416,7 +399,7 @@ public abstract partial class SharedPhysicsSystem
                     contact.Flags &= ~ContactFlags.Island;
                     if (index >= contacts.Length)
                     {
-                        Log.Error($"Insufficient contact length at 388! Index {index} and length is {contacts.Length}. Tell Sloth");
+                        _sawmill.Error($"Insufficient contact length at 388! Index {index} and length is {contacts.Length}. Tell Sloth");
                     }
                     contacts[index++] = contact;
                 }
@@ -426,14 +409,14 @@ public abstract partial class SharedPhysicsSystem
 
             if (indexA >= fixtureA.Proxies.Length)
             {
-                Log.Error($"Found invalid contact index of {indexA} on {fixtureA.ID} / {ToPrettyString(uidA)}, expected {fixtureA.Proxies.Length}");
+                _sawmill.Error($"Found invalid contact index of {indexA} on {fixtureA.ID} / {ToPrettyString(uidA)}, expected {fixtureA.Proxies.Length}");
                 DestroyContact(contact);
                 continue;
             }
 
             if (indexB >= fixtureB.Proxies.Length)
             {
-                Log.Error($"Found invalid contact index of {indexB} on {fixtureB.ID} / {ToPrettyString(uidB)}, expected {fixtureB.Proxies.Length}");
+                _sawmill.Error($"Found invalid contact index of {indexB} on {fixtureB.ID} / {ToPrettyString(uidB)}, expected {fixtureB.Proxies.Length}");
                 DestroyContact(contact);
                 continue;
             }
@@ -457,8 +440,8 @@ public abstract partial class SharedPhysicsSystem
                     // Instead of transforming both boxes (which enlarges both aabbs), maybe just transform one box.
                     // I.e. use (matrixA * invMatrixB).TransformBox(). Or (invMatrixB * matrixA), whichever is correct.
                     // Alternatively, maybe just directly construct the relative transform matrix?
-                    var proxyAWorldAABB = _transform.GetWorldMatrix(_xformQuery.GetComponent(broadphaseA.Value), _xformQuery).TransformBox(proxyA.AABB);
-                    var proxyBWorldAABB = _transform.GetWorldMatrix(_xformQuery.GetComponent(broadphaseB.Value), _xformQuery).TransformBox(proxyB.AABB);
+                    var proxyAWorldAABB = _transform.GetWorldMatrix(xformQuery.GetComponent(broadphaseA.Value), xformQuery).TransformBox(proxyA.AABB);
+                    var proxyBWorldAABB = _transform.GetWorldMatrix(xformQuery.GetComponent(broadphaseB.Value), xformQuery).TransformBox(proxyB.AABB);
                     overlap = proxyAWorldAABB.Intersects(proxyBWorldAABB);
                 }
             }
@@ -475,7 +458,7 @@ public abstract partial class SharedPhysicsSystem
             contact.Flags &= ~ContactFlags.Island;
             if (index >= contacts.Length)
             {
-                Log.Error($"Insufficient contact length at 429! Index {index} and length is {contacts.Length}. Tell Sloth");
+                _sawmill.Error($"Insufficient contact length at 429! Index {index} and length is {contacts.Length}. Tell Sloth");
             }
             contacts[index++] = contact;
         }
@@ -491,7 +474,7 @@ public abstract partial class SharedPhysicsSystem
         {
             if (i >= contacts.Length)
             {
-                Log.Error($"Invalid contact length for contact events!");
+                _sawmill.Error($"Invalid contact length for contact events!");
                 continue;
             }
 
@@ -595,6 +578,8 @@ public abstract partial class SharedPhysicsSystem
 
     private void UpdateContacts(Contact[] contacts, int start, int end, ContactStatus[] status, bool[] wake, Vector2[] worldPoints)
     {
+        var xformQuery = GetEntityQuery<TransformComponent>();
+
         for (var i = start; i < end; i++)
         {
             var contact = contacts[i];
@@ -603,7 +588,7 @@ public abstract partial class SharedPhysicsSystem
             // of everything
             if (contact.FixtureA == null || contact.FixtureB == null)
             {
-                Log.Error($"Found a null contact for contact at {i}");
+                _sawmill.Error($"Found a null contact for contact at {i}");
                 status[i] = ContactStatus.NoContact;
                 wake[i] = false;
                 DebugTools.Assert(false);
@@ -612,8 +597,8 @@ public abstract partial class SharedPhysicsSystem
 
             var uidA = contact.EntityA;
             var uidB = contact.EntityB;
-            var bodyATransform = GetPhysicsTransform(uidA, Transform(uidA));
-            var bodyBTransform = GetPhysicsTransform(uidB, Transform(uidB));
+            var bodyATransform = GetPhysicsTransform(uidA, xformQuery.GetComponent(uidA), xformQuery);
+            var bodyBTransform = GetPhysicsTransform(uidB, xformQuery.GetComponent(uidB), xformQuery);
 
             var contactStatus = contact.Update(bodyATransform, bodyBTransform, out wake[i]);
             status[i] = contactStatus;
@@ -628,64 +613,39 @@ public abstract partial class SharedPhysicsSystem
     /// <summary>
     ///     Used to prevent bodies from colliding; may lie depending on joints.
     /// </summary>
-    protected bool ShouldCollide(
-        EntityUid uid,
-        EntityUid other,
-        PhysicsComponent body,
-        PhysicsComponent otherBody,
-        Fixture fixture,
-        Fixture otherFixture,
-        TransformComponent xform,
-        TransformComponent otherXform)
+    protected bool ShouldCollide(EntityUid aUid, EntityUid bUid, PhysicsComponent body, PhysicsComponent other, Fixture fixture, Fixture otherFixture)
     {
         if (((body.BodyType & (BodyType.Kinematic | BodyType.Static)) != 0 &&
-             (otherBody.BodyType & (BodyType.Kinematic | BodyType.Static)) != 0) ||
+             (other.BodyType & (BodyType.Kinematic | BodyType.Static)) != 0) ||
             // Kinematic controllers can't collide.
             (fixture.Hard && body.BodyType == BodyType.KinematicController &&
-             otherFixture.Hard && otherBody.BodyType == BodyType.KinematicController))
+             otherFixture.Hard && other.BodyType == BodyType.KinematicController))
         {
             return false;
-        }
-
-        if (fixture.Hard && otherFixture.Hard)
-        {
-            // Prevent self-propelling entities. I.e., prevent a fixture on a static child entity from propelling the
-            // parent forwards.
-            // TODO Add recursive parent checks, without somehow killing performance.
-            if (uid == other)
-                return false;
-
-            if (other == xform.ParentUid && body.BodyType == BodyType.Static)
-                return false;
-
-            if (uid == otherXform.ParentUid && otherBody.BodyType == BodyType.Static)
-                return false;
         }
 
         // Does a joint prevent collision?
         // if one of them doesn't have jointcomp then they can't share a common joint.
         // otherwise, only need to iterate over the joints of one component as they both store the same joint.
-        if (TryComp(uid, out JointComponent? jointComponentA) && HasComp<JointComponent>(other))
+        if (TryComp(aUid, out JointComponent? jointComponentA) && HasComp<JointComponent>(bUid))
         {
             foreach (var joint in jointComponentA.Joints.Values)
             {
                 // Check if either: the joint even allows collisions OR the other body on the joint is actually the other body we're checking.
-                if (!joint.CollideConnected && (other == joint.BodyAUid || other == joint.BodyBUid))
+                if (!joint.CollideConnected && (bUid == joint.BodyAUid || bUid == joint.BodyBUid))
                     return false;
             }
         }
 
-        var preventCollideMessage = new PreventCollideEvent(uid, other, body, otherBody, fixture, otherFixture);
-        RaiseLocalEvent(uid, ref preventCollideMessage);
+        var preventCollideMessage = new PreventCollideEvent(aUid, bUid, body, other, fixture, otherFixture);
+        RaiseLocalEvent(aUid, ref preventCollideMessage);
 
-        if (preventCollideMessage.Cancelled)
-            return false;
+        if (preventCollideMessage.Cancelled) return false;
 
-        preventCollideMessage = new PreventCollideEvent(other, uid, otherBody, body, otherFixture, fixture);
-        RaiseLocalEvent(other, ref preventCollideMessage);
+        preventCollideMessage = new PreventCollideEvent(bUid, aUid, other, body, otherFixture, fixture);
+        RaiseLocalEvent(bUid, ref preventCollideMessage);
 
-        if (preventCollideMessage.Cancelled)
-            return false;
+        if (preventCollideMessage.Cancelled) return false;
 
         return true;
     }

@@ -23,7 +23,7 @@ namespace Robust.Shared.Network
     /// <summary>
     ///     Contains a networked mapping of IDs -> Strings.
     /// </summary>
-    internal sealed class StringTable
+    public sealed class StringTable
     {
         /// <summary>
         ///     The ID of the <see cref="MsgStringTableEntries"/> packet.
@@ -37,8 +37,6 @@ namespace Robust.Shared.Network
         private int _lastStringIndex;
         private InitCallback? _callback;
         private StringTableUpdateCallback? _updateCallback;
-
-        public ISawmill Sawmill = default!;
 
         /// <summary>
         ///     Default constructor.
@@ -74,7 +72,7 @@ namespace Robust.Shared.Network
         {
             DebugTools.Assert(_network.IsClient);
 
-            Sawmill.Info($"Received message name string table.");
+            Logger.InfoS("net", $"Received message name string table.");
 
             foreach (var entry in message.Entries)
             {
@@ -271,7 +269,7 @@ namespace Robust.Shared.Network
 
             }
 
-            Sawmill.Info($"Sending message name string table to {channel.RemoteEndPoint.Address}.");
+            Logger.InfoS("net",$"Sending message name string table to {channel.RemoteEndPoint.Address}.");
             _network.ServerSendMessage(message, channel);
         }
     }

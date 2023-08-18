@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.Profiling;
 using Robust.Client.UserInterface.CustomControls;

@@ -1,4 +1,3 @@
-using System.Numerics;
 using NUnit.Framework;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
@@ -41,33 +40,28 @@ namespace Robust.UnitTesting.Client.GameObjects.Components
             var (sim, gridIdA, gridIdB) = SimulationFactory();
             var entMan = sim.Resolve<IEntityManager>();
             var mapMan = sim.Resolve<IMapManager>();
-            var xformSystem = entMan.System<SharedTransformSystem>();
 
             var gridA = mapMan.GetGrid(gridIdA);
             var gridB = mapMan.GetGrid(gridIdB);
 
             // Arrange
-            var initialPos = new EntityCoordinates(gridA.Owner, new Vector2(0, 0));
+            var initialPos = new EntityCoordinates(gridA.Owner, (0, 0));
             var parent = entMan.SpawnEntity(null, initialPos);
             var child = entMan.SpawnEntity(null, initialPos);
             var parentTrans = entMan.GetComponent<TransformComponent>(parent);
             var childTrans = entMan.GetComponent<TransformComponent>(child);
-            ComponentHandleState handleState;
 
             var compState = new TransformComponentState(new Vector2(5, 5), new Angle(0), gridB.Owner, false, false);
-            handleState = new ComponentHandleState(compState, null);
-            xformSystem.OnHandleState(parent, parentTrans, ref handleState);
+            parentTrans.HandleComponentState(compState, null);
 
             compState = new TransformComponentState(new Vector2(6, 6), new Angle(0), gridB.Owner, false, false);
-            handleState = new ComponentHandleState(compState, null);
-            xformSystem.OnHandleState(child, childTrans, ref handleState);
+            childTrans.HandleComponentState(compState, null);
             // World pos should be 6, 6 now.
 
             // Act
             var oldWpos = childTrans.WorldPosition;
             compState = new TransformComponentState(new Vector2(1, 1), new Angle(0), parent, false, false);
-            handleState = new ComponentHandleState(compState, null);
-            xformSystem.OnHandleState(child, childTrans, ref handleState);
+            childTrans.HandleComponentState(compState, null);
             var newWpos = childTrans.WorldPosition;
 
             // Assert
@@ -89,7 +83,7 @@ namespace Robust.UnitTesting.Client.GameObjects.Components
             var gridB = mapMan.GetGrid(gridIdB);
 
             // Arrange
-            var initalPos = new EntityCoordinates(gridA.Owner, new Vector2(0, 0));
+            var initalPos = new EntityCoordinates(gridA.Owner, (0, 0));
             var node1 = entMan.SpawnEntity(null, initalPos);
             var node2 = entMan.SpawnEntity(null, initalPos);
             var node3 = entMan.SpawnEntity(null, initalPos);

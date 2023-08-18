@@ -14,7 +14,7 @@ internal sealed partial class ClientConsoleHost
     private int _completionSeq;
 
 
-    public async Task<CompletionResult> GetCompletions(List<string> args, string argStr, CancellationToken cancel)
+    public async Task<CompletionResult> GetCompletions(List<string> args, CancellationToken cancel)
     {
         // Last element is the command currently being typed. May be empty.
 
@@ -24,10 +24,10 @@ internal sealed partial class ClientConsoleHost
         if (delay > 0)
             await Task.Delay((int)(delay * 1000), cancel);
 
-        return await CalcCompletions(args, argStr, cancel);
+        return await CalcCompletions(args, cancel);
     }
 
-    private Task<CompletionResult> CalcCompletions(List<string> args, string argStr, CancellationToken cancel)
+    private Task<CompletionResult> CalcCompletions(List<string> args, CancellationToken cancel)
     {
         if (args.Count == 1)
         {
@@ -44,10 +44,10 @@ internal sealed partial class ClientConsoleHost
         if (!AvailableCommands.TryGetValue(args[0], out var cmd))
             return Task.FromResult(CompletionResult.Empty);
 
-        return cmd.GetCompletionAsync(LocalShell, args.ToArray()[1..], argStr, cancel).AsTask();
+        return cmd.GetCompletionAsync(LocalShell, args.ToArray()[1..], cancel).AsTask();
     }
 
-    private Task<CompletionResult> DoServerCompletions(List<string> args, string argStr, CancellationToken cancel)
+    private Task<CompletionResult> DoServerCompletions(List<string> args, CancellationToken cancel)
     {
         var tcs = new TaskCompletionSource<CompletionResult>();
         var cts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
@@ -62,7 +62,6 @@ internal sealed partial class ClientConsoleHost
         var msg = new MsgConCompletion
         {
             Args = args.ToArray(),
-            ArgString = argStr,
             Seq = seq
         };
 
