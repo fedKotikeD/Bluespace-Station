@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using System.Linq;
 using JetBrains.Annotations;
 using Robust.Client.Replays.Loading;
@@ -43,17 +42,15 @@ public sealed class ReplayLoadCommand : BaseReplayCommand
             return;
         }
 
-        var file = new ResPath(_cfg.GetCVar(CVars.ReplayDirectory)) / args[0];
+        var dir = new ResPath(_cfg.GetCVar(CVars.ReplayDirectory)) / args[0];
+        var file = dir / IReplayRecordingManager.MetaFile;
         if (!_resMan.UserData.Exists(file))
         {
             shell.WriteError(Loc.GetString("cmd-error-file-not-found", ("file", file)));
             return;
         }
 
-        var stream = _resMan.UserData.OpenRead(file);
-        var provider = new ReplayFileReaderZip(new ZipArchive(stream), ReplayConstants.ReplayZipFolder);
-
-        _loadMan.LoadAndStartReplay(provider);
+        _loadMan.LoadAndStartReplay(_resMan.UserData, dir);
     }
 
     public override CompletionResult GetCompletion(IConsoleShell shell, string[] args)
@@ -64,6 +61,7 @@ public sealed class ReplayLoadCommand : BaseReplayCommand
         var dir = new ResPath(_cfg.GetCVar(CVars.ReplayDirectory)) / args[0];
         dir = dir.ToRootedPath();
         var opts = CompletionHelper.UserFilePath(dir.CanonPath, _resMan.UserData);
+        opts = opts.Where(x => _resMan.UserData.IsDir(new ResPath(x.Value)));
 
         return CompletionResult.FromHintOptions(opts, Loc.GetString("cmd-replay-load-hint"));
     }

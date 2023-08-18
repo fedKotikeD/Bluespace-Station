@@ -64,14 +64,13 @@ namespace Robust.Shared.GameObjects
         internal EntityPrototype? _entityPrototype;
 
         /// <summary>
-        /// When this entity was paused, if applicable. Note that this is the actual time, not the duration which gets
-        /// returned by <see cref="MetaDataSystem.GetPauseTime"/>.
+        /// When this entity was paused, if applicable
         /// </summary>
         internal TimeSpan? PauseTime;
 
         // Every entity starts at tick 1, because they are conceptually created in the time between 0->1
         [ViewVariables]
-        public GameTick EntityLastModifiedTick { get; internal set; } = GameTick.Zero;
+        public GameTick EntityLastModifiedTick { get; internal set; } = new(1);
 
         /// <summary>
         ///     This is the tick at which the client last applied state data received from the server.

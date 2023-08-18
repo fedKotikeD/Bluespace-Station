@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using NUnit.Framework;
 using Robust.Shared.Maths;
 
@@ -69,7 +68,7 @@ namespace Robust.UnitTesting.Shared.Maths
 
             var (offX, offY) = offset;
 
-            var offsetDirection = new Vector2(offX, offY).Normalized();
+            var offsetDirection = new Vector2(offX, offY).Normalized;
             var pointInside = centerVec + offsetDirection * (radius * 0.5f);
             var pointOn = centerVec + offsetDirection * radius;
             var pointOutside = centerVec + offsetDirection * (radius * 1.5f);
@@ -92,7 +91,7 @@ namespace Robust.UnitTesting.Shared.Maths
 
             var (offX, offY) = offset;
 
-            var offsetDirection = new Vector2(offX, offY).Normalized();
+            var offsetDirection = new Vector2(offX, offY).Normalized;
             var pointOn = centerVec + offsetDirection * radius;
             var pointFar = centerVec + offsetDirection * (radius * 4);
 
@@ -118,7 +117,7 @@ namespace Robust.UnitTesting.Shared.Maths
             var boxDim = 1f;
 
             var (offX, offY) = offset;
-            var offsetDirection = new Vector2(offX, offY).Normalized();
+            var offsetDirection = new Vector2(offX, offY).Normalized;
 
             var boxCenterOn = centerVec + offsetDirection * radius;
             var boxCenterFar = centerVec + offsetDirection * (radius * 20);

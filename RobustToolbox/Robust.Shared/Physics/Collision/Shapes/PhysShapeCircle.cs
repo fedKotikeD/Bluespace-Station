@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Serialization;

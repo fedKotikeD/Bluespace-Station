@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 
@@ -32,7 +31,7 @@ public record struct PhysicsHull()
         var rightCount = 0;
 
         var bestIndex = 0;
-        float bestDistance = Vector2Helpers.Cross(ps[bestIndex] - p1, e);
+        float bestDistance = Vector2.Cross(ps[bestIndex] - p1, e);
         if (bestDistance > 0.0f)
         {
             rightPoints[rightCount++] = ps[bestIndex];
@@ -40,7 +39,7 @@ public record struct PhysicsHull()
 
         for (var i = 1; i < count; ++i)
         {
-            float distance = Vector2Helpers.Cross(ps[i] - p1, e);
+            float distance = Vector2.Cross(ps[i] - p1, e);
             if (distance > bestDistance)
             {
                 bestIndex = i;
@@ -110,8 +109,8 @@ public record struct PhysicsHull()
 	    const float tolSqr = 16.0f * PhysicsConstants.LinearSlop * PhysicsConstants.LinearSlop;
 	    for (var i = 0; i < count; ++i)
 	    {
-		    aabb.BottomLeft = Vector2.Min(aabb.BottomLeft, points[i]);
-		    aabb.TopRight = Vector2.Max(aabb.TopRight, points[i]);
+		    aabb.BottomLeft = Vector2.ComponentMin(aabb.BottomLeft, points[i]);
+		    aabb.TopRight = Vector2.ComponentMax(aabb.TopRight, points[i]);
 
 		    var vi = points[i];
 
@@ -120,7 +119,7 @@ public record struct PhysicsHull()
 		    {
 			    var vj = points[j];
 
-			    float distSqr = (vj - vi).LengthSquared();
+			    float distSqr = (vj - vi).LengthSquared;
 			    if (distSqr < tolSqr)
 			    {
 				    unique = false;
@@ -143,10 +142,10 @@ public record struct PhysicsHull()
 	    // Find an extreme point as the first point on the hull
 	    var c = aabb.Center;
 	    var i1 = 0;
-        float dsq1 = (ps[i1] - c).LengthSquared();
+        float dsq1 = (ps[i1] - c).LengthSquared;
 	    for (var i = 1; i < n; ++i)
         {
-            float dsq = (ps[i] - c).LengthSquared();
+            float dsq = (ps[i] - c).LengthSquared;
 		    if (dsq > dsq1)
 		    {
 			    i1 = i;
@@ -160,10 +159,10 @@ public record struct PhysicsHull()
 	    n = n - 1;
 
 	    var i2 = 0;
-        float dsq2 = (ps[i2] - p1).LengthSquared();
+        float dsq2 = (ps[i2] - p1).LengthSquared;
 	    for (var i = 1; i < n; ++i)
         {
-            float dsq = (ps[i] - p1).LengthSquared();
+            float dsq = (ps[i] - p1).LengthSquared;
 		    if (dsq > dsq2)
 		    {
 			    i2 = i;
@@ -188,7 +187,7 @@ public record struct PhysicsHull()
 
 	    for (var i = 0; i < n; ++i)
 	    {
-		    float d = Vector2Helpers.Cross(ps[i] - p1, e);
+		    float d = Vector2.Cross(ps[i] - p1, e);
 
 		    // slop used here to skip points that are very close to the line p1-p2
 		    if (d >= 2.0f * PhysicsConstants.LinearSlop)
@@ -248,7 +247,7 @@ public record struct PhysicsHull()
 			    e.Normalize();
 
 			    var v = p2 - p1;
-			    float distance = Vector2Helpers.Cross(p2 - p1, e);
+			    float distance = Vector2.Cross(p2 - p1, e);
 			    if (distance <= 2.0f * PhysicsConstants.LinearSlop)
 			    {
 				    // remove midpoint from hull
@@ -300,7 +299,7 @@ public record struct PhysicsHull()
                     continue;
                 }
 
-                float distance = Vector2Helpers.Cross(hull.Points[j] - p, e);
+                float distance = Vector2.Cross(hull.Points[j] - p, e);
                 if (distance >= 0.0f)
                 {
                     return false;
@@ -323,7 +322,7 @@ public record struct PhysicsHull()
             e.Normalize();
 
             var v = p2 - p1;
-            float distance = Vector2Helpers.Cross(p2 - p1, e);
+            float distance = Vector2.Cross(p2 - p1, e);
             if (distance <= PhysicsConstants.LinearSlop)
             {
                 // p1-p2-p3 are collinear

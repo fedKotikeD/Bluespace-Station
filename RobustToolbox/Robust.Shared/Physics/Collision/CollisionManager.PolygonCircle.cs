@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Utility;
@@ -78,14 +77,14 @@ internal sealed partial class CollisionManager
         {
             var sergal = (cLocal - v1);
 
-		    if (sergal.LengthSquared() > radius * radius)
+		    if (sergal.LengthSquared > radius * radius)
 		    {
 			    return;
 		    }
 
 		    manifold.PointCount = 1;
 		    manifold.Type = ManifoldType.FaceA;
-		    manifold.LocalNormal = (cLocal - v1).Normalized();
+		    manifold.LocalNormal = (cLocal - v1).Normalized;
             manifold.LocalPoint = v1;
 
             ref var p0 = ref manifold.Points[0];
@@ -97,14 +96,14 @@ internal sealed partial class CollisionManager
         {
             var sergal = (cLocal - v2);
 
-		    if (sergal.LengthSquared() > radius * radius)
+		    if (sergal.LengthSquared > radius * radius)
 		    {
 			    return;
 		    }
 
 		    manifold.PointCount = 1;
 		    manifold.Type = ManifoldType.FaceA;
-		    manifold.LocalNormal = (cLocal - v2).Normalized();
+		    manifold.LocalNormal = (cLocal - v2).Normalized;
             manifold.LocalPoint = v2;
 
             ref var p0 = ref manifold.Points[0];

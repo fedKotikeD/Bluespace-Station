@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using Robust.Shared.Maths;
 
 namespace Robust.Server.GameStates;
@@ -14,11 +13,9 @@ public struct ChunkIndicesEnumerator
 
     public ChunkIndicesEnumerator(Vector2 viewPos, float range, float chunkSize)
     {
-        var rangeVec = new Vector2(range, range);
-
-        _bottomLeft = ((viewPos - rangeVec) / chunkSize).Floored();
+        _bottomLeft = ((viewPos - range) / chunkSize).Floored();
         // Also floor this as we get the whole chunk anyway.
-        _topRight = ((viewPos + rangeVec) / chunkSize).Floored();
+        _topRight = ((viewPos + range) / chunkSize).Floored();
 
         _x = _bottomLeft.X;
         _y = _bottomLeft.Y;

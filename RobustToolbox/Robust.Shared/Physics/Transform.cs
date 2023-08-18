@@ -21,7 +21,6 @@
 */
 
 using System;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Robust.Shared.Maths;

@@ -1,4 +1,3 @@
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
@@ -47,7 +46,7 @@ namespace Robust.Client.GameObjects
             LayoutContainer.SetPosition(_label, screenPos + new Vector2(0, 50));
             _label.Visible = true;
 
-            _label.Text = $"Speed: {body.LinearVelocity.Length():0.00}\nLinear: {body.LinearVelocity.X:0.00}, {body.LinearVelocity.Y:0.00}\nAngular: {body.AngularVelocity}";
+            _label.Text = $"Speed: {body.LinearVelocity.Length:0.00}\nLinear: {body.LinearVelocity.X:0.00}, {body.LinearVelocity.Y:0.00}\nAngular: {body.AngularVelocity}";
         }
     }
 }

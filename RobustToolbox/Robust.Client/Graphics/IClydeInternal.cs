@@ -65,8 +65,6 @@ namespace Robust.Client.Graphics
 
         void RegisterGridEcsEvents();
 
-        void ShutdownGridEcsEvents();
-
         void RunOnWindowThread(Action action);
     }
 }

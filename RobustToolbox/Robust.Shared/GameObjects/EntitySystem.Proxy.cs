@@ -398,7 +398,7 @@ public partial class EntitySystem
 
     /// <inheritdoc cref="IEntityManager.GetComponent&lt;T&gt;"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected T Comp<T>(EntityUid uid) where T : Component
+    protected T Comp<T>(EntityUid uid) where T : class, IComponent
     {
         return EntityManager.GetComponent<T>(uid);
     }
@@ -635,14 +635,14 @@ public partial class EntitySystem
 
     #region Entity Spawning
 
-    /// <inheritdoc cref="IEntityManager.SpawnEntity(string?, EntityCoordinates, ComponentRegistry?)" />
+    /// <inheritdoc cref="IEntityManager.SpawnEntity(string?, EntityCoordinates)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected EntityUid Spawn(string? prototype, EntityCoordinates coordinates)
     {
         return EntityManager.SpawnEntity(prototype, coordinates);
     }
 
-    /// <inheritdoc cref="IEntityManager.SpawnEntity(string?, MapCoordinates, ComponentRegistry?)" />
+    /// <inheritdoc cref="IEntityManager.SpawnEntity(string?, MapCoordinates)" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected EntityUid Spawn(string? prototype, MapCoordinates coordinates)
     {

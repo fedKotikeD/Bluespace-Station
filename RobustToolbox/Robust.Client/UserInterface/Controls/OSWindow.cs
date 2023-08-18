@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.IoC;
@@ -114,7 +113,7 @@ namespace Robust.Client.UserInterface.Controls
 
             if (SizeToContent != WindowSizeToContent.Manual)
             {
-                Measure(Vector2Helpers.Infinity);
+                Measure(Vector2.Infinity);
 
                 if ((SizeToContent & WindowSizeToContent.Width) != 0)
                     parameters.Width = (int)DesiredSize.X;

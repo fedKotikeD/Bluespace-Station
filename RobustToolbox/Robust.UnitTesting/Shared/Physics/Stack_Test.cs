@@ -25,7 +25,6 @@ These tests are derived from box2d's testbed tests but done in a way as to be au
  */
 
 using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Robust.Shared.GameObjects;
@@ -130,7 +129,7 @@ public sealed class PhysicsTestBedTest : RobustIntegrationTest
         });
 
         // Assert
-
+        
         await server.WaitRunTicks(200);
 
         // Assert settled, none below 0, etc.

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -694,9 +693,6 @@ namespace Robust.Client.Placement
             IsActive = true;
 
             CurrentPlacementOverlayEntity = EntityManager.SpawnEntity(templateName, MapCoordinates.Nullspace);
-            EntityManager.RunMapInit(
-                CurrentPlacementOverlayEntity.Value,
-                EntityManager.GetComponent<MetaDataComponent>(CurrentPlacementOverlayEntity.Value));
         }
 
         public void PreparePlacementSprite(SpriteComponent sprite)

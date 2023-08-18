@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Text;
 using JetBrains.Annotations;
 using Robust.Client.Graphics;
@@ -261,7 +260,7 @@ namespace Robust.Client.UserInterface.Controls
             if (_mouseSelectingText)
             {
                 var style = _getStyleBox();
-                var contentBox = style.GetContentBox(PixelSizeBox, UIScale);
+                var contentBox = style.GetContentBox(PixelSizeBox);
 
                 if (_lastMousePosition < contentBox.Left)
                 {
@@ -283,14 +282,16 @@ namespace Robust.Client.UserInterface.Controls
         {
             var font = _getFont();
             var style = _getStyleBox();
-            return new Vector2(0, font.GetHeight(1.0f)) + style.MinimumSize;
+            return new Vector2(0, font.GetHeight(UIScale) / UIScale) + style.MinimumSize / UIScale;
         }
 
         protected override Vector2 ArrangeOverride(Vector2 finalSize)
         {
             var style = _getStyleBox();
-            var box = UIBox2.FromDimensions(Vector2.Zero, finalSize);
-            _renderBox.Arrange(style.GetContentBox(box, 1));
+
+            _renderBox.ArrangePixel(
+                (UIBox2i) style.GetContentBox(
+                    UIBox2.FromDimensions(Vector2.Zero, finalSize * UIScale)));
 
             return finalSize;
         }
@@ -748,7 +749,7 @@ namespace Robust.Client.UserInterface.Controls
         private int GetIndexAtPos(float horizontalPos)
         {
             var style = _getStyleBox();
-            var contentBox = style.GetContentBox(PixelSizeBox, UIScale);
+            var contentBox = style.GetContentBox(PixelSizeBox);
 
             var clickPosX = horizontalPos * UIScale;
 
@@ -805,7 +806,7 @@ namespace Robust.Client.UserInterface.Controls
         public float GetOffsetAtIndex(int index)
         {
             var style = _getStyleBox();
-            var contentBox = style.GetContentBox(PixelSizeBox, UIScale);
+            var contentBox = style.GetContentBox(PixelSizeBox);
 
             var font = _getFont();
             var i = 0;
@@ -895,7 +896,7 @@ namespace Robust.Client.UserInterface.Controls
         {
             base.Draw(handle);
 
-            _getStyleBox().Draw(handle, PixelSizeBox, UIScale);
+            _getStyleBox().Draw(handle, PixelSizeBox);
         }
 
         public sealed class LineEditEventArgs : EventArgs

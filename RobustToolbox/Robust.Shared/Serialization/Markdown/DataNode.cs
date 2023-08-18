@@ -1,7 +1,4 @@
-using System.IO;
 using Robust.Shared.Serialization.Manager;
-using YamlDotNet.Core;
-using YamlDotNet.RepresentationModel;
 
 namespace Robust.Shared.Serialization.Markdown
 {
@@ -33,20 +30,6 @@ namespace Robust.Shared.Serialization.Markdown
         public T CopyCast<T>() where T : DataNode
         {
             return (T) Copy();
-        }
-
-        public void Write(TextWriter writer)
-        {
-            var yaml = this.ToYamlNode();
-            var stream = new YamlStream { new(yaml) };
-            stream.Save(new YamlMappingFix(new Emitter(writer)), false);
-        }
-
-        public override string ToString()
-        {
-            StringWriter sw = new StringWriter();
-            Write(sw);
-            return sw.ToString();
         }
     }
 

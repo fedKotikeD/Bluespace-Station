@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Buffers;
-using System.Numerics;
 using OpenToolkit.Graphics.OpenGL4;
 using Robust.Client.GameObjects;
 using Robust.Client.ResourceManagement;
@@ -18,7 +17,6 @@ using Robust.Shared.Physics;
 using Robust.Client.ComponentTrees;
 using static Robust.Shared.GameObjects.OccluderComponent;
 using Robust.Shared.Utility;
-using Vector4 = Robust.Shared.Maths.Vector4;
 
 namespace Robust.Client.Graphics.Clyde
 {
@@ -560,7 +558,7 @@ namespace Robust.Client.Graphics.Clyde
             if (light.CastShadows)
                 shadowCount++;
 
-            var distanceSquared = (state.worldAABB.Center - lightPos).LengthSquared();
+            float distanceSquared = (state.worldAABB.Center - lightPos).LengthSquared;
             state.clyde._lightsToRenderList[count++] = (light, lightPos, distanceSquared, rot);
 
             return true;
@@ -578,9 +576,9 @@ namespace Robust.Client.Graphics.Clyde
             var xforms = _entityManager.GetEntityQuery<TransformComponent>();
             var state = (this, count: 0, shadowCastingCount: 0, xformSystem, xforms, worldAABB);
 
-            foreach (var (uid, comp) in lightTreeSys.GetIntersectingTrees(map, worldAABB))
+            foreach (var comp in lightTreeSys.GetIntersectingTrees(map, worldAABB))
             {
-                var bounds = xformSystem.GetInvWorldMatrix(uid, xforms).TransformBox(worldBounds);
+                var bounds = xformSystem.GetInvWorldMatrix(comp.Owner, xforms).TransformBox(worldBounds);
                 comp.Tree.QueryAabb(ref state, LightQuery, bounds);
             }
 
@@ -928,12 +926,12 @@ namespace Robust.Client.Graphics.Clyde
 
             try
             {
-                foreach (var (uid, comp) in occluderSystem.GetIntersectingTrees(map, expandedBounds))
+                foreach (var comp in occluderSystem.GetIntersectingTrees(map, expandedBounds))
                 {
                     if (ami >= amiMax)
                         break;
 
-                    var treeBounds = xforms.GetComponent(uid).InvWorldMatrix.TransformBox(expandedBounds);
+                    var treeBounds = xforms.GetComponent(comp.Owner).InvWorldMatrix.TransformBox(expandedBounds);
 
                     comp.Tree.QueryAabb((in ComponentTreeEntry<OccluderComponent> entry) =>
                     {

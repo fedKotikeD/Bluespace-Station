@@ -38,7 +38,6 @@ internal sealed partial class UserInterfaceManager
         newRoot.StyleSheetUpdate();
         newRoot.InvalidateMeasure();
         QueueMeasureUpdate(newRoot);
-        QueueArrangeUpdate(newRoot);
 
         if (window.IsFocused)
             FocusRoot(newRoot);

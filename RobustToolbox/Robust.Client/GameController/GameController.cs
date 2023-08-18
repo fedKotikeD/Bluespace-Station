@@ -33,7 +33,6 @@ using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Profiling;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Reflection;
 using Robust.Shared.Replays;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.Manager;
@@ -85,8 +84,7 @@ namespace Robust.Client
         [Dependency] private readonly NetworkResourceManager _netResMan = default!;
         [Dependency] private readonly IReplayLoadManager _replayLoader = default!;
         [Dependency] private readonly IReplayPlaybackManager _replayPlayback = default!;
-        [Dependency] private readonly IReplayRecordingManagerInternal _replayRecording = default!;
-        [Dependency] private readonly IReflectionManager _reflectionManager = default!;
+        [Dependency] private readonly IReplayRecordingManager _replayRecording = default!;
 
         private IWebViewManagerHook? _webViewHook;
 
@@ -164,7 +162,6 @@ namespace Robust.Client
             // before prototype load.
             ProgramShared.FinishCheckBadFileExtensions(checkBadExtensions);
 
-            _reflectionManager.Initialize();
             _prototypeManager.Initialize();
             _prototypeManager.LoadDefaultPrototypes();
             _prototypeManager.ResolveResults();
@@ -203,12 +200,7 @@ namespace Robust.Client
             // Setup main loop
             if (_mainLoop == null)
             {
-                _mainLoop = new GameLoop(
-                    _gameTiming,
-                    _runtimeLog,
-                    _prof,
-                    _logManager.GetSawmill("eng"),
-                    GameLoopOptions.FromCVars(_configurationManager))
+                _mainLoop = new GameLoop(_gameTiming, _runtimeLog, _prof)
                 {
                     SleepMode = displayMode == DisplayMode.Headless ? SleepMode.Delay : SleepMode.None
                 };
@@ -568,11 +560,6 @@ namespace Robust.Client
             {
                 _taskManager.ProcessPendingTasks(); // tasks like connect
             }
-
-            using (_prof.Group("Content post engine"))
-            {
-                _modLoader.BroadcastUpdate(ModUpdateLevel.InputPostEngine, frameEventArgs);
-            }
         }
 
         private void Tick(FrameEventArgs frameEventArgs)
@@ -769,8 +756,6 @@ namespace Robust.Client
 
         internal void CleanupGameThread()
         {
-            _replayRecording.Shutdown();
-
             _modLoader.Shutdown();
 
             // CEF specifically makes a massive silent stink of it if we don't shut it down from the correct thread.

@@ -24,10 +24,5 @@
         ///     This update is called after the main state manager on render frames, thus only applies to the client.
         /// </summary>
         FramePostEngine,
-
-        /// <summary>
-        ///     Ran after processing network packets and pending asynchronous tasks.
-        /// </summary>
-        InputPostEngine,
     }
 }

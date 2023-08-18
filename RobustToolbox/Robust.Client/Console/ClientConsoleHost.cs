@@ -10,7 +10,6 @@ using Robust.Shared.Console;
 using Robust.Shared.Enums;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
-using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Network.Messages;
 using Robust.Shared.Players;
@@ -22,13 +21,13 @@ namespace Robust.Client.Console
 {
     public sealed class AddStringArgs : EventArgs
     {
-        public FormattedMessage Text { get; }
+        public string Text { get; }
 
         public bool Local { get; }
 
         public bool Error { get; }
 
-        public AddStringArgs(FormattedMessage text, bool local, bool error)
+        public AddStringArgs(string text, bool local, bool error)
         {
             Text = text;
             Local = local;
@@ -133,17 +132,10 @@ namespace Robust.Client.Console
             AddFormatted?.Invoke(this, new AddFormattedMessageArgs(message));
         }
 
-        public override void WriteLine(ICommonSession? session, FormattedMessage msg)
-        {
-            AddFormattedLine(msg);
-        }
-
         /// <inheritdoc />
         public override void WriteError(ICommonSession? session, string text)
         {
-            var msg = new FormattedMessage();
-            msg.AddText(text);
-            OutputText(msg, true, true);
+            OutputText(text, true, true);
         }
 
         public bool IsCmdServer(IConsoleCommand cmd)
@@ -159,13 +151,8 @@ namespace Robust.Client.Console
             if (string.IsNullOrWhiteSpace(command))
                 return;
 
-            WriteLine(null, "");
-            var msg = new FormattedMessage();
-            msg.PushColor(Color.Gold);
-            msg.AddText("> " + command);
-            msg.Pop();
             // echo the command locally
-            OutputText(msg, true, false);
+            WriteLine(null, "> " + command);
 
             //Commands are processed locally and then sent to the server to be processed there again.
             var args = new List<string>();
@@ -218,9 +205,7 @@ namespace Robust.Client.Console
         /// <inheritdoc />
         public override void WriteLine(ICommonSession? session, string text)
         {
-            var msg = new FormattedMessage();
-            msg.AddText(text);
-            OutputText(msg, true, false);
+            OutputText(text, true, false);
         }
 
         /// <inheritdoc />
@@ -229,12 +214,12 @@ namespace Robust.Client.Console
             // We don't have anything to dispose.
         }
 
-        private void OutputText(FormattedMessage text, bool local, bool error)
+        private void OutputText(string text, bool local, bool error)
         {
             AddString?.Invoke(this, new AddStringArgs(text, local, error));
 
             var level = error ? LogLevel.Warning : LogLevel.Info;
-            _conLogger.Log(level, text.ToString());
+            _conLogger.Log(level, text);
         }
 
         private void OnNetworkConnected(object? sender, NetChannelArgs netChannelArgs)
@@ -244,7 +229,7 @@ namespace Robust.Client.Console
 
         private void HandleConCmdAck(MsgConCmdAck msg)
         {
-            OutputText(msg.Text, false, msg.Error);
+            OutputText("< " + msg.Text, false, msg.Error);
         }
 
         private void HandleConCmdReg(MsgConCmdReg msg)
@@ -318,14 +303,13 @@ namespace Robust.Client.Console
             public async ValueTask<CompletionResult> GetCompletionAsync(
                 IConsoleShell shell,
                 string[] args,
-                string argStr,
                 CancellationToken cancel)
             {
                 var host = (ClientConsoleHost)shell.ConsoleHost;
                 var argsList = args.ToList();
                 argsList.Insert(0, Command);
 
-                return await host.DoServerCompletions(argsList, argStr, cancel);
+                return await host.DoServerCompletions(argsList, cancel);
             }
         }
 
@@ -343,11 +327,10 @@ namespace Robust.Client.Console
             public override async ValueTask<CompletionResult> GetCompletionAsync(
                 IConsoleShell shell,
                 string[] args,
-                string argStr,
                 CancellationToken cancel)
             {
                 var host = (ClientConsoleHost)shell.ConsoleHost;
-                return await host.DoServerCompletions(args.ToList(), argStr[">".Length..], cancel);
+                return await host.DoServerCompletions(args.ToList(), cancel);
             }
         }
     }

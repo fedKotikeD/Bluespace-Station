@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Robust.Shared.Map;
@@ -514,7 +513,7 @@ internal partial class Clyde
             cmd.Tcs.TrySetResult(SDL_GetClipboardText());
         }
 
-        private static Vector2 GetWindowScale(nint window)
+        private static (float h, float v) GetWindowScale(nint window)
         {
             // Get scale by diving size in pixels with size in points.
             SDL_GetWindowSizeInPixels(window, out var pixW, out var pixH);
@@ -522,7 +521,7 @@ internal partial class Clyde
 
             // Avoiding degenerate cases, not sure if these can actually happen.
             if (pixW == 0 || pixH == 0 || pointW == 0 || pointH == 0)
-                return new Vector2(1, 1);
+                return (1, 1);
 
             var scaleH = pixW / (float) pointW;
             var scaleV = pixH / (float) pointH;
@@ -531,7 +530,7 @@ internal partial class Clyde
             scaleH = MathF.Round(scaleH * 20) / 20;
             scaleV = MathF.Round(scaleV * 20) / 20;
 
-            return new Vector2(scaleH, scaleV);
+            return (scaleH, scaleV);
         }
 
         private static void CheckWindowDisposed(WindowReg reg)

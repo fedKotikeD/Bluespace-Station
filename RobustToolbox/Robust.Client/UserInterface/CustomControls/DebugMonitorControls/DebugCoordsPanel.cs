@@ -62,19 +62,18 @@ namespace Robust.Client.UserInterface.CustomControls.DebugMonitorControls
             var screenSize = _displayManager.ScreenSize;
             var screenScale = _displayManager.MainWindow.ContentScale;
 
+            MapCoordinates mouseWorldMap;
             EntityCoordinates mouseGridPos;
             TileRef tile;
 
-            var mouseWorldMap = _eyeManager.ScreenToMap(mouseScreenPos);
+            mouseWorldMap = _eyeManager.ScreenToMap(mouseScreenPos);
             if (mouseWorldMap == MapCoordinates.Nullspace)
                 return;
 
-            var mapSystem = _entityManager.System<SharedMapSystem>();
-
-            if (_mapManager.TryFindGridAt(mouseWorldMap, out var mouseGridUid, out var mouseGrid))
+            if (_mapManager.TryFindGridAt(mouseWorldMap, out _, out var mouseGrid))
             {
-                mouseGridPos = mapSystem.MapToGrid(mouseGridUid, mouseWorldMap);
-                tile = mapSystem.GetTileRef(mouseGridUid, mouseGrid, mouseGridPos);
+                mouseGridPos = mouseGrid.MapToGrid(mouseWorldMap);
+                tile = mouseGrid.GetTileRef(mouseGridPos);
             }
             else
             {

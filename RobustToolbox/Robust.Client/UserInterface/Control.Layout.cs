@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Map;
@@ -32,7 +31,6 @@ namespace Robust.Client.UserInterface
         private VAlignment _verticalAlignment = VAlignment.Stretch;
         private Thickness _margin;
         private bool _measuring;
-        private bool _arranging;
 
         /// <summary>
         /// The desired minimum size this control needs for layout to avoid cutting off content or such.
@@ -337,8 +335,8 @@ namespace Robust.Client.UserInterface
         /// <seealso cref="MinHeight"/>
         public Vector2 MinSize
         {
-            get => new(_minWidth, _minHeight);
-            set => (MinWidth, MinHeight) = Vector2.Max(Vector2.Zero, value);
+            get => (_minWidth, _minHeight);
+            set => (MinWidth, MinHeight) = Vector2.ComponentMax(Vector2.Zero, value);
         }
 
         /// <summary>
@@ -360,7 +358,7 @@ namespace Robust.Client.UserInterface
         /// <seealso cref="SetHeight"/>
         public Vector2 SetSize
         {
-            get => new(_setWidth, _setHeight);
+            get => (_setWidth, _setHeight);
             set => (SetWidth, SetHeight) = value;
         }
 
@@ -376,7 +374,7 @@ namespace Robust.Client.UserInterface
         /// <seealso cref="MaxHeight"/>
         public Vector2 MaxSize
         {
-            get => new(_maxWidth, _maxHeight);
+            get => (_maxWidth, _maxHeight);
             set => (MaxWidth, MaxHeight) = value;
         }
 
@@ -470,12 +468,13 @@ namespace Robust.Client.UserInterface
         /// </summary>
         public void InvalidateMeasure()
         {
-            if (!IsMeasureValid || _measuring)
+            if (!IsMeasureValid)
                 return;
 
             IsMeasureValid = false;
+            IsArrangeValid = false;
+
             UserInterfaceManagerInternal.QueueMeasureUpdate(this);
-            InvalidateArrange();
         }
 
         /// <summary>
@@ -484,7 +483,7 @@ namespace Robust.Client.UserInterface
         /// </summary>
         public void InvalidateArrange()
         {
-            if (!IsArrangeValid || _arranging)
+            if (!IsArrangeValid)
             {
                 // Already queued for a layout update, don't bother.
                 return;
@@ -508,16 +507,7 @@ namespace Robust.Client.UserInterface
             if (!IsMeasureValid || PreviousMeasure != availableSize)
             {
                 IsMeasureValid = true;
-                _measuring = true;
-                Vector2 desired;
-                try
-                {
-                    desired = MeasureCore(availableSize);
-                }
-                finally
-                {
-                    _measuring = false;
-                }
+                var desired = MeasureCore(availableSize);
 
                 if (desired.X < 0 || desired.Y < 0 || !float.IsFinite(desired.X) || !float.IsFinite(desired.Y))
                     throw new InvalidOperationException("Invalid size returned from Measure()");
@@ -549,7 +539,16 @@ namespace Robust.Client.UserInterface
 
             var constrained = ApplySizeConstraints(this, withoutMargin);
 
-            var measured = MeasureOverride(constrained);
+            Vector2 measured;
+            try
+            {
+                _measuring = true;
+                measured = MeasureOverride(constrained);
+            }
+            finally
+            {
+                _measuring = false;
+            }
 
             if (!float.IsNaN(SetWidth))
             {
@@ -566,8 +565,8 @@ namespace Robust.Client.UserInterface
             measured.Y = Math.Clamp(measured.Y, MinHeight, MaxHeight);
 
             measured = _margin.Inflate(measured);
-            measured = Vector2.Min(measured, availableSize);
-            measured = Vector2.Max(measured, Vector2.Zero);
+            measured = Vector2.ComponentMin(measured, availableSize);
+            measured = Vector2.ComponentMax(measured, Vector2.Zero);
             return measured;
         }
 
@@ -581,7 +580,7 @@ namespace Robust.Client.UserInterface
             foreach (var child in Children)
             {
                 child.Measure(availableSize);
-                min = Vector2.Max(min, child.DesiredSize);
+                min = Vector2.ComponentMax(min, child.DesiredSize);
             }
 
             return min;
@@ -604,22 +603,14 @@ namespace Robust.Client.UserInterface
         /// </summary>
         public void Arrange(UIBox2 finalRect)
         {
-            _arranging = true;
-            try
-            {
-                if (!IsMeasureValid)
-                    Measure(PreviousMeasure ?? finalRect.Size);
+            if (!IsMeasureValid)
+                Measure(PreviousMeasure ?? finalRect.Size);
 
-                if (!IsArrangeValid || PreviousArrange != finalRect)
-                {
-                    IsArrangeValid = true;
-                    ArrangeCore(finalRect);
-                    PreviousArrange = finalRect;
-                }
-            }
-            finally
+            if (!IsArrangeValid || PreviousArrange != finalRect)
             {
-                _arranging = false;
+                IsArrangeValid = true;
+                ArrangeCore(finalRect);
+                PreviousArrange = finalRect;
             }
         }
 
@@ -649,7 +640,7 @@ namespace Robust.Client.UserInterface
 
             var arranged = ArrangeOverride(size);
 
-            size = Vector2.Min(arranged, size);
+            size = Vector2.ComponentMin(arranged, size);
 
             switch (HorizontalAlignment)
             {
@@ -717,7 +708,7 @@ namespace Robust.Client.UserInterface
             minConstraint = float.IsNaN(setH) ? 0 : setH;
             minH = MathHelper.Clamp(maxH, minConstraint, minH);
 
-            return new Vector2(
+            return (
                 Math.Clamp(avail.X, minW, maxW),
                 Math.Clamp(avail.Y, minH, maxH));
         }

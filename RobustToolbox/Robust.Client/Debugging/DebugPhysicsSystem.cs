@@ -47,7 +47,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.Player;
@@ -218,7 +217,7 @@ namespace Robust.Client.Debugging
             _debugPhysicsSystem = system;
             _lookup = lookup;
             _physicsSystem = physicsSystem;
-            _font = new VectorFont(cache.GetResource<FontResource>("/EngineFonts/NotoSans/NotoSans-Regular.ttf"), 10);
+            _font = new VectorFont(cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 10);
         }
 
         private void DrawWorld(DrawingHandleWorld worldHandle, OverlayDrawArgs args)

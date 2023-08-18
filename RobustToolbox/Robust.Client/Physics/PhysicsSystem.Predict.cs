@@ -138,13 +138,10 @@ public sealed partial class PhysicsSystem
                 continue;
             }
 
-            var xformA = xformQuery.GetComponent(uidA);
-            var xformB = xformQuery.GetComponent(uidB);
-
             if ((contact.Flags & ContactFlags.Filter) != 0x0)
             {
                 if (!ShouldCollide(fixtureA, fixtureB) ||
-                    !ShouldCollide(uidA, uidB, bodyA, bodyB, fixtureA, fixtureB, xformA, xformB))
+                    !ShouldCollide(uidA, uidB, bodyA, bodyB, fixtureA, fixtureB))
                 {
                     contact.IsTouching = false;
                     continue;
@@ -159,6 +156,9 @@ public sealed partial class PhysicsSystem
                 contact.IsTouching = false;
                 continue;
             }
+
+            var xformA = xformQuery.GetComponent(uidA);
+            var xformB = xformQuery.GetComponent(uidB);
 
             if (xformA.MapUid == null || xformA.MapUid != xformB.MapUid)
             {

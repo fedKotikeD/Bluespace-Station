@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
 using Robust.Shared.Utility;
-using Robust.Shared.ViewVariables;
 
 namespace Robust.Client.Audio.Midi;
 
@@ -13,7 +12,7 @@ public struct MidiRendererState
     internal FixedArray16<byte> ChannelPressure;
     internal FixedArray16<ushort> PitchBend;
 
-    [ViewVariables] internal Span<byte> AsSpan => MemoryMarshal.CreateSpan(ref NoteVelocities._00._00, 4160);
+    internal Span<byte> AsSpan => MemoryMarshal.CreateSpan(ref NoteVelocities._00._00, 4160);
 
     static unsafe MidiRendererState()
     {

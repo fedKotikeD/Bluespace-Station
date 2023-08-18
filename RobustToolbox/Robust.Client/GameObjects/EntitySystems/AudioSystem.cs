@@ -181,7 +181,7 @@ public sealed class AudioSystem : SharedAudioSystem
 
         // Max distance check
         var delta = mapPos.Value.Position - listener.Position;
-        var distance = delta.Length();
+        var distance = delta.Length;
         if (distance > stream.MaxDistance)
         {
             stream.Source.SetVolumeDirect(0);
@@ -314,9 +314,9 @@ public sealed class AudioSystem : SharedAudioSystem
         return source != null;
     }
 
-    private PlayingStream CreateAndStartPlayingStream(IClydeAudioSource source, AudioParams? audioParams, AudioStream stream)
+    private PlayingStream CreateAndStartPlayingStream(IClydeAudioSource source, AudioParams? audioParams)
     {
-        ApplyAudioParams(audioParams, source, stream);
+        ApplyAudioParams(audioParams, source);
         source.StartPlaying();
         var playing = new PlayingStream
         {
@@ -365,7 +365,7 @@ public sealed class AudioSystem : SharedAudioSystem
 
         source.SetGlobal();
 
-        return CreateAndStartPlayingStream(source, audioParams, stream);
+        return CreateAndStartPlayingStream(source, audioParams);
     }
 
     /// <summary>
@@ -416,7 +416,7 @@ public sealed class AudioSystem : SharedAudioSystem
         if (!source.SetPosition(worldPos))
             return Play(stream, fallbackCoordinates.Value, fallbackCoordinates.Value, audioParams);
 
-        var playing = CreateAndStartPlayingStream(source, audioParams, stream);
+        var playing = CreateAndStartPlayingStream(source, audioParams);
         playing.TrackingEntity = entity;
         playing.TrackingFallbackCoordinates = fallbackCoordinates != EntityCoordinates.Invalid ? fallbackCoordinates : null;
         return playing;
@@ -469,7 +469,7 @@ public sealed class AudioSystem : SharedAudioSystem
             return null;
         }
 
-        var playing = CreateAndStartPlayingStream(source, audioParams, stream);
+        var playing = CreateAndStartPlayingStream(source, audioParams);
         playing.TrackingCoordinates = coordinates;
         playing.TrackingFallbackCoordinates = fallbackCoordinates != EntityCoordinates.Invalid ? fallbackCoordinates : null;
         return playing;
@@ -493,7 +493,7 @@ public sealed class AudioSystem : SharedAudioSystem
         return null;
     }
 
-    private void ApplyAudioParams(AudioParams? audioParams, IClydeAudioSource source, AudioStream audio)
+    private void ApplyAudioParams(AudioParams? audioParams, IClydeAudioSource source)
     {
         if (!audioParams.HasValue)
             return;
@@ -508,12 +508,8 @@ public sealed class AudioSystem : SharedAudioSystem
         source.SetRolloffFactor(audioParams.Value.RolloffFactor);
         source.SetMaxDistance(audioParams.Value.MaxDistance);
         source.SetReferenceDistance(audioParams.Value.ReferenceDistance);
+        source.SetPlaybackPosition(audioParams.Value.PlayOffsetSeconds);
         source.IsLooping = audioParams.Value.Loop;
-
-        // TODO clamp the offset inside of SetPlaybackPosition() itself.
-        var offset = audioParams.Value.PlayOffsetSeconds;
-        offset = Math.Clamp(offset, 0f, (float) audio.Length.TotalSeconds);
-        source.SetPlaybackPosition(offset);
     }
 
     public sealed class PlayingStream : IPlayingAudioStream

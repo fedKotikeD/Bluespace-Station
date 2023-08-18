@@ -55,7 +55,6 @@ internal sealed partial class ReplayPlaybackManager : IReplayPlaybackManager
 
     private bool _initialized;
     private ISawmill _sawmill = default!;
-    private HashSet<Type> _warned = new();
 
     public bool Playing
     {

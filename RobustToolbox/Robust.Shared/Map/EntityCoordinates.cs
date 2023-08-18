@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using JetBrains.Annotations;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -191,17 +190,15 @@ namespace Robust.Shared.Map
             if(!IsValid(entityManager))
                 return new Vector2i();
 
-            var mapSystem = entityManager.System<SharedMapSystem>();
             var gridIdOpt = GetGridUid(entityManager);
             if (gridIdOpt is { } gridId && gridId.IsValid())
             {
-                var grid = mapManager.GetGrid(gridId);
-                return mapSystem.GetTileRef(gridId, grid, this).GridIndices;
+                return mapManager.GetGrid(gridId).GetTileRef(this).GridIndices;
             }
 
-            var vec = ToMapPos(entityManager, transformSystem);
+            var (x, y) = ToMapPos(entityManager, transformSystem);
 
-            return new Vector2i((int)MathF.Floor(vec.X), (int)MathF.Floor(vec.Y));
+            return new Vector2i((int)Math.Floor(x), (int)Math.Floor(y));
         }
 
         /// <summary>
@@ -333,7 +330,7 @@ namespace Robust.Shared.Map
                 return false;
 
             if (EntityId == otherCoordinates.EntityId)
-                return (otherCoordinates.Position - Position).LengthSquared() < range * range;
+                return (otherCoordinates.Position - Position).LengthSquared < range * range;
 
             var mapCoordinates = ToMap(entityManager, transformSystem);
             var otherMapCoordinates = otherCoordinates.ToMap(entityManager, transformSystem);
@@ -374,7 +371,7 @@ namespace Robust.Shared.Map
 
             if (EntityId == otherCoordinates.EntityId)
             {
-                distance = (Position - otherCoordinates.Position).Length();
+                distance = (Position - otherCoordinates.Position).Length;
                 return true;
             }
 
@@ -384,7 +381,7 @@ namespace Robust.Shared.Map
             if (mapCoordinates.MapId != otherMapCoordinates.MapId)
                 return false;
 
-            distance = (mapCoordinates.Position - otherMapCoordinates.Position).Length();
+            distance = (mapCoordinates.Position - otherMapCoordinates.Position).Length;
             return true;
         }
 

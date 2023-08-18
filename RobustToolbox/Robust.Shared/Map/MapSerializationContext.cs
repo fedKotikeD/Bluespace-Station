@@ -12,7 +12,6 @@ using Robust.Shared.Serialization.Markdown;
 using Robust.Shared.Serialization.Markdown.Validation;
 using Robust.Shared.Serialization.Markdown.Value;
 using Robust.Shared.Serialization.TypeSerializers.Interfaces;
-using Robust.Shared.Timing;
 
 namespace Robust.Shared.Map;
 
@@ -27,8 +26,6 @@ internal sealed class MapSerializationContext : ISerializationContext, IEntityLo
     public HashSet<string> CurrentlyIgnoredComponents = new();
     public string? CurrentComponent;
     public EntityUid? CurrentWritingEntity;
-    public IEntityManager EntityManager;
-    public IGameTiming Timing;
 
     private Dictionary<int, EntityUid> _uidEntityMap = new();
     private Dictionary<EntityUid, int> _entityUidMap = new();
@@ -53,10 +50,8 @@ internal sealed class MapSerializationContext : ISerializationContext, IEntityLo
     /// </summary>
     private EntityUid? _parentUid;
 
-    public MapSerializationContext(IEntityManager entityManager, IGameTiming timing)
+    public MapSerializationContext()
     {
-        EntityManager = entityManager;
-        Timing = timing;
         SerializerProvider.RegisterSerializer(this);
     }
 

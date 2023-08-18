@@ -65,7 +65,7 @@ namespace Robust.UnitTesting.Shared.Map
                 var x = i % size;
                 var y = i / size;
 
-                chunk.TrySetTile((ushort)x, (ushort)y, new Tile((ushort)tiles[i]), out _, out _);
+                chunk.SetTile((ushort)x, (ushort)y, new Tile((ushort)tiles[i]));
             }
 
             return chunk;

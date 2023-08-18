@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -57,7 +56,7 @@ namespace Robust.Client.ViewVariables
             };
             VBox.AddChild(BottomContainer);
 
-            //var smallFont = new VectorFont(_resourceCache.GetResource<FontResource>("/EngineFonts/NotoSans/NotoSans-Regular.ttf"), 10);
+            //var smallFont = new VectorFont(_resourceCache.GetResource<FontResource>("/Fonts/CALIBRI.TTF"), 10);
 
             _bottomLabel = new Label
             {

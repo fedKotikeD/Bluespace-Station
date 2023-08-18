@@ -37,9 +37,6 @@ namespace Robust.Shared.Network
         {
             try
             {
-                _logger.Verbose($"{connection.RemoteEndPoint}: Starting handshake with peer ");
-
-                _logger.Verbose($"{connection.RemoteEndPoint}: Awaiting MsgLoginStart");
                 var incPacket = await AwaitData(connection);
 
                 var msgLogin = new MsgLoginStart();
@@ -50,13 +47,6 @@ namespace Robust.Shared.Network
                 var canAuth = msgLogin.CanAuth;
                 var needPk = msgLogin.NeedPubKey;
                 var authServer = _config.GetCVar(CVars.AuthServer);
-
-                _logger.Verbose(
-                    $"{connection.RemoteEndPoint}: Received MsgLoginStart. " +
-                    $"canAuth: {canAuth}, needPk: {needPk}, username: {msgLogin.UserName}, encrypt: {msgLogin.Encrypt}");
-
-                _logger.Verbose(
-                    $"{connection.RemoteEndPoint}: Connection is specialized local? {isLocal} ");
 
                 if (Auth == AuthMode.Required && !isLocal)
                 {
@@ -74,9 +64,6 @@ namespace Robust.Shared.Network
 
                 if (canAuth && Auth != AuthMode.Disabled)
                 {
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Initiating authentication");
-
                     var verifyToken = new byte[4];
                     RandomNumberGenerator.Fill(verifyToken);
                     var msgEncReq = new MsgEncryptionRequest
@@ -91,16 +78,10 @@ namespace Robust.Shared.Network
                     msgEncReq.WriteToBuffer(outMsgEncReq, _serializer);
                     peer.Peer.SendMessage(outMsgEncReq, connection, NetDeliveryMethod.ReliableOrdered);
 
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Awaiting MsgEncryptionResponse");
-
                     incPacket = await AwaitData(connection);
 
                     var msgEncResponse = new MsgEncryptionResponse();
                     msgEncResponse.ReadFromBuffer(incPacket, _serializer);
-
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Received MsgEncryptionResponse");
 
                     var encResp = new byte[verifyToken.Length + SharedKeyLength];
                     var ret = CryptoBox.SealOpen(
@@ -131,26 +112,17 @@ namespace Robust.Shared.Network
                     if (msgLogin.Encrypt)
                         encryption = new NetEncryption(sharedSecret, isServer: true);
 
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Checking with session server for auth hash...");
-
                     var authHashBytes = MakeAuthHash(sharedSecret, CryptoPublicKey!);
                     var authHash = Base64Helpers.ConvertToBase64Url(authHashBytes);
 
                     var url = $"{authServer}api/session/hasJoined?hash={authHash}&userId={msgEncResponse.UserId}";
-                    var joinedRespJson = await _http.Client.GetFromJsonAsync<HasJoinedResponse>(url);
+                    var joinedRespJson = await _httpClient.GetFromJsonAsync<HasJoinedResponse>(url);
 
                     if (joinedRespJson is not {IsValid: true})
                     {
                         connection.Disconnect("Failed to validate login");
                         return;
                     }
-
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Auth hash passed. " +
-                        $"User ID: {joinedRespJson.UserData!.UserId}, " +
-                        $"Username: {joinedRespJson.UserData!.UserName}," +
-                        $"Patron: {joinedRespJson.UserData.PatronTier}");
 
                     var userId = new NetUserId(joinedRespJson.UserData!.UserId);
                     userData = new NetUserData(userId, joinedRespJson.UserData.UserName)
@@ -163,9 +135,6 @@ namespace Robust.Shared.Network
                 }
                 else
                 {
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Not doing authentication");
-
                     var reqUserName = msgLogin.UserName;
 
                     if (!UsernameHelpers.IsNameValid(reqUserName, out var reason))
@@ -188,26 +157,14 @@ namespace Robust.Shared.Network
                         name = $"{origName}_{++iterations}";
                     }
 
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Assigned name: {name}");
-
                     NetUserId userId;
                     (userId, type) = await AssignUserIdAsync(name);
-
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: Assigned user ID: {userId}");
 
                     userData = new NetUserData(userId, name)
                     {
                         HWId = msgLogin.HWId
                     };
                 }
-
-                _logger.Verbose(
-                    $"{connection.RemoteEndPoint}: Login type: {type}");
-
-                _logger.Verbose(
-                    $"{connection.RemoteEndPoint}: Raising Connecting event");
 
                 var endPoint = connection.RemoteEndPoint;
                 var connect = await OnConnecting(endPoint, userData, type);
@@ -217,15 +174,9 @@ namespace Robust.Shared.Network
                     return;
                 }
 
-                _logger.Verbose(
-                    $"{connection.RemoteEndPoint}: Connecting event passed, client is IN");
-
                 // Well they're in. Kick a connected client with the same GUID if we have to.
                 if (_assignedUserIds.TryGetValue(userData.UserId, out var existing))
                 {
-                    _logger.Verbose(
-                        $"{connection.RemoteEndPoint}: User was already connected in another connection, disconnecting");
-
                     if (_awaitingDisconnectToConnect.Contains(userData.UserId))
                     {
                         connection.Disconnect("Stop trying to connect multiple times at once.");
@@ -237,14 +188,7 @@ namespace Robust.Shared.Network
                     {
                         existing.Disconnect("Another connection has been made with your account.");
                         // Have to wait until they're properly off the server to avoid any collisions.
-
-                        _logger.Verbose(
-                            $"{connection.RemoteEndPoint}: Awaiting for clean disconnect of previous client");
-
                         await AwaitDisconnectAsync(existing);
-
-                        _logger.Verbose(
-                            $"{connection.RemoteEndPoint}: Previous client disconnected");
                     }
                     finally
                     {
@@ -260,8 +204,6 @@ namespace Robust.Shared.Network
 
                     return;
                 }
-
-                _logger.Verbose($"{connection.RemoteEndPoint}: Sending MsgLoginSuccess");
 
                 var msg = peer.Peer.CreateMessage();
                 var msgResp = new MsgLoginSuccess

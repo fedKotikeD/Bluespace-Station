@@ -34,10 +34,12 @@ namespace Robust.Client.ResourceManagement
 
         public override void Load(IResourceCache cache, ResPath path)
         {
+            var clyde = IoCManager.Resolve<IClyde>();
+
             var loadStepData = new LoadStepData {Path = path};
             LoadPreTexture(cache, loadStepData);
 
-            loadStepData.AtlasTexture = cache.Clyde.LoadTextureFromImage(
+            loadStepData.AtlasTexture = clyde.LoadTextureFromImage(
                 loadStepData.AtlasSheet,
                 loadStepData.Path.ToString());
 

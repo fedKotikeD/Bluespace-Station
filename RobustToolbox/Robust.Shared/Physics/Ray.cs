@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 
@@ -31,7 +30,7 @@ namespace Robust.Shared.Physics
             Position = position;
             Direction = direction;
 
-            DebugTools.Assert(MathHelper.CloseToPercent(Direction.LengthSquared(), 1));
+            DebugTools.Assert(MathHelper.CloseToPercent(Direction.LengthSquared, 1));
 
         }
 

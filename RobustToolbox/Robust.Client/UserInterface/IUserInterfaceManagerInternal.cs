@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Shared.Input;

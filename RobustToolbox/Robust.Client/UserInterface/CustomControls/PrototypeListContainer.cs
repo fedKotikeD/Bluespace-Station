@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using Robust.Client.UserInterface.Controls;
+﻿using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Maths;
 
 namespace Robust.Client.UserInterface.CustomControls;
@@ -46,7 +45,7 @@ public sealed class PrototypeListContainer : Container
         first.Measure(availableSize);
         var (minX, minY) = first.DesiredSize;
 
-        return new Vector2(minX, minY * TotalItemCount + (TotalItemCount - 1) * Separation);
+        return (minX, minY * TotalItemCount + (TotalItemCount - 1) * Separation);
     }
 
     protected override Vector2 ArrangeOverride(Vector2 finalSize)

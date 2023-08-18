@@ -1,8 +1,6 @@
 using System;
-using System.Numerics;
 using JetBrains.Annotations;
-using Vector3 = Robust.Shared.Maths.Vector3;
-using Vector4 = Robust.Shared.Maths.Vector4;
+using Robust.Shared.Maths;
 
 namespace Robust.Shared.Noise
 {
@@ -78,7 +76,7 @@ namespace Robust.Shared.Noise
 
         public float GetNoiseTiled(float x, float y)
         {
-            return GetNoiseTiled(new Vector2(x, y));
+            return GetNoiseTiled((x, y));
         }
 
         public float GetNoiseTiled(Vector2 vec)
@@ -109,7 +107,7 @@ namespace Robust.Shared.Noise
 
         public float GetNoise(float x)
         {
-            return GetNoise(new Vector2(x, 0));
+            return GetNoise((x, 0));
         }
 
         public float GetNoise(float x, float y)

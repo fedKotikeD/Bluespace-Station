@@ -20,13 +20,14 @@ namespace Robust.Client.ResourceManagement
 
             using (var fileStream = cache.ContentFileRead(path))
             {
+                var clyde = IoCManager.Resolve<IClydeAudio>();
                 if (path.Extension == "ogg")
                 {
-                    AudioStream = cache.ClydeAudio.LoadAudioOggVorbis(fileStream, path.ToString());
+                    AudioStream = clyde.LoadAudioOggVorbis(fileStream, path.ToString());
                 }
                 else if (path.Extension == "wav")
                 {
-                    AudioStream = cache.ClydeAudio.LoadAudioWav(fileStream, path.ToString());
+                    AudioStream = clyde.LoadAudioWav(fileStream, path.ToString());
                 }
                 else
                 {

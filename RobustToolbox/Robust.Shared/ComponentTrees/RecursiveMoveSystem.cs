@@ -15,15 +15,7 @@ internal sealed class RecursiveMoveSystem : EntitySystem
 {
     [Dependency] private readonly IMapManager _mapManager = default!;
 
-    private EntityQuery<TransformComponent> _xformQuery;
-
     bool Subscribed = false;
-
-    public override void Initialize()
-    {
-        base.Initialize();
-        _xformQuery = GetEntityQuery<TransformComponent>();
-    }
 
     internal void AddSubscription()
     {
@@ -42,12 +34,14 @@ internal sealed class RecursiveMoveSystem : EntitySystem
         DebugTools.Assert(!_mapManager.IsMap(args.Sender));
         DebugTools.Assert(!_mapManager.IsGrid(args.Sender));
 
-        AnythingMovedSubHandler(args.Sender, args.Component);
+        var xformQuery = GetEntityQuery<TransformComponent>();
+        AnythingMovedSubHandler(args.Sender, args.Component, xformQuery);
     }
 
     private void AnythingMovedSubHandler(
         EntityUid uid,
-        TransformComponent xform)
+        TransformComponent xform,
+        EntityQuery<TransformComponent> xformQuery)
     {
         // TODO maybe use a c# event? This event gets raised a lot.
         // Would probably help with server performance and is also the main bottleneck for replay scrubbing.
@@ -61,8 +55,8 @@ internal sealed class RecursiveMoveSystem : EntitySystem
         var childEnumerator = xform.ChildEnumerator;
         while (childEnumerator.MoveNext(out var child))
         {
-            if (_xformQuery.TryGetComponent(child.Value, out var childXform))
-                AnythingMovedSubHandler(child.Value, childXform);
+            if (xformQuery.TryGetComponent(child.Value, out var childXform))
+                AnythingMovedSubHandler(child.Value, childXform, xformQuery);
         }
     }
 }

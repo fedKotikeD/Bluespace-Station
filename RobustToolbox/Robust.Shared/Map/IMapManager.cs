@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 using JetBrains.Annotations;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map.Components;
@@ -131,11 +130,6 @@ namespace Robust.Shared.Map
 
         void FindGridsIntersecting<TState>(MapId mapId, Box2 worldAABB, ref TState state, GridCallback<TState> callback, bool approx = false, bool includeMap = true);
 
-        void FindGridsIntersecting(MapId mapId, Box2Rotated worldBounds, GridCallback callback, bool approx = false, bool includeMap = true);
-
-        void FindGridsIntersecting<TState>(MapId mapId, Box2Rotated worldBounds, ref TState state, GridCallback<TState> callback, bool approx = false, bool includeMap = true);
-
-
         /// <summary>
         /// Returns the grids intersecting this AABB.
         /// </summary>
@@ -172,7 +166,6 @@ namespace Robust.Shared.Map
 
         void DoMapInitialize(MapId mapId);
 
-        // TODO rename this to actually be descriptive or just remove it.
         void AddUninitializedMap(MapId mapId);
 
         [Pure]

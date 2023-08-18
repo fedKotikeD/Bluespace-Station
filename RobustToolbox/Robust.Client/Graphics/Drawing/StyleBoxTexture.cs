@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Utility;
 
@@ -38,57 +37,21 @@ namespace Robust.Client.Graphics
 
             Texture = copy.Texture;
             Modulate = copy.Modulate;
-            TextureScale = copy.TextureScale;
         }
 
-        /// <summary>
-        /// Left expansion size, in virtual pixels.
-        /// </summary>
-        /// <remarks>
-        /// This expands the size of the area where the patches get drawn. This will cause the drawn texture to
-        /// extend beyond the box passed to the <see cref="StyleBox.Draw"/> function. This is not affected by
-        /// <see cref="TextureScale"/>.
-        /// </remarks>
         public float ExpandMarginLeft { get; set; }
 
-        /// <summary>
-        /// Top expansion size, in virtual pixels.
-        /// </summary>
-        /// <remarks>
-        /// This expands the size of the area where the patches get drawn. This will cause the drawn texture to
-        /// extend beyond the box passed to the <see cref="StyleBox.Draw"/> function. This is not affected by
-        /// <see cref="TextureScale"/>.
-        /// </remarks>
         public float ExpandMarginTop { get; set; }
 
-        /// <summary>
-        /// Bottom expansion size, in virtual pixels.
-        /// </summary>
-        /// <remarks>
-        /// This expands the size of the area where the patches get drawn. This will cause the drawn texture to
-        /// extend beyond the box passed to the <see cref="StyleBox.Draw"/> function. This is not affected by
-        /// <see cref="TextureScale"/>.
-        /// </remarks>
         public float ExpandMarginBottom { get; set; }
 
-        /// <summary>
-        /// Right expansion size, in virtual pixels.
-        /// </summary>
-        /// <remarks>
-        /// This expands the size of the area where the patches get drawn. This will cause the drawn texture to
-        /// extend beyond the box passed to the <see cref="StyleBox.Draw"/> function. This is not affected by
-        /// <see cref="TextureScale"/>.
-        /// </remarks>
         public float ExpandMarginRight { get; set; }
 
         public StretchMode Mode { get; set; } = StretchMode.Stretch;
 
         private float _patchMarginLeft;
 
-        /// <summary>
-        /// Distance of the left patch margin from the image. In texture space.
-        /// The size of this patch in virtual pixels can be obtained by scaling this with <see cref="TextureScale"/>.
-        /// </summary>
+        // Distance of the left patch margin from the image. In texture space.
         public float PatchMarginLeft
         {
             get => _patchMarginLeft;
@@ -105,10 +68,7 @@ namespace Robust.Client.Graphics
 
         private float _patchMarginRight;
 
-        /// <summary>
-        /// Distance of the right patch margin from the image. In texture space.
-        /// The size of this patch in virtual pixels can be obtained by scaling this with <see cref="TextureScale"/>.
-        /// </summary>
+        // Distance of the right patch margin from the image. In texture space.
         public float PatchMarginRight
         {
             get => _patchMarginRight;
@@ -125,10 +85,7 @@ namespace Robust.Client.Graphics
 
         private float _patchMarginTop;
 
-        /// <summary>
-        /// Distance of the top patch margin from the image. In texture space.
-        /// The size of this patch in virtual pixels can be obtained by scaling this with <see cref="TextureScale"/>.
-        /// </summary>
+        // Distance of the top patch margin from the image. In texture space.
         public float PatchMarginTop
         {
             get => _patchMarginTop;
@@ -145,10 +102,7 @@ namespace Robust.Client.Graphics
 
         private float _patchMarginBottom;
 
-        /// <summary>
-        /// Distance of the bottom patch margin from the image. In texture space.
-        /// The size of this patch in virtual pixels can be obtained by scaling this with <see cref="TextureScale"/>.
-        /// </summary>
+        // Distance of the bottom patch margin from the image. In texture space.
         public float PatchMarginBottom
         {
             get => _patchMarginBottom;
@@ -167,9 +121,7 @@ namespace Robust.Client.Graphics
 
         public Texture? Texture { get; set; }
 
-        /// <summary>
-        /// Additional scaling to use when drawing the texture.
-        /// </summary>
+        // Applies an additional x/y scale to the teture
         public Vector2 TextureScale { get; set; } = Vector2.One;
 
         public void SetPatchMargin(Margin margin, float value)
@@ -218,7 +170,7 @@ namespace Robust.Client.Graphics
             }
         }
 
-        protected override void DoDraw(DrawingHandleScreen handle, UIBox2 box, float uiScale)
+        protected override void DoDraw(DrawingHandleScreen handle, UIBox2 box)
         {
             if (Texture == null)
             {
@@ -226,13 +178,13 @@ namespace Robust.Client.Graphics
             }
 
             box = new UIBox2(
-                box.Left - ExpandMarginLeft * uiScale,
-                box.Top - ExpandMarginTop * uiScale,
-                box.Right + ExpandMarginRight * uiScale,
-                box.Bottom + ExpandMarginBottom * uiScale);
+                box.Left - ExpandMarginLeft,
+                box.Top - ExpandMarginTop,
+                box.Right + ExpandMarginRight,
+                box.Bottom + ExpandMarginBottom);
 
-            var scaledMargin = new UIBox2(PatchMarginLeft * TextureScale.X * uiScale, PatchMarginTop * TextureScale.Y * uiScale,
-                    PatchMarginRight * TextureScale.X * uiScale, PatchMarginBottom * TextureScale.Y * uiScale);
+            var scaledMargin = new UIBox2(PatchMarginLeft * TextureScale.X, PatchMarginTop * TextureScale.Y,
+                    PatchMarginRight * TextureScale.X, PatchMarginBottom * TextureScale.Y);
 
             if (PatchMarginLeft > 0)
             {
@@ -251,7 +203,7 @@ namespace Robust.Client.Graphics
                         new UIBox2(0, scaledMargin.Top, scaledMargin.Left, box.Height - scaledMargin.Bottom)
                             .Translated(box.TopLeft);
                     DrawStretchingArea(handle, leftBox,
-                        new UIBox2(0, PatchMarginTop, PatchMarginLeft, Texture.Height - PatchMarginBottom), uiScale);
+                        new UIBox2(0, PatchMarginTop, PatchMarginLeft, Texture.Height - PatchMarginBottom));
                 }
 
                 if (PatchMarginBottom > 0)
@@ -286,7 +238,7 @@ namespace Robust.Client.Graphics
                     DrawStretchingArea(handle, rightBox,
                         new UIBox2(Texture.Width - PatchMarginRight, PatchMarginTop,
                             Texture.Width,
-                            Texture.Height - PatchMarginBottom), uiScale);
+                            Texture.Height - PatchMarginBottom));
                 }
 
                 if (PatchMarginBottom > 0)
@@ -308,7 +260,7 @@ namespace Robust.Client.Graphics
                     new UIBox2(scaledMargin.Left, 0, box.Width - scaledMargin.Right, scaledMargin.Top)
                         .Translated(box.TopLeft);
                 DrawStretchingArea(handle, topBox,
-                    new UIBox2(PatchMarginLeft, 0, Texture.Width - PatchMarginRight, PatchMarginTop), uiScale);
+                    new UIBox2(PatchMarginLeft, 0, Texture.Width - PatchMarginRight, PatchMarginTop));
             }
 
             if (PatchMarginBottom > 0)
@@ -322,7 +274,7 @@ namespace Robust.Client.Graphics
                 DrawStretchingArea(handle, bottomBox,
                     new UIBox2(PatchMarginLeft, Texture.Height - PatchMarginBottom,
                         Texture.Width - PatchMarginRight,
-                        Texture.Height), uiScale);
+                        Texture.Height));
             }
 
             // Draw center
@@ -331,11 +283,11 @@ namespace Robust.Client.Graphics
                     box.Height - scaledMargin.Bottom).Translated(box.TopLeft);
 
                 DrawStretchingArea(handle, centerBox, new UIBox2(PatchMarginLeft, PatchMarginTop, Texture.Width - PatchMarginRight,
-                    Texture.Height - PatchMarginBottom), uiScale);
+                    Texture.Height - PatchMarginBottom));
             }
         }
 
-        private void DrawStretchingArea(DrawingHandleScreen handle, UIBox2 area, UIBox2 texCoords, float uiScale)
+        private void DrawStretchingArea(DrawingHandleScreen handle, UIBox2 area, UIBox2 texCoords)
         {
             if (Mode == StretchMode.Stretch)
             {
@@ -348,8 +300,8 @@ namespace Robust.Client.Graphics
             // TODO: this is an insanely expensive way to do tiling, seriously.
             // This should 100% be implemented in a shader instead.
 
-            var sectionWidth = texCoords.Width * TextureScale.X * uiScale;
-            var sectionHeight = texCoords.Height * TextureScale.Y * uiScale;
+            var sectionWidth = texCoords.Width * TextureScale.X;
+            var sectionHeight = texCoords.Height * TextureScale.Y;
             var invScale = Vector2.One / TextureScale;
 
             for (var x = area.Left; area.Right - x > 0; x += sectionWidth)
@@ -375,13 +327,13 @@ namespace Robust.Client.Graphics
             switch (margin)
             {
                 case Margin.Top:
-                    return PatchMarginTop * TextureScale.Y;
+                    return PatchMarginTop;
                 case Margin.Bottom:
-                    return PatchMarginBottom * TextureScale.Y;
+                    return PatchMarginBottom;
                 case Margin.Right:
-                    return PatchMarginRight * TextureScale.X;
+                    return PatchMarginRight;
                 case Margin.Left:
-                    return PatchMarginLeft * TextureScale.X;
+                    return PatchMarginLeft;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(margin), margin, null);
             }

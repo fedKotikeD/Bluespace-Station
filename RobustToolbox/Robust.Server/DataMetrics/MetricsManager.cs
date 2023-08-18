@@ -18,18 +18,14 @@ internal sealed partial class MetricsManager : IMetricsManager, IDisposable
 {
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
-    [Dependency] private readonly ILogManager _logManager = default!;
 
     private bool _initialized;
 
     private ManagedHttpListenerMetricsServer? _metricServer;
     private IDisposable? _runtimeCollector;
-    private ISawmill _sawmill = default!;
 
     public void Initialize()
     {
-        _sawmill = _logManager.GetSawmill("metrics");
-
         _initialized = true;
 
         ValueChanged(CVars.MetricsEnabled);
@@ -62,7 +58,7 @@ internal sealed partial class MetricsManager : IMetricsManager, IDisposable
             return;
         }
 
-        _sawmill.Info("Shutting down metrics.");
+        Logger.InfoS("metrics", "Shutting down metrics.");
         await _metricServer.StopAsync();
         _metricServer = null;
         _runtimeCollector?.Dispose();
@@ -96,14 +92,14 @@ internal sealed partial class MetricsManager : IMetricsManager, IDisposable
         var host = _cfg.GetCVar(CVars.MetricsHost);
         var port = _cfg.GetCVar(CVars.MetricsPort);
 
-        _sawmill.Info("Prometheus metrics enabled, host: {1} port: {0}", port, host);
+        Logger.InfoS("metrics", "Prometheus metrics enabled, host: {1} port: {0}", port, host);
         var sawmill = Logger.GetSawmill("metrics.server");
         _metricServer = new ManagedHttpListenerMetricsServer(sawmill, host, port);
         _metricServer.Start();
 
         if (_cfg.GetCVar(CVars.MetricsRuntime))
         {
-            _sawmill.Debug("Enabling runtime metrics");
+            Logger.DebugS("metrics", "Enabling runtime metrics");
             _runtimeCollector = BuildRuntimeStats().StartCollecting();
         }
     }

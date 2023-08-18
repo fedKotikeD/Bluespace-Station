@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.RichText;
 using Robust.Shared.IoC;
@@ -47,7 +46,7 @@ namespace Robust.Client.UserInterface.Controls
             var font = _getFont();
             _entry.Update(font, availableSize.X * UIScale, UIScale);
 
-            return new Vector2(_entry.Width / UIScale, _entry.Height / UIScale);
+            return (_entry.Width / UIScale, _entry.Height / UIScale);
         }
 
         protected internal override void Draw(DrawingHandleScreen handle)

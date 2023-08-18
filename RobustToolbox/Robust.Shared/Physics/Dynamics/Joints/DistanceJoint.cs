@@ -25,7 +25,6 @@
  */
 
 using System;
-using System.Numerics;
 using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -319,7 +318,7 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
         _u = cB + _rB - cA - _rA;
 
         // Handle singularity.
-        _currentLength = _u.Length();
+        _currentLength = _u.Length;
         if (_currentLength > PhysicsConstants.LinearSlop)
         {
             _u *= 1.0f / _currentLength;
@@ -333,8 +332,8 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
             _upperImpulse = 0.0f;
         }
 
-        float crAu = Vector2Helpers.Cross(_rA, _u);
-        float crBu = Vector2Helpers.Cross(_rB, _u);
+        float crAu = Vector2.Cross(_rA, _u);
+        float crBu = Vector2.Cross(_rB, _u);
         float invMass = _invMassA + _invIA * crAu * crAu + _invMassB + _invIB * crBu * crBu;
         _mass = invMass != 0.0f ? 1.0f / invMass : 0.0f;
 
@@ -375,9 +374,9 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
 
             var P = _u * (_impulse + _lowerImpulse - _upperImpulse);
             vA -= P * _invMassA;
-            wA -= _invIA * Vector2Helpers.Cross(_rA, P);
+            wA -= _invIA * Vector2.Cross(_rA, P);
             vB += P * _invMassB;
-            wB += _invIB * Vector2Helpers.Cross(_rB, P);
+            wB += _invIB * Vector2.Cross(_rB, P);
         }
         else
         {
@@ -407,8 +406,8 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
             if (Stiffness > 0.0f)
             {
                 // Cdot = dot(u, v + cross(w, r))
-                var vpA = vA + Vector2Helpers.Cross(wA, _rA);
-                var vpB = vB + Vector2Helpers.Cross(wB, _rB);
+                var vpA = vA + Vector2.Cross(wA, _rA);
+                var vpB = vB + Vector2.Cross(wB, _rB);
                 float Cdot = Vector2.Dot(_u, vpB - vpA);
 
                 float impulse = -_softMass * (Cdot + _bias + _gamma * _impulse);
@@ -417,9 +416,9 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
                 // TODO: Ability to make this one-sided.
                 var P = _u * impulse;
                 vA -= P * _invMassA;
-                wA -= _invIA * Vector2Helpers.Cross(_rA, P);
+                wA -= _invIA * Vector2.Cross(_rA, P);
                 vB += P * _invMassB;
-                wB += _invIB * Vector2Helpers.Cross(_rB, P);
+                wB += _invIB * Vector2.Cross(_rB, P);
             }
 
             // lower
@@ -427,8 +426,8 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
                 float C = _currentLength - _minLength;
                 float bias = MathF.Max(0.0f, C) * data.InvDt;
 
-                var vpA = vA + Vector2Helpers.Cross(wA, _rA);
-                var vpB = vB + Vector2Helpers.Cross(wB, _rB);
+                var vpA = vA + Vector2.Cross(wA, _rA);
+                var vpB = vB + Vector2.Cross(wB, _rB);
                 float Cdot = Vector2.Dot(_u, vpB - vpA);
 
                 float impulse = -_mass * (Cdot + bias);
@@ -438,9 +437,9 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
                 var P = _u * impulse;
 
                 vA -= P * _invMassA;
-                wA -= _invIA * Vector2Helpers.Cross(_rA, P);
+                wA -= _invIA * Vector2.Cross(_rA, P);
                 vB += P * _invMassB;
-                wB += _invIB * Vector2Helpers.Cross(_rB, P);
+                wB += _invIB * Vector2.Cross(_rB, P);
             }
 
             // upper
@@ -448,8 +447,8 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
                 float C = _maxLength - _currentLength;
                 float bias = MathF.Max(0.0f, C) * data.InvDt;
 
-                var vpA = vA + Vector2Helpers.Cross(wA, _rA);
-                var vpB = vB + Vector2Helpers.Cross(wB, _rB);
+                var vpA = vA + Vector2.Cross(wA, _rA);
+                var vpB = vB + Vector2.Cross(wB, _rB);
                 float Cdot = Vector2.Dot(_u, vpA - vpB);
 
                 float impulse = -_mass * (Cdot + bias);
@@ -459,9 +458,9 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
                 var P = _u * -impulse;
 
                 vA -= P * _invMassA;
-                wA -= _invIA * Vector2Helpers.Cross(_rA, P);
+                wA -= _invIA * Vector2.Cross(_rA, P);
                 vB += P * _invMassB;
-                wB += _invIB * Vector2Helpers.Cross(_rB, P);
+                wB += _invIB * Vector2.Cross(_rB, P);
             }
         }
         else
@@ -469,8 +468,8 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
             // Equal limits
 
             // Cdot = dot(u, v + cross(w, r))
-            var vpA = vA + Vector2Helpers.Cross(wA, _rA);
-            var vpB = vB + Vector2Helpers.Cross(wB, _rB);
+            var vpA = vA + Vector2.Cross(wA, _rA);
+            var vpB = vB + Vector2.Cross(wB, _rB);
             float Cdot = Vector2.Dot(_u, vpB - vpA);
 
             float impulse = -_mass * Cdot;
@@ -478,9 +477,9 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
 
             var P = _u * impulse;
             vA -= P * _invMassA;
-            wA -= _invIA * Vector2Helpers.Cross(_rA, P);
+            wA -= _invIA * Vector2.Cross(_rA, P);
             vB += P * _invMassB;
-            wB += _invIB * Vector2Helpers.Cross(_rB, P);
+            wB += _invIB * Vector2.Cross(_rB, P);
         }
 
         linearVelocities[offset + _indexA] = vA;
@@ -506,8 +505,8 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
         var rB = Transform.Mul(qB, LocalAnchorB - _localCenterB);
         var u = cB + rB - cA - rA;
 
-        float length = u.Length();
-        u = u.Normalized();
+        float length = u.Length;
+        u = u.Normalized;
         float C;
         if (MathHelper.CloseTo(_minLength, _maxLength))
         {
@@ -530,9 +529,9 @@ public sealed class DistanceJoint : Joint, IEquatable<DistanceJoint>
         var P = u * impulse;
 
         cA -= P * _invMassA;
-        aA -= _invIA * Vector2Helpers.Cross(rA, P);
+        aA -= _invIA * Vector2.Cross(rA, P);
         cB += P * _invMassB;
-        aB += _invIB * Vector2Helpers.Cross(rB, P);
+        aB += _invIB * Vector2.Cross(rB, P);
 
         positions[_indexA] = cA;
         angles[_indexA] = aA;

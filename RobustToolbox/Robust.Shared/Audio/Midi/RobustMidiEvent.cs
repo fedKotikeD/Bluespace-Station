@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Robust.Shared.Serialization;
 
 namespace Robust.Shared.Audio.Midi
@@ -10,9 +9,6 @@ namespace Robust.Shared.Audio.Midi
     [Serializable, NetSerializable]
     public readonly struct RobustMidiEvent
     {
-        public const int MaxChannels = 16;
-        public const int PercussionChannel = 9;
-
         #region Data
 
         /// <summary>
@@ -50,17 +46,6 @@ namespace Robust.Shared.Audio.Midi
             Status = status;
             Data1 = data1;
             Data2 = data2;
-            Tick = tick;
-        }
-
-        /// <summary>
-        ///     Clones another event but with a different tick value.
-        /// </summary>
-        public RobustMidiEvent(RobustMidiEvent ev, uint tick)
-        {
-            Status = ev.Status;
-            Data1 = ev.Data1;
-            Data2 = ev.Data2;
             Tick = tick;
         }
 

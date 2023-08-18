@@ -77,7 +77,7 @@ internal sealed class MapChunkSerializer : ITypeSerializer<MapChunk, MappingData
                 id = tileDefinitionManager[defName].TileId;
 
                 var tile = new Tile(id, flags, variant);
-                chunk.TrySetTile(x, y, tile, out _, out _);
+                chunk.SetTile(x, y, tile);
             }
         }
 
@@ -143,7 +143,7 @@ internal sealed class MapChunkSerializer : ITypeSerializer<MapChunk, MappingData
         {
             for (ushort x = 0; x < chunk.ChunkSize; x++)
             {
-                chunk.TrySetTile(x, y, source.GetTile(x, y), out _, out _);
+                chunk.SetTile(x, y, source.GetTile(x, y));
             }
         }
 

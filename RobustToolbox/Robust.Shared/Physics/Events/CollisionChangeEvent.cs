@@ -9,15 +9,12 @@ namespace Robust.Shared.Physics.Events
     [ByRefEvent]
     public readonly struct CollisionChangeEvent
     {
-        public readonly EntityUid BodyUid;
-
         public readonly PhysicsComponent Body;
 
         public readonly bool CanCollide;
 
-        public CollisionChangeEvent(EntityUid bodyUid, PhysicsComponent body, bool canCollide)
+        public CollisionChangeEvent(PhysicsComponent body, bool canCollide)
         {
-            BodyUid = bodyUid;
             Body = body;
             CanCollide = canCollide;
         }

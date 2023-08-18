@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Numerics;
 using Lidgren.Network;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;

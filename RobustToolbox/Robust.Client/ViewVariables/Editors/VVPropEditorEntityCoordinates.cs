@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Numerics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.GameObjects;
@@ -69,11 +68,11 @@ namespace Robust.Client.ViewVariables.Editors
 
                 if (!mapManager.TryGetGrid(gridVal, out var grid))
                 {
-                    ValueChanged(new EntityCoordinates(EntityUid.Invalid, new(xVal, yVal)));
+                    ValueChanged(new EntityCoordinates(EntityUid.Invalid, (xVal, yVal)));
                     return;
                 }
 
-                ValueChanged(new EntityCoordinates(grid.Owner, new(xVal, yVal)));
+                ValueChanged(new EntityCoordinates(grid.Owner, (xVal, yVal)));
             }
 
             if (!ReadOnly)

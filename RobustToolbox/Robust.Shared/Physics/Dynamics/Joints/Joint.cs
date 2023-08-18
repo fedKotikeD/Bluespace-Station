@@ -22,7 +22,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Numerics;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
@@ -179,7 +178,7 @@ public abstract class Joint : IEquatable<Joint>
 
     [DataField("breakpoint")]
     private float _breakpoint = float.MaxValue;
-    private double _breakpointSquared = double.MaxValue;
+    private double _breakpointSquared = Double.MaxValue;
 
     // TODO: Later nerd
     // serializer.DataField(this, x => x.BodyA, "bodyA", EntityUid.Invalid);
@@ -191,10 +190,10 @@ public abstract class Joint : IEquatable<Joint>
         IoCManager.Resolve(ref entMan);
 
         if (entMan.TryGetComponent(BodyAUid, out PhysicsComponent? physics))
-            entMan.Dirty(BodyAUid, physics);
+            entMan.Dirty(physics);
 
         if (entMan.TryGetComponent(BodyBUid, out physics))
-            entMan.Dirty(BodyBUid, physics);
+            entMan.Dirty(physics);
     }
 
     protected Joint() {}
@@ -274,7 +273,7 @@ public abstract class Joint : IEquatable<Joint>
         if (!Enabled)
             return 0.0f;
 
-        var jointErrorSquared = GetReactionForce(invDt).LengthSquared();
+        var jointErrorSquared = GetReactionForce(invDt).LengthSquared;
 
         if (MathF.Abs(jointErrorSquared) <= _breakpointSquared)
             return 0.0f;

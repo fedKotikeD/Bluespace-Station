@@ -1,6 +1,5 @@
 using System;
 using Robust.Shared.Maths;
-using Robust.Shared.Physics.Components;
 
 namespace Robust.Shared.Physics.Collision.Shapes
 {

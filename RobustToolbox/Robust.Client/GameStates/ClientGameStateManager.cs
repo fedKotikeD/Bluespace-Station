@@ -532,6 +532,7 @@ namespace Robust.Client.GameStates
 
                     var handleState = new ComponentHandleState(compState, null);
                     _entities.EventBus.RaiseComponentEvent(comp, ref handleState);
+                    comp.HandleComponentState(compState, null);
                     comp.LastModifiedTick = _timing.LastRealTick;
                 }
 
@@ -560,6 +561,7 @@ namespace Robust.Client.GameStates
 
                         var stateEv = new ComponentHandleState(state, null);
                         _entities.EventBus.RaiseComponentEvent(comp, ref stateEv);
+                        comp.HandleComponentState(state, null);
                         comp.ClearCreationTick(); // don't undo the re-adding.
                         comp.LastModifiedTick = _timing.LastRealTick;
                     }
@@ -745,6 +747,10 @@ namespace Robust.Client.GameStates
                 }
             }
 
+            var contQuery = _entities.GetEntityQuery<ContainerManagerComponent>();
+            var physicsQuery = _entities.GetEntityQuery<PhysicsComponent>();
+            var fixturesQuery = _entities.GetEntityQuery<FixturesComponent>();
+            var broadQuery = _entities.GetEntityQuery<BroadphaseComponent>();
             var queuedBroadphaseUpdates = new List<(EntityUid, TransformComponent)>(enteringPvs);
 
             // Apply entity states.
@@ -777,7 +783,7 @@ namespace Robust.Client.GameStates
                 {
                     foreach (var (uid, xform) in queuedBroadphaseUpdates)
                     {
-                        lookupSys.FindAndAddToEntityTree(uid, true, xform);
+                        lookupSys.FindAndAddToEntityTree(uid, xform, xforms, metas, contQuery, physicsQuery, fixturesQuery, broadQuery);
                     }
                 }
                 catch (Exception e)
@@ -863,13 +869,13 @@ namespace Robust.Client.GameStates
 
                 // This entity is going to get deleted, but maybe some if its children won't be, so lets detach them to
                 // null. First we will detach the parent in order to reduce the number of broadphase/lookup updates.
-                xformSys.DetachParentToNull(ent, xform);
+                xformSys.DetachParentToNull(ent, xform, xforms, metas);
 
                 // Then detach all children.
                 var childEnumerator = xform.ChildEnumerator;
                 while (childEnumerator.MoveNext(out var child))
                 {
-                    xformSys.DetachParentToNull(child.Value, xforms.GetComponent(child.Value), xform);
+                    xformSys.DetachParentToNull(child.Value, xforms.GetComponent(child.Value), xforms, metas, xform);
 
                     if (deleteClientChildren
                         && !deleteClientEntities // don't add duplicates
@@ -911,13 +917,13 @@ namespace Robust.Client.GameStates
                     continue; // Already deleted? or never sent to us?
 
                 // First, a single recursive map change
-                xformSys.DetachParentToNull(id, xform);
+                xformSys.DetachParentToNull(id, xform, xforms, metas);
 
                 // Then detach all children.
                 var childEnumerator = xform.ChildEnumerator;
                 while (childEnumerator.MoveNext(out var child))
                 {
-                    xformSys.DetachParentToNull(child.Value, xforms.GetComponent(child.Value), xform);
+                    xformSys.DetachParentToNull(child.Value, xforms.GetComponent(child.Value), xforms, metas, xform);
                 }
 
                 // Finally, delete the entity.
@@ -996,7 +1002,7 @@ namespace Robust.Client.GameStates
                 var xform = xforms.GetComponent(ent);
                 if (xform.ParentUid.IsValid())
                 {
-                    lookupSys.RemoveFromEntityTree(ent, xform);
+                    lookupSys.RemoveFromEntityTree(ent, xform, xforms);
                     xform.Broadphase = BroadphaseData.Invalid;
 
                     // In some cursed scenarios an entity inside of a container can leave PVS without the container itself leaving PVS.
@@ -1011,7 +1017,7 @@ namespace Robust.Client.GameStates
                     }
 
                     meta._flags |= MetaDataFlags.Detached;
-                    xformSys.DetachParentToNull(ent, xform);
+                    xformSys.DetachParentToNull(ent, xform, xforms, metas);
                     DebugTools.Assert((meta.Flags & MetaDataFlags.InContainer) == 0);
 
                     if (container != null)
@@ -1166,6 +1172,7 @@ namespace Robust.Client.GameStates
                 {
                     var handleState = new ComponentHandleState(cur, next);
                     bus.RaiseComponentEvent(comp, ref handleState);
+                    comp.HandleComponentState(cur, next);
                 }
                 catch (Exception e)
                 {
@@ -1216,7 +1223,7 @@ namespace Robust.Client.GameStates
                 return;
 
             using var _ = _timing.StartStateApplicationArea();
-            ResetEnt(uid, meta, false);
+            ResetEnt(meta, false);
         }
 
         /// <summary>
@@ -1294,23 +1301,23 @@ namespace Robust.Client.GameStates
         {
             using var _ = _timing.StartStateApplicationArea();
 
-            var query = _entityManager.AllEntityQueryEnumerator<MetaDataComponent>();
-
-            while (query.MoveNext(out var uid, out var meta))
+            foreach (var meta in _entities.EntityQuery<MetaDataComponent>(true))
             {
-                ResetEnt(uid, meta);
+                ResetEnt(meta);
             }
         }
 
         /// <summary>
         ///     Reset a given entity to the most recent server state.
         /// </summary>
-        private void ResetEnt(EntityUid uid, MetaDataComponent meta, bool skipDetached = true)
+        private void ResetEnt(MetaDataComponent meta, bool skipDetached = true)
         {
             if (skipDetached && (meta.Flags & MetaDataFlags.Detached) != 0)
                 return;
 
             meta.Flags &= ~MetaDataFlags.Detached;
+
+            var uid = meta.Owner;
 
             if (!_processor.TryGetLastServerStates(uid, out var lastState))
                 return;
@@ -1327,6 +1334,7 @@ namespace Robust.Client.GameStates
 
                 var handleState = new ComponentHandleState(state, null);
                 _entityManager.EventBus.RaiseComponentEvent(comp, ref handleState);
+                comp.HandleComponentState(state, null);
             }
 
             // ensure we don't have any extra components

@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Robust.Shared.Configuration;
 using Robust.Shared.IoC;
-using Robust.Shared.Localization;
 using Robust.Shared.Log;
 using Robust.Shared.Utility;
 
@@ -18,7 +17,6 @@ namespace Robust.Shared.ContentPack
     internal partial class ResourceManager : IResourceManagerInternal
     {
         [Dependency] private readonly IConfigurationManager _config = default!;
-        [Dependency] private readonly ILogManager _logManager = default!;
 
         private (ResPath prefix, IContentRoot root)[] _contentRoots =
             new (ResPath prefix, IContentRoot root)[0];
@@ -34,16 +32,12 @@ namespace Robust.Shared.ContentPack
         private static readonly Regex BadPathCharacterRegex =
             new("[<>:\"|?*\0\\x01-\\x1f]", RegexOptions.IgnoreCase);
 
-        private ISawmill _sawmill = default!;
-
         /// <inheritdoc />
         public IWritableDirProvider UserData { get; private set; } = default!;
 
         /// <inheritdoc />
         public void Initialize(string? userData)
         {
-            _sawmill = _logManager.GetSawmill("res");
-
             if (userData != null)
             {
                 UserData = new WritableDirProvider(Directory.CreateDirectory(userData));
@@ -66,7 +60,7 @@ namespace Robust.Shared.ContentPack
             // no pack in config
             if (string.IsNullOrWhiteSpace(zipPath))
             {
-                _sawmill.Warning("No default ContentPack to load in configuration.");
+                Logger.WarningS("res", "No default ContentPack to load in configuration.");
                 return;
             }
 
@@ -90,7 +84,7 @@ namespace Robust.Shared.ContentPack
 
             //create new PackLoader
 
-            var loader = new PackLoader(packInfo, _sawmill);
+            var loader = new PackLoader(packInfo);
             AddRoot(prefix.Value, loader);
         }
 
@@ -98,7 +92,7 @@ namespace Robust.Shared.ContentPack
         {
             prefix = SanitizePrefix(prefix);
 
-            var loader = new PackLoader(zipStream, _sawmill);
+            var loader = new PackLoader(zipStream);
             AddRoot(prefix.Value, loader);
         }
 
@@ -146,7 +140,7 @@ namespace Robust.Shared.ContentPack
                 throw new DirectoryNotFoundException("Specified directory does not exist: " + pathInfo.FullName);
             }
 
-            var loader = new DirLoader(pathInfo, _logManager.GetSawmill("res"), _config.GetCVar(CVars.ResCheckPathCasing));
+            var loader = new DirLoader(pathInfo, Logger.GetSawmill("res"), _config.GetCVar(CVars.ResCheckPathCasing));
             AddRoot(prefix.Value, loader);
         }
 
@@ -191,14 +185,6 @@ namespace Robust.Shared.ContentPack
                 throw new FileNotFoundException($"Path '{path}' contains invalid characters/filenames.");
             }
 #endif
-
-            if (path.Value.CanonPath.EndsWith(ResPath.Separator))
-            {
-                // This is a folder, not a file.
-                fileStream = null;
-                return false;
-            }
-
             foreach (var (prefix, root) in _contentRoots)
             {
                 if (!path.Value.TryRelativeTo(prefix, out var relative))
