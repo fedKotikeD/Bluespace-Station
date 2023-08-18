@@ -29,3 +29,6 @@
 "NOT TO MERGE":
 - '**/SECURITY.md'
 - '**/LICENSE.txt'
+
+"File: passport":
+- '**/passports.**'
