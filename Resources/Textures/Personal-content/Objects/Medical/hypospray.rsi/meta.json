@@ -7,14 +7,6 @@
     "y": 32
   },
   "states": [
-    {
-      "name": "borghypo"
-    },
-    {
-      "name": "borghypo_s"
-    },
-    {
-      "name": "combat_hypo"
     },
     {
       "name": "hypo"
