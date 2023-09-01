@@ -74,7 +74,7 @@
   name: combat knife
   parent: BaseKnife
   id: CombatKnife
-  description: A deadly knife intended for melee confrontations.
+  description: A deadly knife intended for melee confrontations. Can be used as a crowbar.
   components:
   - type: Tag
     tags:
@@ -94,6 +94,12 @@
     sprite: Objects/Weapons/Melee/combat_knife.rsi
   - type: DisarmMalus
     malus: 0.225
+  - type: Tool
+    qualities:
+      - Prying
+    useSound:
+      path: /Audio/Items/crowbar.ogg
+  - type: TilePrying
 
 - type: entity
   name: survival knife
