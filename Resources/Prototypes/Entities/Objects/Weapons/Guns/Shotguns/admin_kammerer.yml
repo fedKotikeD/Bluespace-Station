@@ -1,0 +1,45 @@
+- type: entity
+  name: Kammerer
+  parent: WeaponShotgunKammerer
+  id: WeaponShotgunKammererAdmin
+  description: To be continued...
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Shotguns/pump.rsi
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Shotguns/pump.rsi
+  - type: BallisticAmmoProvider
+    capacity: 666
+    whitelist:
+      tags:
+      - ShellShotgunAdmin
+    proto: ShellShotgunAdmin
+  - type: Gun # Corvax-Guns
+    soundGunshot:
+      path: /Audio/Corvax/Weapons/Guns/Gunshots/shotgun_alt.ogg
+
+- type: entity
+  id: ShellShotgunAdmin
+  name: admin shell (.50)
+  parent: BaseShellShotgun
+  components:
+  - type: Sprite
+    layers:
+      - state: base
+        map: [ "enum.AmmoVisualLayers.Base" ]
+  - type: CartridgeAmmo
+    proto: PelletShotgunAdmin
+
+- type: entity
+  id: PelletShotgunAdmin
+  name: admin pellet (.50)
+  noSpawn: true
+  parent: BaseBullet
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    state: buckshot
+  - type: Projectile
+    damage:
+      types:
+        Cellular: 200
