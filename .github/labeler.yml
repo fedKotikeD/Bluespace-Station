@@ -1,34 +1,15 @@
-"File: Video":
-- '**/*.mp4'
-- '**/*.mov'
+﻿"Changes: Sprites":
+- '**/*.rsi/*.png'
 
-"File: Audio":
-- '**/*.mp3'
-- '**/*.ogg'
-- '**/Resources/Audio/**'
+"Changes: Map":
+- 'Resources/Maps/*.yml'
+- 'Resources/Prototypes/Maps/*.yml'
 
-"File: Text":
-- '**/*.txt'
+"Changes: UI":
+- '**/*.xaml*'
 
-"File: Textures":
-- '**/Resources/Textures/**'
-- '**/meta.json'
+"Changes: Localization":
+- 'Resources/Locale/**/*.ftl'
 
-"File: github":
-- '.github/**'
-
-"File: Role":
-- '**/Resources/Prototypes/Roles/**'
-
-"File: Localization":
-- '**/*.ftl'
-
-"File: Entity":
-- '**/Resources/Prototypes/Entities/**'
-
-"NOT TO MERGE":
-- '**/SECURITY.md'
-- '**/LICENSE.txt'
-
-"File: passport":
-- '**/passports.*'
+"No C#":
+- all: ["!**/*.cs"]
