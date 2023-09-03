@@ -387,3 +387,29 @@
         - state: book6
     - type: Paper
       content: book-text-inspiration
+
+ - type: entity
+  parent: BookBase
+  id: TraitorsGuide
+  name: Traitor's Guide, operator edition
+  description: A guide for syndicate agents. Everything a real asshole needs to know here.
+  components:
+    - type: Sprite
+      sprite: Objects/Misc/books.rsi
+      layers:
+        - state: traitors_guide
+    - type: Paper
+      content: traitorsguide
+      
+ - type: entity
+  parent: BookBase
+  id: OperativeGuide
+  name: Nuclear Operative Manual
+  description: Manual for the final destruction of the station by nuclear strike. Before reading, drink a jar of Nuki Robust for a better perception.
+  components:
+    - type: Sprite
+      sprite: Objects/Misc/books.rsi
+      layers:
+        - state: traitors_guide
+    - type: Paper
+      content: operativeguide
