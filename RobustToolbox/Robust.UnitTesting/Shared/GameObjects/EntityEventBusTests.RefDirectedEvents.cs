@@ -4,7 +4,6 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Reflection;
-using Robust.Shared.Utility;
 using Robust.UnitTesting.Server;
 
 namespace Robust.UnitTesting.Shared.GameObjects
@@ -79,7 +78,7 @@ namespace Robust.UnitTesting.Shared.GameObjects
                 SubscribeLocalEvent<DummyComponent, TestStructEvent>(MyRefHandler);
 #pragma warning disable RA0013
                 SubscribeLocalEvent<DummyTwoComponent, TestStructEvent>(MyValueHandler);
-#pragma warning enable RA0013
+#pragma warning restore RA0013
             }
 
             private void MyValueHandler(EntityUid uid, DummyTwoComponent component, TestStructEvent args) { }
@@ -177,7 +176,7 @@ namespace Robust.UnitTesting.Shared.GameObjects
             }
         }
 
-        private sealed class DummyTwoComponent : Component
+        private sealed partial class DummyTwoComponent : Component
         {
         }
 

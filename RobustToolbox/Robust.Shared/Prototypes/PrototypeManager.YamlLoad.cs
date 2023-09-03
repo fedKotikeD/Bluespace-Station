@@ -7,10 +7,8 @@ using Robust.Shared.Random;
 using Robust.Shared.Serialization.Markdown;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Serialization.Markdown.Sequence;
-using Robust.Shared.Serialization.Markdown.Validation;
 using Robust.Shared.Serialization.Markdown.Value;
 using Robust.Shared.Utility;
-using YamlDotNet.RepresentationModel;
 
 namespace Robust.Shared.Prototypes;
 
@@ -102,7 +100,7 @@ public partial class PrototypeManager
                         throw;
                     }
 
-                    _sawmill.Error($"Error reloading prototypes in file {file}:\n{e}");
+                    Sawmill.Error($"Error reloading prototypes in file {file}:\n{e}");
                     return null;
                 }
 
@@ -140,7 +138,7 @@ public partial class PrototypeManager
                 }
                 catch (Exception e)
                 {
-                    _sawmill.Error($"Exception whilst loading prototypes from {file}#{i}:\n{e}");
+                    Sawmill.Error($"Exception whilst loading prototypes from {file}#{i}:\n{e}");
                 }
 
                 i += 1;
@@ -148,18 +146,18 @@ public partial class PrototypeManager
         }
         catch (Exception e)
         {
-            _sawmill.Error("YamlException whilst loading prototypes from {0}: {1}", file, e.Message);
+            Sawmill.Error("YamlException whilst loading prototypes from {0}: {1}", file, e.Message);
         }
     }
 
     private ExtractedMappingData? ExtractMapping(MappingDataNode dataNode)
     {
         var type = dataNode.Get<ValueDataNode>("type").Value;
+        if (_ignoredPrototypeTypes.Contains(type))
+            return null;
+
         if (!_kindNames.TryGetValue(type, out var kind))
         {
-            if (_ignoredPrototypeTypes.Contains(type))
-                return null;
-
             throw new PrototypeLoadException($"Unknown prototype type: '{type}'");
         }
 

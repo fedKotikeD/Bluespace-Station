@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
@@ -10,6 +11,8 @@ using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Utility;
 using Robust.Shared.ViewVariables;
 using YamlDotNet.RepresentationModel;
+using Vector3 = Robust.Shared.Maths.Vector3;
+using Vector4 = Robust.Shared.Maths.Vector4;
 
 namespace Robust.Client.Graphics
 {
@@ -17,8 +20,8 @@ namespace Robust.Client.Graphics
     public sealed class ShaderPrototype : IPrototype, ISerializationHooks
     {
         [ViewVariables]
-        [IdDataFieldAttribute]
-        public string ID { get; } = default!;
+        [IdDataField]
+        public string ID { get; private set; } = default!;
 
         [ViewVariables] private ShaderKind Kind;
         [ViewVariables] private Dictionary<string, object>? _params;
@@ -62,12 +65,12 @@ namespace Robust.Client.Graphics
 
                 case ShaderKind.Canvas:
 
-                    var hasLight = rawMode != "unshaded";
+                    var hasLight = _rawMode != "unshaded";
                     ShaderBlendMode? blend = null;
-                    if (rawBlendMode != null)
+                    if (_rawBlendMode != null)
                     {
-                        if (!Enum.TryParse<ShaderBlendMode>(rawBlendMode.ToUpper(), out var parsed))
-                            Logger.Error($"invalid mode: {rawBlendMode}");
+                        if (!Enum.TryParse<ShaderBlendMode>(_rawBlendMode.ToUpper(), out var parsed))
+                            Logger.Error($"invalid mode: {_rawBlendMode}");
                         else
                             blend = parsed;
                     }
@@ -91,11 +94,20 @@ namespace Robust.Client.Graphics
             return Instance().Duplicate();
         }
 
-        [DataField("kind", readOnly: true, required: true)] private string _rawKind = default!;
-        [DataField("path", readOnly: true)] private ResPath path;
-        [DataField("params", readOnly: true)] private Dictionary<string, string>? paramMapping;
-        [DataField("light_mode", readOnly: true)] private string? rawMode;
-        [DataField("blend_mode", readOnly: true)] private string? rawBlendMode;
+        [DataField("kind", required: true)]
+        private string _rawKind = default!;
+
+        [DataField("path")]
+        private ResPath? _path;
+
+        [DataField("params")]
+        private Dictionary<string, string>? _paramMapping;
+
+        [DataField("light_mode")]
+        private string? _rawMode;
+
+        [DataField("blend_mode")]
+        private string? _rawBlendMode;
 
         void ISerializationHooks.AfterDeserialization()
         {
@@ -103,18 +115,22 @@ namespace Robust.Client.Graphics
             {
                 case "source":
                     Kind = ShaderKind.Source;
-                    if (path == null) throw new InvalidOperationException();
-                    _source = IoCManager.Resolve<IResourceCache>().GetResource<ShaderSourceResource>(path);
 
-                    if (paramMapping != null)
+                    // TODO use a custom type serializer.
+                    if (_path == null)
+                        throw new InvalidOperationException("Source shaders must specify a source file.");
+
+                    _source = IoCManager.Resolve<IResourceCache>().GetResource<ShaderSourceResource>(_path.Value);
+
+                    if (_paramMapping != null)
                     {
                         _params = new Dictionary<string, object>();
-                        foreach (var item in paramMapping!)
+                        foreach (var item in _paramMapping!)
                         {
                             var name = item.Key;
                             if (!_source.ParsedShader.Uniforms.TryGetValue(name, out var uniformDefinition))
                             {
-                                Logger.ErrorS("shader", "Shader param '{0}' does not exist on shader '{1}'", name, path);
+                                Logger.ErrorS("shader", "Shader param '{0}' does not exist on shader '{1}'", name, _path);
                                 continue;
                             }
 

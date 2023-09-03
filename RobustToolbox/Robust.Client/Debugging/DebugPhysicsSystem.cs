@@ -47,6 +47,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.Player;
@@ -217,7 +218,7 @@ namespace Robust.Client.Debugging
             _debugPhysicsSystem = system;
             _lookup = lookup;
             _physicsSystem = physicsSystem;
-            _font = new VectorFont(cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 10);
+            _font = new VectorFont(cache.GetResource<FontResource>("/EngineFonts/NotoSans/NotoSans-Regular.ttf"), 10);
         }
 
         private void DrawWorld(DrawingHandleWorld worldHandle, OverlayDrawArgs args)
@@ -370,7 +371,7 @@ namespace Robust.Client.Debugging
             if ((_debugPhysicsSystem.Flags & PhysicsDebugFlags.ShapeInfo) != 0x0)
             {
                 var hoverBodies = new List<PhysicsComponent>();
-                var bounds = Box2.UnitCentered.Translated(_eyeManager.ScreenToMap(mousePos.Position).Position);
+                var bounds = Box2.UnitCentered.Translated(_eyeManager.PixelToMap(mousePos.Position).Position);
 
                 foreach (var physBody in _physicsSystem.GetCollidingEntities(mapId, bounds))
                 {
@@ -403,7 +404,7 @@ namespace Robust.Client.Debugging
 
             if ((_debugPhysicsSystem.Flags & PhysicsDebugFlags.Distance) != 0x0)
             {
-                var mapPos = _eyeManager.ScreenToMap(mousePos);
+                var mapPos = _eyeManager.PixelToMap(mousePos);
 
                 if (mapPos.MapId != args.MapId)
                     return;

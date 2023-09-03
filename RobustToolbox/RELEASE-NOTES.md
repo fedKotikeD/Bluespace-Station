@@ -54,6 +54,648 @@ END TEMPLATE-->
 *None yet*
 
 
+## 154.0.0
+
+### Breaking changes
+
+* Change ignored prototypes to skip prototypes even if the prototype type is found.
+* Moved IPlayerData interface to shared.
+
+### New features
+
+* Added a multiline text submit keybind function.
+
+### Bugfixes
+
+* Fixed multiline edits scrollbar margins.
+
+### Internal
+
+* Added more event sources.
+* Made Toolshed types oneOff IoC injections.
+
+
+## 153.0.0
+
+### Breaking changes
+
+* Removed SharedUserInterfaceComponent component references.
+* Removed EntityDeletedMessage.
+
+### Other
+
+* Performance improvements for replay recording.
+* Lidgren has been updated to [v0.2.6](https://github.com/space-wizards/SpaceWizards.Lidgren.Network/blob/v0.2.6/RELEASE-NOTES.md).
+* Make EntityManager.AddComponent with a component instance set the owner if its default, add system proxy for it.
+
+### Internal
+
+* Added some `EventSource` providers for PVS and replay recording: `Robust.Pvs` and `Robust.ReplayRecording`.
+* Added RecursiveMoveBenchmark.
+* Removed redundant prototype resolving.
+* Removed CollisionWake component removal subscription.
+* Removed redundant DebugTools.AssertNotNull(netId) in ClientGameStateManager
+
+
+## 152.0.0
+
+### Breaking changes
+
+* `Robust.Server.GameObjects.BoundUserInterface.InteractionRangeSqrd` is now a get-only property. Modify `InteractionRange` instead if you want to change it on active UIs.
+* Remove IContainerManager.
+* Remove and obsolete ComponentExt methods.
+* Remove EntityStarted and ComponentDeleted C# events.
+* Convert Tile.TypeId to an int. Old maps that were saved with TypeId being an ushort will still be properly deserialized.
+
+### New features
+
+* `BoundUserInterfaceCheckRangeEvent` can be used to implement custom logic for BUI range checks.
+* Add support for long values in CVars.
+* Allow user code to implement own logic for bound user interface range checks.
+
+### Bugfixes
+
+* Fix timers counting down slower than real time and drifting.
+* Add missing System using statement to generated component states.
+* Fix build with USE_SYSTEM_SQLITE.
+* Fix prototype manager not being initialized in robust server simulation tests.
+* Fix not running serialization hooks when copying non-byref data definition fields without a custom type serializer.
+
+### Other
+
+* Remove warning for glibc 2.37.
+* Remove personally-identifiable file paths from client logs.
+
+### Internal
+
+* Disable obsoletion and inherited member hidden warnings in serialization source generated code.
+* Update CI workflows to use setup-dotnet 3.2.0 and checkout 3.6.0.
+* Fix entity spawn tests having instance per test lifecycle with a non static OneTimeTearDown method.
+* Add new PVS test to check that there is no issue with entity states referencing other entities that the client is not yet aware of.
+
+
+## 151.0.0
+
+
+## 150.0.1
+
+### Bugfixes
+
+* Fix some partial datadefs.
+
+
+## 150.0.0
+
+### Breaking changes
+
+* Remove the Id field from Fixtures as the Id is already stored on FixturesComponent.
+
+### New features
+
+* Add AbstractDictionarySerializer for abstract classes.
+* Add many new spawn functions for entities for common operations.
+
+
+## 149.0.1
+
+### Bugfixes
+
+* Fix serialization sharing instances when copying data definitions and not assigning null when the source is null.
+* Fixed resizing a window to be bigger than its set maxsize crashing the client.
+
+
+## 149.0.0
+
+### Breaking changes
+
+* Data definitions must now be partial, their data fields must not be readonly and their data field properties must have a setter.
+
+### Internal
+
+* Copying data definitions through the serialization manager is now faster and consumes less memory.
+
+
+## 148.4.0
+
+### New features
+
+* Add recursive PVS overrides and remove IsOverride()
+
+
+## 148.3.0
+
+### New features
+
+* Happy eyeballs delay can be configured.
+* Added more colors.
+* Allow pre-startup components to be shut down.
+* Added tile texture reload command.
+* Add implementation of Random.Pick(ValueList<T> ..).
+* Add IntegrationInstance fields for common dependencies.
+
+### Bugfixes
+
+* Prevent invalid prototypes from being spawned.
+* Change default value of EntityLastModifiedTick from zero to one.
+* Make DiscordRichPresence icon CVars server-side with replication.
+
+
+## 148.2.0
+
+### New features
+
+* `SpinBox.LineEditControl` exposes the underlying `LineEdit`.
+* Add VV attributes to various fields across overlay and sessions.
+* Add IsPaused to EntityManager to check if an entity is paused.
+
+### Bugfixes
+
+* Fix SetActiveTheme not updating the theme.
+
+
+## 148.1.0
+
+### New features
+
+* Added IgnoreUIChecksComponent that lets entities ignore bound user interface range checks which would normally close the UI.
+* Add support for F16-F24 keybinds.
+
+### Bugfixes
+
+* Fix gamestate bug where PVS is disabled.
+
+### Other
+
+* EntityQuery.HasComponent override for nullable entity uids.
+
+
+## 148.0.0
+
+### Breaking changes
+
+* Several NuGet dependencies are now private assets.
+* Added `IViewportControl.PixelToMap()` and `PixelToMapEvent`. These are variants of the existing screen-to-map functions that should account for distortion effects.
+
+### New features
+
+* Added several new rich-text tags, including italic and bold-italic.
+
+### Bugfixes
+
+* Fixed log messages for unknown components not working due to threaded IoC issues.
+* Replay recordings no longer record invalid prototype uploads.
+
+
+## 147.0.0
+
+### Breaking changes
+
+* Renamed one of the EntitySystem.Dirty() methods to `DirtyEntity()` to avoid confusion with the component-dirtying methods.
+
+### New features
+
+* Added debug commands that return the entity system update order.
+
+### Bugfixes
+
+* Fixed a bug in MetaDataSystem that was causing the metadata component to not be marked as dirty.
+
+
+## 146.0.0
+
+### Breaking changes
+
+* Remove readOnly for DataFields and rename some ShaderPrototype C# fields internally to align with the normal schema.
+
+### Bugfixes
+
+* Add InvariantCulture to angle validation.
+
+### Internal
+
+* Add some additional EntityQuery<T> usages and remove a redundant CanCollide call on fixture shutdown.
+
+
+## 145.0.0
+
+### Breaking changes
+
+* Removed some old SpriteComponent data-fields ("rsi", and "layerDatums").
+
+### New features
+
+* Added `ActorSystem.TryGetActorFromUserId()`.
+* Added IPrototypeManager.EnumerateKinds().
+
+### Bugfixes
+
+* Fixed SpriteSpecifierSerializer yaml validation not working properly.
+* Fixed IoC/Threading exceptions in `Resource.Load()`.
+* Fixed `TransformSystem.SetCoordinates()` throwing uninformative client-side errors.
+* Fixed `IResourceManager.ContentFileExists()` and `TryContentFileRead()` throwing exceptions on windows when trying to open a directory.
+
+
+## 144.0.1
+
+### Bugfixes
+
+* Fix some EntityLookup queries incorrectly being double transformed internally.
+* Shrink TileEnlargement even further for EntityLookup default queries.
+
+
+## 144.0.0
+
+### Breaking changes
+
+* Add new args to entitylookup methods to allow for shrinkage of tile-bounds checks. Default changed to shrink the grid-local AABB by the polygon skin to avoid clipping neighboring tile entities.
+* Non-hard fixtures will no longer count by default for EntityLookup.
+
+### New features
+
+* Added new EntityLookup flag to return non-hard fixtures or not.
+
+
+## 143.3.0
+
+### New features
+
+* Entity placement and spawn commands now raise informative events that content can handle.
+* Replay clients can now optionally ignore some errors instead of refusing to load the replay.
+
+### Bugfixes
+
+* `AudioParams.PlayOffsetSecond` will no longer apply an offset that is larger then the length of the audio stream.
+* Fixed yaml serialization of arrays of virtual/abstract objects.
+
+
+### Other
+
+* Removed an incorrect gamestate debug assert.
+
+
+## 143.2.0
+
+### New features
+
+* Add support for tests to load extra prototypes from multiple sources.
+
+### Bugfixes
+
+* Fix named toolshed command.
+* Unsubscribe from grid rendering events on shutdown.
+
+### Other
+
+* Remove unnecessary test prototypes.
+
+
+## 143.1.0
+
+### New features
+
+* Add locale support for grammatical measure words.
+
+### Bugfixes
+
+* Don't raise contact events for entities that were QueueDeleted during the tick.
+* Exception on duplicate broadcast subscriptions as this was unsupported behaviour.
+
+### Other
+
+* Add VV ReadWrite to PhysicsComponent BodyStatus.
+
+
+## 143.0.0
+
+### New features
+
+
+- Toolshed, a tacit shell language, has been introduced.
+  - Use Robust.Shared.ToolshedManager to invoke commands, with optional input and output.
+  - Implement IInvocationContext for custom invocation contexts i.e. scripting systems.
+
+
+## 142.1.2
+
+### Other
+
+* Don't log an error on failing to resolve for joint relay refreshing.
+
+
+## 142.1.1
+
+### Bugfixes
+
+* Fixed a bad debug assert in `DetachParentToNull()`
+
+
+## 142.1.0
+
+### New features
+
+* `IHttpClientHolder` holds a shared `HttpClient` for use by content. It has Happy Eyeballs fixed and an appropriate `User-Agent`.
+* Added `DataNode.ToString()`. Makes it easier to save yaml files and debug code.
+* Added some cvars to modify discord rich presence icons.
+* .ogg files now read the `Artist` and `Title` tags and make them available via new fields in `AudioStream`.
+* The default fragment shaders now have access to the local light level (`lowp vec3 lightSample`).
+* Added `IPrototypeManager.ValidateAllPrototypesSerializable()`, which can be used to check that all currently loaded prototypes can be serialised & deserialised.
+
+### Bugfixes
+
+* Fix certain debug commands and tools crashing on non-SS14 RobustToolbox games due to a missing font.
+* Discord rich presence strings are now truncated if they are too long.
+* Fixed a couple of broadphase/entity-lookup update bugs that were affecting containers and entities attached to other (non-grid/map) entities.
+* Fixed `INetChannel.Disconnect()` not properly disconnecting clients in integration tests.
+
+### Other
+
+* Outgoing HTTP requests now all use Happy Eyeballs to try to prioritize IPv6. This is necessary because .NET still does not support this critical feature itself.
+* Made various physics related component properties VV-editable.
+* The default EntitySystem sawmill log level now defaults to `Info` instead of `Verbose`. The level remains verbose when in debug mode.
+
+### Internal
+
+* The debug asserts in `DetachParentToNull()` are now more informative.
+
+
+## 142.0.1
+
+### Bugfixes
+
+* Fix Enum serialization.
+
+
+## 142.0.0
+
+### Breaking changes
+
+* `EntityManager.GetAllComponents()` now returns a (EntityUid, Component) tuple
+
+### New features
+
+* Added `IPrototypeManager.ValidateFields()`, which uses reflection to validate that the default values of c# string fields correspond to valid entity prototypes. Validates any fields with a `ValidatePrototypeIdAttribute`  and any data-field that uses the PrototypeIdSerializer custom type serializer.
+
+### Other
+
+* Replay playback will now log errors when encountering unhandled messages.
+* Made `GetAssemblyByName()` throw descriptive error messages.
+* Improved performance of various EntityLookupSystem functions
+
+
+## 141.2.1
+
+### Bugfixes
+
+* Fix component trait dictionaries not clearing on reconnect leading to bad GetComponent in areas (e.g. entire game looks black due to no entities).
+
+
+## 141.2.0
+
+### Other
+
+* Fix bug in `NetManager` that allowed exception spam through protocol abuse.
+
+
+## 141.1.0
+
+### New features
+
+* MapInitEvent is run clientside for placementmanager entities to predict entity appearances.
+* Add CollisionLayerChangeEvent for physics fixtures.
+
+
+## 141.0.0
+
+### Breaking changes
+
+* Component.Initialize has been fully replaced with the Eventbus.
+
+### Bugfixes
+
+* Fixed potential crashes if buffered audio sources (e.g. MIDI) fail to create due to running out of audio streams.
+
+### Other
+
+* Pressing `^C` twice on the server will now cause it to hard-exit immediately.
+* `Tools` now has `EXCEPTION_TOLERANCE` enabled.
+
+
+## 140.0.0
+
+### Breaking changes
+
+* `IReplayRecordingManager.RecordingFinished` now takes a `ReplayRecordingFinished` object as argument.
+* `IReplayRecordingManager.GetReplayStats` now returns a `ReplayRecordingStats` struct instead of a tuple. The units have also been normalized
+
+### New features
+
+* `IReplayRecordingManager` can now track a "state" object for an active recording.
+* If the path given to `IReplayRecordingManager.TryStartRecording` is rooted, the base replay directory is ignored.
+
+### Other
+
+* `IReplayRecordingManager` no longer considers itself recording inside `RecordingFinished`.
+* `IReplayRecordingManager.Initialize()` was moved to an engine-internal interface.
+
+
+## 139.0.0
+
+### Breaking changes
+
+* Remove Component.Startup(), fully replacing it with the Eventbus.
+
+
+## 138.1.0
+
+### New features
+
+* Add rotation methods to TransformSystem for no lerp.
+
+### Bugfixes
+
+* Fix AnimationCompleted ordering.
+
+
+## 138.0.0
+
+### Breaking changes
+
+* Obsoleted unused `IMidiRenderer.VolumeBoost` property. Use `IMidiRenderer.VelocityOverride` instead.
+* `IMidiRenderer.TrackedCoordinates` is now a `MapCoordinates`.
+
+### New features
+
+* Added `Master` property to `IMidiRenderer`, which allows it to copy all MIDI events from another renderer.
+* Added `FilteredChannels` property to `IMidiRenderer`, which allows it to filter out notes from certain channels.
+* Added `SystemReset` helper property to `IMidiRenderer`, which allows you to easily send it a SystemReset MIDI message.
+
+### Bugfixes
+
+* Fixed some cases were `MidiRenderer` would not respect the `MidiBank` and `MidiProgram.
+* Fixed user soundfonts not loading.
+* Fixed `ItemList` item selection unselecting everything when in `Multiple` mode.
+
+
+## 137.1.0
+
+### New features
+
+* Added BQL `paused` selector.
+* `ModUpdateLevel.PostInput` allows running content code after network and async task processing.
+
+### Other
+
+* BQL `with` now includes paused entities.
+* The game loop now times more accurately and avoids sleeping more than necessary.
+* Sandboxing (and thus, client startup) should be much faster when ran from the launcher.
+
+
+## 137.0.0
+
+### Breaking changes
+
+* Component network state handler methods have been fully deprecated and replaced with the eventbus event equivalents (ComponentGetState and ComponentHandleState).
+
+
+## 136.0.1
+
+### Bugfixes
+
+* Fixed debugging on Linux when CEF is enabled.
+
+
+## 136.0.0
+
+### New features
+
+* Several more style box properties now scale with UI scale. Signature of some stylebox methods have been changed.
+
+### Bugfixes
+
+* Fixed OutputPanel scroll-bar not functioning properly.
+
+
+## 135.0.0
+
+### Breaking changes
+
+* Style boxes now scale with the current UI scale. This affects how the the margins, padding, and style box textures are drawn and how controls are arranged. Various style box methods now need to be provided with the current UI scale.
+
+
+## 134.0.0
+
+### Breaking changes
+
+* Several methods were moved out of the `UserInterface` components and into the UI system.
+* The BUI constructor arguments have changed and now require an EntityUid to be given instead of a component.
+
+
+## 133.0.0
+
+### Breaking changes
+
+* Replace Robust's Vector2 with System.Numerics.Vector2.
+
+### New features
+
+* `AssetPassPipe` has a new `CheckDuplicates` property that makes it explicitly check for and drop duplicate asset files passed through.
+
+### Bugfixes
+
+* Static entities that are parented to other entities will no longer collide with their parent.
+* Fix some miscellaneous doc comments and typos (e.g. PvsSystem and EntityManager).
+* Fix ContentGetDirectoryEntries.
+
+
+## 132.2.0
+
+### New features
+
+* Add method to clear all joints + relayed joints on an entity.
+
+### Other
+
+* Lower default MTU to `1000`.
+
+### Internal
+
+* Resolved some warnings and unnecessary component resolves.
+
+
+## 132.1.0
+
+### New features
+
+* `Robust.Shared.Physics.Events.CollisionChangeEvent` now has the `EntityUid` of the physics body.
+
+### Other
+
+* Paused entities now pause their animations. There's no guarantee they'll resume at the same point (use SyncSprite instead).
+
+### Internal
+
+* Fix ComponentTreeSystem warnings.
+* Fix some miscellaneous other warnings.
+
+
+## 132.0.1
+
+### Bugfixes
+
+* Return maps first from FindGridsIntersecting which fixes rendering order issues for grids.
+
+
+## 132.0.0
+
+### Breaking changes
+
+* TimeOffsetSerializer now always reads & writes zeros unless it is reading/writing an initialized map. EntityPrototypes with TimeOffsetSerializer data-fields need to default to zero.\
+* TimeOffsetSerializer now only applies a time offset when reading from yaml, not when copying.
+
+### New features
+
+* Added a function to count the number of prototypes of a given kind. See `IPrototypeManager.Count<T>()`.
+
+### Bugfixes
+
+* Fixed a bug in `IPrototypeManager.EnumerateParents()` that was causing it to not actually return the parent prototypes.
+
+### Other
+
+* Map serialisation will now log errors when saving an uninitialized map that contains initialized entities.
+
+
+## 131.1.0
+
+### New features
+
+* Add NextByte method to random.
+* Add method to get a random tile variant.
+
+### Bugfixes
+
+* Fix replay component state bug.
+
+### Internal
+
+* Remove some AggressiveOptimization attributes.
+
+
+## 131.0.0
+
+### Breaking changes
+
+* `IWritableDirProvider` async functions have been removed.
+* Replay recording & load API has been reworked to operate on zip files instead.
+* Constants on `IReplayRecordingManager` have been moved to a new `ReplayConstants` class, renamed and values changed.
+
+### New features
+
+* Added `ISawmill.Verbose()` log functions.
+* Replays are now written as `.zip` files. These will be [content bundles](https://docs.spacestation14.io/en/launcher/content-bundles) directly executable by the launcher if the server has the necessary build information.
+* Client replays now use local time rather than UTC as default file name.
+
+
 ## 130.0.0
 
 ### Breaking changes

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -133,7 +134,7 @@ namespace Robust.Client.Placement
         public IEnumerable<EntityCoordinates> LineCoordinates()
         {
             var mouseScreen = pManager.InputManager.MouseScreenPosition;
-            var mousePos = pManager.EyeManager.ScreenToMap(mouseScreen);
+            var mousePos = pManager.EyeManager.PixelToMap(mouseScreen);
 
             if (mousePos.MapId == MapId.Nullspace)
                 yield break;
@@ -164,7 +165,7 @@ namespace Robust.Client.Placement
         public IEnumerable<EntityCoordinates> GridCoordinates()
         {
             var mouseScreen = pManager.InputManager.MouseScreenPosition;
-            var mousePos = pManager.EyeManager.ScreenToMap(mouseScreen);
+            var mousePos = pManager.EyeManager.PixelToMap(mouseScreen);
 
             if (mousePos.MapId == MapId.Nullspace)
                 yield break;
@@ -253,7 +254,7 @@ namespace Robust.Client.Placement
 
         protected EntityCoordinates ScreenToCursorGrid(ScreenCoordinates coords)
         {
-            var mapCoords = pManager.EyeManager.ScreenToMap(coords.Position);
+            var mapCoords = pManager.EyeManager.PixelToMap(coords.Position);
             if (!pManager.MapManager.TryFindGridAt(mapCoords, out var gridUid, out var grid))
             {
                 return EntityCoordinates.FromMap(pManager.MapManager, mapCoords);

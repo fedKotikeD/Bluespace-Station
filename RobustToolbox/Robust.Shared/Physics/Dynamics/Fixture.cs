@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Components;
@@ -30,28 +31,14 @@ using Robust.Shared.Physics.Systems;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
-using Robust.Shared.Utility;
 using Robust.Shared.ViewVariables;
 
 namespace Robust.Shared.Physics.Dynamics
 {
     [Serializable, NetSerializable]
     [DataDefinition]
-    public sealed class Fixture : IEquatable<Fixture>, ISerializationHooks
+    public sealed partial class Fixture : IEquatable<Fixture>, ISerializationHooks
     {
-        /// <summary>
-        /// Allows us to reference a specific fixture when we contain multiple
-        /// This is useful for stuff like slippery objects that might have a non-hard layer for mob collisions and
-        /// a hard layer for wall collisions.
-        /// <remarks>
-        /// We can also use this for networking to make cross-referencing fixtures easier.
-        /// Won't call Dirty() by default
-        /// Not a DataField as the component already stores the key and we would have to double it in yaml.
-        /// </remarks>
-        /// </summary>
-        [ViewVariables(VVAccess.ReadWrite)]
-        public string ID;
-
         [ViewVariables]
         [field: NonSerialized]
         public FixtureProxy[] Proxies { get; set; } = Array.Empty<FixtureProxy>();
@@ -78,14 +65,14 @@ namespace Robust.Shared.Physics.Dynamics
         /// <summary>
         /// Contact friction between 2 bodies. Not tile-friction for top-down.
         /// </summary>
-        [DataField("friction"), Access(typeof(SharedPhysicsSystem), typeof(FixtureSystem), Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.Read)]
+        [ViewVariables(VVAccess.ReadWrite), DataField("friction"), Access(typeof(SharedPhysicsSystem), typeof(FixtureSystem), Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.Read)]
         public float Friction = PhysicsConstants.DefaultContactFriction;
 
         /// <summary>
         /// AKA how much bounce there is on a collision.
         /// 0.0 for inelastic collision and 1.0 for elastic.
         /// </summary>
-        [DataField("restitution"), Access(typeof(SharedPhysicsSystem), typeof(FixtureSystem), Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.Read)]
+        [ViewVariables(VVAccess.ReadWrite), DataField("restitution"), Access(typeof(SharedPhysicsSystem), typeof(FixtureSystem), Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.Read)]
         public float Restitution = PhysicsConstants.DefaultRestitution;
 
         /// <summary>
@@ -95,13 +82,13 @@ namespace Robust.Shared.Physics.Dynamics
         /// <remarks>
         ///     This is useful for triggers or such to detect collision without actually causing a blockage.
         /// </remarks>
-        [DataField("hard"), Access(typeof(SharedPhysicsSystem), typeof(FixtureSystem), Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.Read)]
+        [ViewVariables(VVAccess.ReadWrite), DataField("hard"), Access(typeof(SharedPhysicsSystem), typeof(FixtureSystem), Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.Read)]
         public bool Hard = true;
 
         /// <summary>
         /// In kg / m ^ 2
         /// </summary>
-        [DataField("density"),
+        [ViewVariables(VVAccess.ReadWrite), DataField("density"),
          Access(typeof(SharedPhysicsSystem), Friend = AccessPermissions.ReadWriteExecute,
              Other = AccessPermissions.Read)]
         public float Density = PhysicsConstants.DefaultDensity;
@@ -109,7 +96,7 @@ namespace Robust.Shared.Physics.Dynamics
         /// <summary>
         /// Bitmask of the collision layers the component is a part of.
         /// </summary>
-        [DataField("layer", customTypeSerializer: typeof(FlagSerializer<CollisionLayer>)),
+        [ViewVariables(VVAccess.ReadWrite), DataField("layer", customTypeSerializer: typeof(FlagSerializer<CollisionLayer>)),
          Access(typeof(SharedPhysicsSystem), Friend = AccessPermissions.ReadWriteExecute,
              Other = AccessPermissions.Read)]
         public int CollisionLayer;
@@ -117,7 +104,7 @@ namespace Robust.Shared.Physics.Dynamics
         /// <summary>
         ///  Bitmask of the layers this component collides with.
         /// </summary>
-        [DataField("mask", customTypeSerializer: typeof(FlagSerializer<CollisionMask>)),
+        [ViewVariables(VVAccess.ReadWrite), DataField("mask", customTypeSerializer: typeof(FlagSerializer<CollisionMask>)),
          Access(typeof(SharedPhysicsSystem), Friend = AccessPermissions.ReadWriteExecute,
              Other = AccessPermissions.Read)]
         public int CollisionMask;
@@ -141,7 +128,6 @@ namespace Robust.Shared.Physics.Dynamics
         }
 
         internal Fixture(
-            string id,
             IPhysShape shape,
             int collisionLayer,
             int collisionMask,
@@ -150,7 +136,6 @@ namespace Robust.Shared.Physics.Dynamics
             float friction = PhysicsConstants.DefaultContactFriction,
             float restitution = PhysicsConstants.DefaultRestitution)
         {
-            ID = id;
             Shape = shape;
             CollisionLayer = collisionLayer;
             CollisionMask = collisionMask;
@@ -162,7 +147,6 @@ namespace Robust.Shared.Physics.Dynamics
 
         public Fixture()
         {
-            ID = string.Empty;
         }
 
         /// <summary>
@@ -171,7 +155,6 @@ namespace Robust.Shared.Physics.Dynamics
         /// <param name="fixture"></param>
         internal void CopyTo(Fixture fixture)
         {
-            fixture.ID = ID;
             fixture.Shape = Shape;
             fixture.Friction = Friction;
             fixture.Restitution = Restitution;
@@ -186,8 +169,7 @@ namespace Robust.Shared.Physics.Dynamics
         /// </summary>
         public bool Equivalent(Fixture other)
         {
-            return ID.Equals(other.ID) &&
-                   Hard == other.Hard &&
+            return Hard == other.Hard &&
                    CollisionLayer == other.CollisionLayer &&
                    CollisionMask == other.CollisionMask &&
                    Shape.Equals(other.Shape) &&

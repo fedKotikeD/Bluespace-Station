@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using Robust.Client.GameStates;
 using Robust.Client.Input;
 using Robust.Client.Player;
@@ -205,8 +206,10 @@ namespace Robust.Client.GameObjects
             SetEntityContextActive(_inputManager, controlled);
         }
 
-        void IPostInjectInit.PostInject()
+        protected override void PostInject()
         {
+            base.PostInject();
+
             _sawmillInputContext = _logManager.GetSawmill("input.context");
         }
     }

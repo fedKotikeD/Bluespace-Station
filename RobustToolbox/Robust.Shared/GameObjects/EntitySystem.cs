@@ -203,9 +203,16 @@ namespace Robust.Shared.GameObjects
 
         #endregion
 
-        void IPostInjectInit.PostInject()
+
+        void IPostInjectInit.PostInject() => PostInject();
+
+        protected virtual void PostInject()
         {
             Log = LogManager.GetSawmill(SawmillName);
+
+#if !DEBUG
+            Log.Level = LogLevel.Info;
+#endif
         }
     }
 }

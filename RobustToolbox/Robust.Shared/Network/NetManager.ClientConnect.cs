@@ -195,7 +195,7 @@ namespace Robust.Shared.Network
                 var request = new HttpRequestMessage(HttpMethod.Post, authServer + "api/session/join");
                 request.Content = JsonContent.Create(joinReq);
                 request.Headers.Authorization = new AuthenticationHeaderValue("SS14Auth", authToken);
-                var joinResp = await _httpClient.SendAsync(request, cancel);
+                var joinResp = await _http.Client.SendAsync(request, cancel);
 
                 joinResp.EnsureSuccessStatusCode();
 
@@ -324,7 +324,8 @@ namespace Robust.Shared.Network
             {
                 DebugTools.AssertNotNull(second);
                 // Connecting via second peer is delayed by 25ms to give an advantage to IPv6, if it works.
-                await Task.Delay(25, cancellationToken);
+                var delay = TimeSpan.FromSeconds(_config.GetCVar(CVars.NetHappyEyeballsDelay));
+                await Task.Delay(delay, cancellationToken);
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return;

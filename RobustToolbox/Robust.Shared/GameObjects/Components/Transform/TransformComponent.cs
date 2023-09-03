@@ -11,6 +11,7 @@ using Robust.Shared.ViewVariables;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Robust.Shared.Map.Components;
 
 namespace Robust.Shared.GameObjects
@@ -19,7 +20,7 @@ namespace Robust.Shared.GameObjects
     ///     Stores the position and orientation of the entity.
     /// </summary>
     [RegisterComponent, NetworkedComponent]
-    public sealed class TransformComponent : Component, IComponentDebug
+    public sealed partial class TransformComponent : Component, IComponentDebug
     {
         [Dependency] private readonly IEntityManager _entMan = default!;
         [Dependency] private readonly IGameTiming _gameTiming = default!;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
@@ -9,7 +10,14 @@ namespace Robust.Shared.Maths
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     // ReSharper disable once InconsistentNaming
-    public struct Vector2i : IEquatable<Vector2i>, ISpanFormattable
+    public struct Vector2i :
+        IEquatable<Vector2i>,
+        ISpanFormattable,
+        IAdditionOperators<Vector2i, Vector2i, Vector2i>,
+        ISubtractionOperators<Vector2i, Vector2i, Vector2i>,
+        IMultiplyOperators<Vector2i, Vector2i, Vector2i>,
+        IMultiplyOperators<Vector2i, int, Vector2i>,
+        IComparisonOperators<Vector2i, Vector2i, bool>
     {
         public static readonly Vector2i Zero = (0, 0);
         public static readonly Vector2i One = (1, 1);
@@ -211,6 +219,26 @@ namespace Robust.Shared.Maths
                 destination,
                 out charsWritten,
                 $"({X}, {Y})");
+        }
+
+        public static bool operator >(Vector2i left, Vector2i right)
+        {
+            return left.LengthSquared > right.LengthSquared;
+        }
+
+        public static bool operator >=(Vector2i left, Vector2i right)
+        {
+            return left.LengthSquared >= right.LengthSquared;
+        }
+
+        public static bool operator <(Vector2i left, Vector2i right)
+        {
+            return left.LengthSquared < right.LengthSquared;
+        }
+
+        public static bool operator <=(Vector2i left, Vector2i right)
+        {
+            return left.LengthSquared <= right.LengthSquared;
         }
     }
 }

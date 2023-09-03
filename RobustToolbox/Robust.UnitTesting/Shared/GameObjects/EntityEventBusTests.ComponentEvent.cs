@@ -3,7 +3,7 @@ using Moq;
 using NUnit.Framework;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
-using Robust.Shared.Reflection;
+using Robust.Shared.Log;
 using Robust.UnitTesting.Shared.Reflection;
 
 namespace Robust.UnitTesting.Shared.GameObjects
@@ -13,7 +13,7 @@ namespace Robust.UnitTesting.Shared.GameObjects
         [Test]
         public void SubscribeCompEvent()
         {
-            var compFactory = new ComponentFactory(new DynamicTypeFactory(), new ReflectionManagerTest());
+            var compFactory = new ComponentFactory(new DynamicTypeFactory(), new ReflectionManagerTest(), new LogManager());
 
             // Arrange
             var entUid = new EntityUid(7);
@@ -241,19 +241,19 @@ namespace Robust.UnitTesting.Shared.GameObjects
             Assert.That(c, Is.True, "C did not fire");
         }
 
-        private sealed class DummyComponent : Component
+        private sealed partial class DummyComponent : Component
         {
         }
 
-        private sealed class OrderAComponent : Component
+        private sealed partial class OrderAComponent : Component
         {
         }
 
-        private sealed class OrderBComponent : Component
+        private sealed partial class OrderBComponent : Component
         {
         }
 
-        private sealed class OrderCComponent : Component
+        private sealed partial class OrderCComponent : Component
         {
         }
 

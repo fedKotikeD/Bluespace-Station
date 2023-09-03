@@ -1,3 +1,4 @@
+using System.Numerics;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Components;
@@ -14,6 +15,9 @@ public readonly struct StartCollideEvent
     public readonly PhysicsComponent OurBody;
     public readonly PhysicsComponent OtherBody;
 
+    public readonly string OurFixtureId;
+    public readonly string OtherFixtureId;
+
     public readonly Fixture OurFixture;
     public readonly Fixture OtherFixture;
     public readonly Vector2 WorldPoint;
@@ -21,6 +25,8 @@ public readonly struct StartCollideEvent
     public StartCollideEvent(
         EntityUid ourEntity,
         EntityUid otherEntity,
+        string ourFixtureId,
+        string otherFixtureId,
         Fixture ourFixture,
         Fixture otherFixture,
         PhysicsComponent ourBody,
@@ -29,6 +35,8 @@ public readonly struct StartCollideEvent
     {
         OurEntity = ourEntity;
         OtherEntity = otherEntity;
+        OurFixtureId = ourFixtureId;
+        OtherFixtureId = otherFixtureId;
         OurFixture = ourFixture;
         OtherFixture = otherFixture;
         WorldPoint = worldPoint;

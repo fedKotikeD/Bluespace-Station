@@ -1,7 +1,10 @@
 using System;
+using System.Numerics;
 using Robust.Shared.Maths;
 using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.ViewVariables;
+using Vector3 = Robust.Shared.Maths.Vector3;
+using Vector4 = Robust.Shared.Maths.Vector4;
 
 namespace Robust.Client.Graphics
 {
@@ -222,7 +225,7 @@ namespace Robust.Client.Graphics
     }
 
     [DataDefinition]
-    public struct StencilParameters
+    public partial struct StencilParameters
     {
         public StencilParameters()
         {

@@ -16,10 +16,9 @@ namespace Robust.Shared.Containers
     /// <summary>
     /// Holds data about a set of entity containers on this entity.
     /// </summary>
-    [ComponentReference(typeof(IContainerManager))]
     [NetworkedComponent]
     [RegisterComponent, ComponentProtoName("ContainerContainer")]
-    public sealed class ContainerManagerComponent : Component, IContainerManager, ISerializationHooks
+    public sealed partial class ContainerManagerComponent : Component, ISerializationHooks
     {
         [Dependency] private readonly IDynamicTypeFactoryInternal _dynFactory = default!;
         [Dependency] private readonly IEntityManager _entMan = default!;
@@ -52,28 +51,6 @@ namespace Robust.Shared.Containers
             }
 
             Containers.Clear();
-        }
-
-        /// <inheritdoc />
-        public override ComponentState GetComponentState()
-        {
-            // naive implementation that just sends the full state of the component
-            Dictionary<string, ContainerManagerComponentState.ContainerData> containerSet = new(Containers.Count);
-
-            foreach (var container in Containers.Values)
-            {
-                var uidArr = new EntityUid[container.ContainedEntities.Count];
-
-                for (var index = 0; index < container.ContainedEntities.Count; index++)
-                {
-                    uidArr[index] = container.ContainedEntities[index];
-                }
-
-                var sContainer = new ContainerManagerComponentState.ContainerData(container.ContainerType, container.ID, container.ShowContents, container.OccludesLight, uidArr);
-                containerSet.Add(container.ID, sContainer);
-            }
-
-            return new ContainerManagerComponentState(containerSet);
         }
 
         /// <inheritdoc />
@@ -206,7 +183,7 @@ namespace Robust.Shared.Containers
         }
 
         [DataDefinition]
-        private struct ContainerPrototypeData
+        private partial struct ContainerPrototypeData
         {
             [DataField("entities")] public List<EntityUid> Entities = new ();
 

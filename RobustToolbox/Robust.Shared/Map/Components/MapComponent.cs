@@ -9,10 +9,10 @@ namespace Robust.Shared.Map.Components
 {
     [RegisterComponent]
     [NetworkedComponent]
-    public sealed class MapComponent : Component
+    public sealed partial class MapComponent : Component
     {
         [ViewVariables(VVAccess.ReadWrite)]
-        [DataField(("lightingEnabled"))]
+        [DataField("lightingEnabled")]
         public bool LightingEnabled { get; set; } = true;
 
         [ViewVariables(VVAccess.ReadOnly)]
@@ -21,6 +21,7 @@ namespace Robust.Shared.Map.Components
         [ViewVariables(VVAccess.ReadOnly)]
         public bool MapPaused { get; set; } = false;
 
+        //TODO replace MapPreInit with the map's entity life stage
         [ViewVariables(VVAccess.ReadOnly)]
         public bool MapPreInit { get; set; } = false;
     }

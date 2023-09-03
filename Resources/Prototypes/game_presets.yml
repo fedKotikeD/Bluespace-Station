@@ -31,6 +31,17 @@
     - Secret
 
 - type: gamePreset
+  id: Sandbox
+  alias:
+    - sandbox
+  name: sandbox-title
+  description: sandbox-description
+  showInVote: false
+  maxPlayers: 5
+  rules:
+    - Sandbox
+
+- type: gamePreset
   id: Traitor
   alias:
     - traitor
@@ -48,8 +59,11 @@
     - dm
   name: death-match-title
   description: death-match-description
+  maxPlayers: 15
+  showInVote: true
+  supportedMaps: DeathMatchMapPool
   rules:
-    - DeathMatch
+    - DeathMatch31
 
 - type: gamePreset
   id: Nukeops

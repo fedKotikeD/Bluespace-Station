@@ -53,7 +53,6 @@ namespace Robust.Shared.GameObjects
 
         event Action<EntityUid>? EntityAdded;
         event Action<EntityUid>? EntityInitialized;
-        event Action<EntityUid>? EntityStarted;
         event Action<EntityUid>? EntityDeleted;
         event Action<EntityUid>? EntityDirtied; // only raised after initialization
 
@@ -70,22 +69,6 @@ namespace Robust.Shared.GameObjects
         void InitializeEntity(EntityUid entity, MetaDataComponent? meta = null);
 
         void StartEntity(EntityUid entity);
-
-        /// <summary>
-        /// Spawns an initialized entity at the default location, using the given prototype.
-        /// </summary>
-        /// <param name="protoName">The prototype to clone. If this is null, the entity won't have a prototype.</param>
-        /// <param name="coordinates"></param>
-        /// <returns>Newly created entity.</returns>
-        EntityUid SpawnEntity(string? protoName, EntityCoordinates coordinates, ComponentRegistry? overrides = null);
-
-        /// <summary>
-        /// Spawns an entity at a specific position
-        /// </summary>
-        /// <param name="protoName"></param>
-        /// <param name="coordinates"></param>
-        /// <returns></returns>
-        EntityUid SpawnEntity(string? protoName, MapCoordinates coordinates, ComponentRegistry? overrides = null);
 
         /// <summary>
         /// How many entities are currently active.
@@ -123,6 +106,11 @@ namespace Robust.Shared.GameObjects
         /// Checks whether an entity with the specified ID exists.
         /// </summary>
         bool EntityExists([NotNullWhen(true)] EntityUid? uid);
+
+        /// <summary>
+        /// Returns true if entity is valid and paused.
+        /// </summary>
+        bool IsPaused([NotNullWhen(true)] EntityUid? uid, MetaDataComponent? metadata = null);
 
         /// <summary>
         /// Checks whether an entity with the specified ID has been deleted or is nonexistent.

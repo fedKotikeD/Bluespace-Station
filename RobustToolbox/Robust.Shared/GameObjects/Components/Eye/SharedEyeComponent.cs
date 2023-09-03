@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using Robust.Shared.GameStates;
 using Robust.Shared.Maths;
 using Robust.Shared.Serialization;
@@ -7,7 +8,7 @@ using Robust.Shared.ViewVariables;
 namespace Robust.Shared.GameObjects
 {
     [NetworkedComponent()]
-    public abstract class SharedEyeComponent : Component
+    public abstract partial class SharedEyeComponent : Component
     {
         [ViewVariables(VVAccess.ReadWrite)]
         public virtual bool DrawFov { get; set; }

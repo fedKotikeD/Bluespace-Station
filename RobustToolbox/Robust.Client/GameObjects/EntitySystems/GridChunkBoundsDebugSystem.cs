@@ -1,3 +1,4 @@
+using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
@@ -80,7 +81,7 @@ namespace Robust.Client.GameObjects
 
                 while (chunkEnumerator.MoveNext(out var chunk))
                 {
-                    foreach (var fixture in chunk.Fixtures)
+                    foreach (var fixture in chunk.Fixtures.Values)
                     {
                         var poly = (PolygonShape) fixture.Shape;
 

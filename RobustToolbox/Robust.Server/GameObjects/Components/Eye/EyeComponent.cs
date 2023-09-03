@@ -1,3 +1,4 @@
+using System.Numerics;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Maths;
@@ -10,7 +11,7 @@ using Robust.Shared.ViewVariables;
 namespace Robust.Server.GameObjects
 {
     [RegisterComponent, ComponentReference(typeof(SharedEyeComponent))]
-    public sealed class EyeComponent : SharedEyeComponent
+    public sealed partial class EyeComponent : SharedEyeComponent
     {
         public const int DefaultVisibilityMask = 1;
 
@@ -85,11 +86,6 @@ namespace Robust.Server.GameObjects
                 _visibilityMask = value;
                 Dirty();
             }
-        }
-
-        public override ComponentState GetComponentState()
-        {
-            return new EyeComponentState(DrawFov, Zoom, Offset, VisibilityMask);
         }
     }
 }

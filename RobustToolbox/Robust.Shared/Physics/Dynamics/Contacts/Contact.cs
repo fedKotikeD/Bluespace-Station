@@ -29,6 +29,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
@@ -67,6 +68,9 @@ namespace Robust.Shared.Physics.Dynamics.Contacts
 
         public EntityUid EntityA;
         public EntityUid EntityB;
+
+        public string FixtureAId = string.Empty;
+        public string FixtureBId = string.Empty;
 
         public Fixture? FixtureA;
         public Fixture? FixtureB;

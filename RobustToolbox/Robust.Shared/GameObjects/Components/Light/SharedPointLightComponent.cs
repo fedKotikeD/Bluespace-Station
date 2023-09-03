@@ -5,11 +5,12 @@ using Robust.Shared.Maths;
 using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.ViewVariables;
 using System;
+using System.Numerics;
 
 namespace Robust.Shared.GameObjects
 {
     [NetworkedComponent]
-    public abstract class SharedPointLightComponent : Component
+    public abstract partial class SharedPointLightComponent : Component
     {
         [Dependency] private readonly IEntitySystemManager _sysMan = default!;
 

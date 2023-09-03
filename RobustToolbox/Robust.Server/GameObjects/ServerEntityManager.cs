@@ -40,19 +40,23 @@ namespace Robust.Server.GameObjects
         [Dependency] private readonly IRuntimeLog _runtimeLog = default!;
 #endif
 
+        private ISawmill _netEntSawmill = default!;
+
         protected override int NextEntityUid { get; set; } = (int) EntityUid.FirstUid;
 
         public override void Initialize()
         {
+            _netEntSawmill = LogManager.GetSawmill("net.ent");
+
             SetupNetworking();
             ReceivedSystemMessage += (_, systemMsg) => EventBus.RaiseEvent(EventSource.Network, systemMsg);
 
             base.Initialize();
         }
 
-        EntityUid IServerEntityManagerInternal.AllocEntity(string? prototypeName, EntityUid uid)
+        EntityUid IServerEntityManagerInternal.AllocEntity(EntityPrototype? prototype, EntityUid uid)
         {
-            return AllocEntity(prototypeName, out _, uid);
+            return AllocEntity(prototype, out _, uid);
         }
 
         void IServerEntityManagerInternal.FinishEntityLoad(EntityUid entity, IEntityLoadContext? context)
@@ -77,28 +81,33 @@ namespace Robust.Server.GameObjects
 
         private protected override EntityUid CreateEntity(string? prototypeName, EntityUid uid = default, IEntityLoadContext? context = null)
         {
-            var entity = base.CreateEntity(prototypeName, uid, context);
+            if (prototypeName == null)
+                return base.CreateEntity(prototypeName, uid, context);
 
-            if (!string.IsNullOrWhiteSpace(prototypeName))
-            {
-                var prototype = PrototypeManager.Index<EntityPrototype>(prototypeName);
+            if (!PrototypeManager.TryIndex<EntityPrototype>(prototypeName, out var prototype))
+                throw new EntityCreationException($"Attempted to spawn an entity with an invalid prototype: {prototypeName}");
 
-                // At this point in time, all data configure on the entity *should* be purely from the prototype.
-                // As such, we can reset the modified ticks to Zero,
-                // which indicates "not different from client's own deserialization".
-                // So the initial data for the component or even the creation doesn't have to be sent over the wire.
-                foreach (var (netId, component) in GetNetComponents(entity))
-                {
-                    // Make sure to ONLY get components that are defined in the prototype.
-                    // Others could be instantiated directly by AddComponent (e.g. ContainerManager).
-                    // And those aren't guaranteed to exist on the client, so don't clear them.
-                    var compName = ComponentFactory.GetComponentName(component.GetType());
-                    if (prototype.Components.ContainsKey(compName))
-                        component.ClearTicks();
-                }
-            }
+            var entity = base.CreateEntity(prototype, uid, context);
 
+            // At this point in time, all data configure on the entity *should* be purely from the prototype.
+            // As such, we can reset the modified ticks to Zero,
+            // which indicates "not different from client's own deserialization".
+            // So the initial data for the component or even the creation doesn't have to be sent over the wire.
+            ClearTicks(entity, prototype);
             return entity;
+        }
+
+        private void ClearTicks(EntityUid entity, EntityPrototype prototype)
+        {
+            foreach (var (netId, component) in GetNetComponents(entity))
+            {
+                // Make sure to ONLY get components that are defined in the prototype.
+                // Others could be instantiated directly by AddComponent (e.g. ContainerManager).
+                // And those aren't guaranteed to exist on the client, so don't clear them.
+                var compName = ComponentFactory.GetComponentName(netId);
+                if (prototype.Components.ContainsKey(compName))
+                    component.ClearTicks();
+            }
         }
 
         public override EntityStringRepresentation ToPrettyString(EntityUid uid)
@@ -199,7 +208,7 @@ namespace Robust.Server.GameObjects
             {
                 if (msgT < cT && _logLateMsgs)
                 {
-                    Logger.WarningS("net.ent", "Got late MsgEntity! Diff: {0}, msgT: {2}, cT: {3}, player: {1}",
+                    _netEntSawmill.Warning("Got late MsgEntity! Diff: {0}, msgT: {2}, cT: {3}, player: {1}",
                         (int) msgT.Value - (int) cT.Value, message.MsgChannel.UserName, msgT, cT);
                 }
 
