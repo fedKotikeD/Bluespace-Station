@@ -3,6 +3,7 @@
   parent: WeaponShotgunKammerer
   id: WeaponShotgunKammererAdmin
   description: To be continued...
+  suffix: Admem
   components:
   - type: Sprite
     sprite: Objects/Weapons/Guns/Shotguns/pump.rsi
