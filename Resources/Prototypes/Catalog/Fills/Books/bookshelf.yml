@@ -71,3 +71,7 @@
         prob: 0.1
       - id: BookBusido # Corvax-Books
         prob: 0.1
+      - id: TraitorsGuide
+        prob: 0.05
+      - id: OperativeGuide
+        prob: 0.01
