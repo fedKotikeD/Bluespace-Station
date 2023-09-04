@@ -388,7 +388,7 @@
     - type: Paper
       content: book-text-inspiration
 
- - type: entity
+- type: entity
   parent: BookBase
   id: TraitorsGuide
   name: Traitor's Guide, operator edition
@@ -401,7 +401,7 @@
     - type: Paper
       content: traitorsguide
       
- - type: entity
+- type: entity
   parent: BookBase
   id: OperativeGuide
   name: Nuclear Operative Manual
