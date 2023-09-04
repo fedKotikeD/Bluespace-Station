@@ -1,7 +1,17 @@
-# Last match in file takes precedence.
+#CODEOWNERS after hotfix
+* @fedKotikeD
 
-# Ping for all PRs
-* @Morb0
-
-# Ping for all PRs that include translations/editing fluent strings
-*.ftl @ficcialfaint
+#.github/** @fedKotikeD #github	
+#INFO/** @fedKotikeD #INFO	
+#**/Resources/Locale/Bluespace-content/** @fedKotikeD #project translate	
+#**/Resources/Textures/**/meta.json @fedKotikeD #meta	
+#**/Resources/Prototypes/Bluespace-content/** @fedKotikeD #project proto	
+#**/Resources/Prototypes/Entities/** @fedKotikeD #entities	
+#**/Resources/Textures/Bluespace-content/** @fedKotikeD #project textures	
+#**/CHANGES.md @fedKotikeD	
+#**/SECURITY.md @fedKotikeD	
+#**/LICENSE.txt @fedKotikeD	
+#other/** @fedKotikeD 	
+#**/mark @fedKotikeD 	
+#**/Bluespace-content/** @fedKotikeD 	
+#**/README.md @fedKotikeD 
