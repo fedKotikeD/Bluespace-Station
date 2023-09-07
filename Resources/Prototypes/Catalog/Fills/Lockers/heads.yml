@@ -123,6 +123,7 @@
         prob: 0.5
       - id: ClothingOuterCoatHOP # Corvax-Resprite
       - id: AccessConfigurator
+      - id: RubberStampOOF
 
 - type: entity
   id: LockerChiefEngineerFilledHardsuit
