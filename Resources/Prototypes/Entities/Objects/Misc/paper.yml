@@ -685,6 +685,20 @@
   - type: Sprite
     sprite: Objects/Misc/bureaucracy.rsi
     state: stamp-deny
+
+- type: entity
+  name: out-of-form rubber stamp
+  parent: RubberStampBaseAlt
+  id: RubberStampOOF
+  components:
+  - type: Stamp
+    stampedName: stamp-component-stamped-name-oof
+    stampedColor: "#a23e3e"
+    stampState: "paper_stamp-deny"
+  - type: Sprite
+    sprite: Objects/Misc/bureaucracy.rsi
+    state: stamp-deny
+
 - type: entity
   name: admin rubber stamp
   parent: RubberStampBase
