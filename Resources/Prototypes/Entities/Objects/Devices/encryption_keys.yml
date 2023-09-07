@@ -72,6 +72,7 @@
     - Security
     - Service
     - Supply
+    - Channel1
     defaultChannel: Command
   - type: Sprite
     layers:
