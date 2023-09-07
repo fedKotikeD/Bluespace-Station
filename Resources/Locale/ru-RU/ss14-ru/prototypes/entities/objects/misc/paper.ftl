@@ -88,4 +88,4 @@ ent-RubberStampDenied = печать ОТКАЗАНО
 ent-RubberStampOOF = печать НЕ-ПО-ФОРМЕ
     .desc = { ent-RubberStampbase.desc }
 ent-RubberStampAdmin = печать администратора
-    .desc = Похоже, боги спустились с небес чтобы показать вам вашу тупость
+    .desc = Похоже, боги спустились с небес чтобы показать вам как надо правильно всё сделать
