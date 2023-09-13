@@ -53,7 +53,7 @@ namespace Robust.Shared.GameObjects
 
         event Action<EntityUid>? EntityAdded;
         event Action<EntityUid>? EntityInitialized;
-        event Action<EntityUid>? EntityDeleted;
+        event Action<EntityUid, MetaDataComponent>? EntityDeleted;
         event Action<EntityUid>? EntityDirtied; // only raised after initialization
 
         EntityUid CreateEntityUninitialized(string? prototypeName, EntityUid euid, ComponentRegistry? overrides = null);
@@ -87,7 +87,7 @@ namespace Robust.Shared.GameObjects
 
         public void Dirty(EntityUid uid, Component component, MetaDataComponent? meta = null);
 
-        public void QueueDeleteEntity(EntityUid uid);
+        public void QueueDeleteEntity(EntityUid? uid);
 
         public bool IsQueuedForDeletion(EntityUid uid);
 
@@ -95,7 +95,7 @@ namespace Robust.Shared.GameObjects
         /// Shuts-down and removes the entity with the given <see cref="Robust.Shared.GameObjects.EntityUid"/>. This is also broadcast to all clients.
         /// </summary>
         /// <param name="uid">Uid of entity to remove.</param>
-        void DeleteEntity(EntityUid uid);
+        void DeleteEntity(EntityUid? uid);
 
         /// <summary>
         /// Checks whether an entity with the specified ID exists.
