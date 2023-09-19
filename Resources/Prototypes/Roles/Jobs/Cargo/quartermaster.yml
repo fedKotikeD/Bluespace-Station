@@ -19,6 +19,7 @@
   startingGear: QuartermasterGear
   icon: "JobIconQuarterMaster"
   supervisors: job-supervisors-captain
+  #canBeAntag: false ЭКСПЕРИМЕНТ https://github.com/Bluespace-community/Bluespace-Station/pull/123
   access:
   - Cargo
   - Salvage
