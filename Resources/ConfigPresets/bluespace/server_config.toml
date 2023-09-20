@@ -94,7 +94,7 @@ round_update_webhook = "Confidental"
 round_end_role = "1142184017270157483"
 [ic]
 flavor_text = true
-punctuation = true #ЭКСПЕРИМЕНТ https://discord.com/channels/1082913477481476147/1082925447718912040/1151609545299349515
+#punctuation = true
 [shuttle]
 arrivals_map = "/Maps/Misc/corvax_terminal.yml"
 arrivals_cooldown = 20
