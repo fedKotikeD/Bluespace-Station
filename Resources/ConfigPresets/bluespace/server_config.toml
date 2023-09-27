@@ -38,7 +38,7 @@ loginlocal = true
 [hub]
 # Set to true to show this server on the public server list
 # Before enabling this, read: https://docs.spacestation14.io/hosts/hub-rules
-advertise = true
+advertise = false
 # Comma-separated list of tags, useful for categorizing your server.
 # See https://docs.spacestation14.io/hosts/hub-rules for more details on this when it becomes relevant.
 tags = ""
@@ -110,7 +110,7 @@ space_wind = true
 [zombie]
 min_players = 2
 [tips]
-enabled = false
+enabled = true
 [admin]
 server_ban_default_severity = "medium"
 deadmin_on_join = true
@@ -122,3 +122,5 @@ motd = "Добро пожаловать на наш проект. Мы ради 
 time = 30
 maxplayers = 32
 welcomemsg = ""
+[whitelist]
+enabled = true
