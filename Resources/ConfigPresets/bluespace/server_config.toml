@@ -26,7 +26,7 @@ bind = "185.189.255.45:11212"
 #  by default the launcher will assume the address and port match that of the status server.
 # connectaddress = "udp://localhost:1212"
 [game]
-hostname = "[RU][MRP] Bluespace Station"
+hostname = "[RU][MRP] Bluespace Station 🧑‍🔬♾️"
 role_timers = true
 desc = "Недавно открывшийся проект, посвященный тематике Блюспейс технологий!\nИмеется своя сборка, в которую может сделать вклад каждый\nБудем рады каждому новому человеку в нашем дискорде!"
 peaceful_end = false
