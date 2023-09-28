@@ -38,7 +38,7 @@ loginlocal = true
 [hub]
 # Set to true to show this server on the public server list
 # Before enabling this, read: https://docs.spacestation14.io/hosts/hub-rules
-advertise = false
+advertise = true
 # Comma-separated list of tags, useful for categorizing your server.
 # See https://docs.spacestation14.io/hosts/hub-rules for more details on this when it becomes relevant.
 tags = ""
@@ -122,5 +122,3 @@ motd = "Добро пожаловать на наш проект. Мы ради 
 time = 30
 maxplayers = 32
 welcomemsg = ""
-[whitelist]
-enabled = true
