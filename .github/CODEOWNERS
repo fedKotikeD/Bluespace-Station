@@ -1,17 +1,2 @@
-#CODEOWNERS after hotfix
+#CODEOWNERS 24.12.2023
 * @fedKotikeD
-
-#.github/** @fedKotikeD #github	
-#INFO/** @fedKotikeD #INFO	
-#**/Resources/Locale/Bluespace-content/** @fedKotikeD #project translate	
-#**/Resources/Textures/**/meta.json @fedKotikeD #meta	
-#**/Resources/Prototypes/Bluespace-content/** @fedKotikeD #project proto	
-#**/Resources/Prototypes/Entities/** @fedKotikeD #entities	
-#**/Resources/Textures/Bluespace-content/** @fedKotikeD #project textures	
-#**/CHANGES.md @fedKotikeD	
-#**/SECURITY.md @fedKotikeD	
-#**/LICENSE.txt @fedKotikeD	
-#other/** @fedKotikeD 	
-#**/mark @fedKotikeD 	
-#**/Bluespace-content/** @fedKotikeD 	
-#**/README.md @fedKotikeD 
