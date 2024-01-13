@@ -20,19 +20,13 @@
       path: /Audio/Items/Toys/weh.ogg
 
 - type: entity
-  parent: PlushieSnake
+  parent: PlushieNuke
   id: Plushielilfleks
-  name: snake plushie
+  name: lilfleks
   description: Legend
   components:
   - type: Sprite
-    state: plushie_snake
-  - type: EmitSoundOnUse
-    sound:
-      path: /Audio/Items/Toys/rattle.ogg
-  - type: MeleeWeapon
-    soundHit:
-      path: /Audio/Items/Toys/rattle.ogg
+    state: plushie_nuke
 
 - type: entity
   parent: PlushieNuke
