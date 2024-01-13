@@ -1,0 +1,36 @@
+- type: entity
+  parent: PlushieLizard
+  id: PlushiefedKotikeD #Weh!
+  name: fedKotikeD
+  description: Owner
+  components:
+  - type: Sprite
+    state: plushie_lizard
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/Items/Toys/weh.ogg
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/Items/Toys/weh.ogg
+  - type: EmitSoundOnActivate
+    sound:
+      path: /Audio/Items/Toys/weh.ogg
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Items/Toys/weh.ogg
+
+- type: entity
+  parent: PlushieSnake
+  id: Plushielilfleks
+  name: snake plushie
+  description: Legend
+  components:
+  - type: Sprite
+    state: plushie_snake
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/Items/Toys/rattle.ogg
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Items/Toys/rattle.ogg
+
