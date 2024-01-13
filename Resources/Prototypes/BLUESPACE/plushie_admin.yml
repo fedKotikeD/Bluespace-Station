@@ -34,3 +34,11 @@
     soundHit:
       path: /Audio/Items/Toys/rattle.ogg
 
+- type: entity
+  parent: PlushieNuke
+  id: Plushiekytukula
+  name: kytukula
+  description: Event Curator
+  components:
+  - type: Sprite
+    state: plushie_nuke
