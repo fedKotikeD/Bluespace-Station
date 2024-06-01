@@ -38,22 +38,28 @@
     state: plushie_nuke
 
 - type: entity
-  parent: PlushieXeno
-  id: PlushieCalcYo
-  name: CalcYo
-  description: Administrator
+  parent: PlushieSharkBlue
+  id: Plushiecitade
+  name: citade
+  description: Stole the power.
   components:
   - type: Sprite
-    state: plushie_xeno
+    sprite: Objects/Fun/sharkplush.rsi
+    state: blue
+  - type: Item
+    heldPrefix: blue
+
+- type: entity
+  parent: ToyMouse
+  id: Plushiexzarkenk
+  name: xzarkenk
+  description: ...
+  components:
+  - type: Sprite
+    state: toy_mouse
   - type: EmitSoundOnUse
     sound:
-      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
-  - type: EmitSoundOnLand
-    sound:
-      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
-  - type: EmitSoundOnActivate
-    sound:
-      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
+      path: /Audio/Items/Toys/mousesqueek.ogg
   - type: MeleeWeapon
     soundHit:
-      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
+      path: /Audio/Items/Toys/mousesqueek.ogg
