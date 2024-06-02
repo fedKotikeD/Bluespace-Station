@@ -100,7 +100,7 @@
   name: chat-radio-death
   keycode: 'э' 
   frequency: 1999
-  color: "#2681a5"
+  color: "#660066"
   longRange: true
 
 - type: radioChannel
@@ -108,5 +108,5 @@
   name: chat-radio-rhb
   keycode: 'р' 
   frequency: 1339
-  color: "#2681a5"
+  color: "#6a7039"
   longRange: true
