@@ -5,7 +5,7 @@
 .ftl @zloy0cheburek
 
 #all textures
-*/Resources/Textures/* @ChubciYT
+**/Resources/Textures/** @ChubciYT
 
 #all proto
-*/Resources/Prototypes/* @IceeeCrowww
+**/Resources/Prototypes/** @IceeeCrowww
