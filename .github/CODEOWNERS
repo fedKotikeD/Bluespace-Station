@@ -1,4 +1,11 @@
 #CODEOWNERS 02.06.2024
 * @fedKotikeD
 
+#all translates
 .ftl @zloy0cheburek
+
+#all textures
+*/Resources/Textures/* @ChubciYT
+
+#all proto
+*/Resources/Prototypes/* @IceeeCrowww
