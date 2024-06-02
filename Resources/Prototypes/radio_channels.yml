@@ -86,3 +86,27 @@
   color: "#2ed2fd"
   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
   longRange: true
+
+- type: radioChannel
+  id: ERT
+  name: chat-radio-ert
+  keycode: 'е' 
+  frequency: 1338
+  color: "#2681a5"
+  longRange: true
+
+- type: radioChannel
+  id: Death
+  name: chat-radio-death
+  keycode: 'э' 
+  frequency: 1999
+  color: "#2681a5"
+  longRange: true
+
+- type: radioChannel
+  id: RHB
+  name: chat-radio-rhb
+  keycode: 'р' 
+  frequency: 1339
+  color: "#2681a5"
+  longRange: true

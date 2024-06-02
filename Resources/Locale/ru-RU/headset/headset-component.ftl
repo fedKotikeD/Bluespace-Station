@@ -16,5 +16,5 @@ chat-radio-syndicate = Синдикат
 chat-radio-handheld = Портативный
 chat-radio-binary = Двоичный
 chat-radio-ert = ОБР
-chat-radio-deathsquad = Эскадрон
-chat-radio-custom = Канал 1
+chat-radio-death = Эскадрон
+chat-radio-rhb = РХБЗЗ
