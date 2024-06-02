@@ -2,7 +2,7 @@
   parent: PlushieLizard
   id: PlushiefedKotikeD #Weh!
   name: fedKotikeD
-  description: Owner
+  description: Главный в качалке
   components:
   - type: Sprite
     state: plushie_lizard
@@ -23,7 +23,7 @@
   parent: PlushieNuke
   id: Plushielilfleks
   name: lilfleks
-  description: Legend
+  description: Сегодня у нас в гостях человек, при жизни ставший легендой. Народный артист Советского Союза, Украины, России и даже Чечено-Ингушетии, лауреат государственной премии СССР и премии ленинского комсомола, человек признанный, известный, авторитетный, мэтр, но потом подумав я всё-таки решил начать иначе, сегодня у нас в гостях человек который творил эту эпоху, и который сам стал эпохой, человек которого я очень уважаю и люблю.
   components:
   - type: Sprite
     state: plushie_nuke
@@ -32,7 +32,7 @@
   parent: PlushieNuke
   id: Plushiekytukula
   name: kytukula
-  description: Event Curator
+  description: Куратор всея ивентового
   components:
   - type: Sprite
     state: plushie_nuke
@@ -41,7 +41,7 @@
   parent: PlushieSharkBlue
   id: Plushiecitade
   name: citade
-  description: Stole the power.
+  description: Украл власть.
   components:
   - type: Sprite
     sprite: Objects/Fun/sharkplush.rsi
