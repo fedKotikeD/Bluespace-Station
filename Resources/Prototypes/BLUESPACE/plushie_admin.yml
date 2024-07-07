@@ -66,3 +66,24 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Items/Toys/mousesqueek.ogg
+
+- type: entity
+  parent: PlushieXeno
+  id: PlushieCalcYo
+  name: CalcYo
+  description: Восстал из пепла, как феникс
+  components:
+  - type: Sprite
+    state: plushie_xeno
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
+  - type: EmitSoundOnActivate
+    sound:
+      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_spitacid.ogg
