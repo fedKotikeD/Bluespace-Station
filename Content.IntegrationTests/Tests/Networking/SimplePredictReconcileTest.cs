@@ -10,6 +10,7 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
+using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests.Networking
@@ -50,11 +51,12 @@ namespace Content.IntegrationTests.Tests.Networking
             PredictionTestComponent clientComponent = default!;
             var serverSystem = sEntityManager.System<PredictionTestEntitySystem>();
             var clientSystem = cEntityManager.System<PredictionTestEntitySystem>();
+            var sMapSys = sEntityManager.System<SharedMapSystem>();
 
             await server.WaitPost(() =>
             {
                 // Spawn dummy component entity.
-                var map = sMapManager.CreateMap();
+                sMapSys.CreateMap(out var map);
                 serverEnt = sEntityManager.SpawnEntity(null, new MapCoordinates(new Vector2(0, 0), map));
                 serverComponent = sEntityManager.AddComponent<PredictionTestComponent>(serverEnt);
             });
@@ -66,7 +68,7 @@ namespace Content.IntegrationTests.Tests.Networking
             Assert.That(sGameTiming.TickTimingAdjustment, Is.EqualTo(0));
 
             // Check client buffer is full
-            Assert.That(cGameStateManager.CurrentBufferSize, Is.EqualTo(cGameStateManager.TargetBufferSize));
+            Assert.That(cGameStateManager.GetApplicableStateCount(), Is.EqualTo(cGameStateManager.TargetBufferSize));
             Assert.That(cGameStateManager.TargetBufferSize, Is.EqualTo(2));
 
             // This isn't required anymore, but the test had this for the sake of "technical things", and I cbf shifting
@@ -77,7 +79,7 @@ namespace Content.IntegrationTests.Tests.Networking
 
             await client.WaitPost(() =>
             {
-                clientComponent = cEntityManager.GetComponent<PredictionTestComponent>(serverEnt);
+                clientComponent = cEntityManager.GetComponent<PredictionTestComponent>(cEntityManager.GetEntity(sEntityManager.GetNetEntity(serverEnt)));
             });
 
             var baseTick = sGameTiming.CurTick.Value;
@@ -98,7 +100,7 @@ namespace Content.IntegrationTests.Tests.Networking
 
                 // Client last ran tick 15 meaning it's ahead of the last server tick it processed (12)
                 Assert.That(cGameTiming.CurTick, Is.EqualTo(expected));
-                Assert.That(cGameTiming.LastProcessedTick, Is.EqualTo(new GameTick((uint)(baseTick - cGameStateManager.TargetBufferSize))));
+                Assert.That(cGameTiming.LastProcessedTick, Is.EqualTo(new GameTick((uint) (baseTick - cGameStateManager.TargetBufferSize))));
             });
 
             // *** I am using block scopes to visually distinguish these sections of the test to make it more readable.
@@ -110,7 +112,7 @@ namespace Content.IntegrationTests.Tests.Networking
                 Assert.That(clientComponent.Foo, Is.False);
                 await client.WaitPost(() =>
                 {
-                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(serverEnt, true));
+                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(sEntityManager.GetNetEntity(serverEnt), true));
                 });
                 Assert.That(clientComponent.Foo, Is.True);
 
@@ -190,7 +192,7 @@ namespace Content.IntegrationTests.Tests.Networking
                 // Send event to server to change flag again, this time to disable it..
                 await client.WaitPost(() =>
                 {
-                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(serverEnt, false));
+                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(sEntityManager.GetNetEntity(serverEnt), false));
 
                     Assert.That(clientComponent.Foo, Is.False);
                 });
@@ -263,14 +265,14 @@ namespace Content.IntegrationTests.Tests.Networking
                 // Assert timing is still correct.
                 Assert.That(sGameTiming.CurTick, Is.EqualTo(new GameTick(baseTick + 8)));
                 Assert.That(cGameTiming.CurTick, Is.EqualTo(new GameTick(baseTick + 8 + delta)));
-                Assert.That(cGameTiming.LastProcessedTick, Is.EqualTo(new GameTick((uint)(baseTick + 8 - cGameStateManager.TargetBufferSize))));
+                Assert.That(cGameTiming.LastProcessedTick, Is.EqualTo(new GameTick((uint) (baseTick + 8 - cGameStateManager.TargetBufferSize))));
             });
 
             {
                 // Send first event to disable the flag (reminder: it never got accepted by the server).
                 await client.WaitPost(() =>
                 {
-                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(serverEnt, false));
+                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(sEntityManager.GetNetEntity(serverEnt), false));
 
                     Assert.That(clientComponent.Foo, Is.False);
                 });
@@ -298,7 +300,7 @@ namespace Content.IntegrationTests.Tests.Networking
                 // Send another event, to re-enable it.
                 await client.WaitPost(() =>
                 {
-                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(serverEnt, true));
+                    cEntityManager.RaisePredictiveEvent(new SetFooMessage(sEntityManager.GetNetEntity(serverEnt), true));
 
                     Assert.That(clientComponent.Foo, Is.True);
                 });
@@ -406,27 +408,30 @@ namespace Content.IntegrationTests.Tests.Networking
 
             private void HandleMessage(SetFooMessage message, EntitySessionEventArgs args)
             {
-                var component = EntityManager.GetComponent<PredictionTestComponent>(message.Uid);
+                var uid = GetEntity(message.Uid);
+
+                var component = EntityManager.GetComponent<PredictionTestComponent>(uid);
                 var old = component.Foo;
                 if (Allow)
                 {
                     component.Foo = message.NewFoo;
-                    Dirty(message.Uid, component);
+                    Dirty(uid, component);
                 }
 
                 EventTriggerList.Add((_gameTiming.CurTick, _gameTiming.IsFirstTimePredicted, old, component.Foo, message.NewFoo));
             }
         }
 
+        [Serializable, NetSerializable]
         public sealed class SetFooMessage : EntityEventArgs
         {
-            public SetFooMessage(EntityUid uid, bool newFoo)
+            public SetFooMessage(NetEntity uid, bool newFoo)
             {
                 Uid = uid;
                 NewFoo = newFoo;
             }
 
-            public EntityUid Uid { get; }
+            public NetEntity Uid { get; }
             public bool NewFoo { get; }
         }
     }

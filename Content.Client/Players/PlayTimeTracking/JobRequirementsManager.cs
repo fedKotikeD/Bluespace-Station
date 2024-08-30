@@ -1,28 +1,33 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
+using Content.Client.Lobby;
 using Content.Shared.CCVar;
 using Content.Shared.Players;
+using Content.Shared.Players.JobWhitelist;
 using Content.Shared.Players.PlayTimeTracking;
+using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Robust.Client;
 using Robust.Client.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Client.Players.PlayTimeTracking;
 
-public sealed class JobRequirementsManager
+public sealed class JobRequirementsManager : ISharedPlaytimeManager
 {
     [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IClientNetManager _net = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
 
     private readonly Dictionary<string, TimeSpan> _roles = new();
     private readonly List<string> _roleBans = new();
+    private readonly List<string> _jobWhitelists = new();
 
     private ISawmill _sawmill = default!;
 
@@ -35,6 +40,7 @@ public sealed class JobRequirementsManager
         // Yeah the client manager handles role bans and playtime but the server ones are separate DEAL.
         _net.RegisterNetMessage<MsgRoleBans>(RxRoleBans);
         _net.RegisterNetMessage<MsgPlayTime>(RxPlayTime);
+        _net.RegisterNetMessage<MsgJobWhitelist>(RxJobWhitelist);
 
         _client.RunLevelChanged += ClientOnRunLevelChanged;
     }
@@ -78,43 +84,99 @@ public sealed class JobRequirementsManager
         Updated?.Invoke();
     }
 
-    public bool IsAllowed(JobPrototype job, [NotNullWhen(false)] out string? reason)
+    private void RxJobWhitelist(MsgJobWhitelist message)
+    {
+        _jobWhitelists.Clear();
+        _jobWhitelists.AddRange(message.Whitelist);
+        Updated?.Invoke();
+    }
+
+    public bool IsAllowed(JobPrototype job, HumanoidCharacterProfile? profile, [NotNullWhen(false)] out FormattedMessage? reason)
     {
         reason = null;
 
         if (_roleBans.Contains($"Job:{job.ID}"))
         {
-            reason = Loc.GetString("role-ban");
+            reason = FormattedMessage.FromUnformatted(Loc.GetString("role-ban"));
             return false;
         }
 
-        if (job.Requirements == null ||
-            !_cfg.GetCVar(CCVars.GameRoleTimers))
-        {
-            return true;
-        }
+        if (!CheckWhitelist(job, out reason))
+            return false;
 
-        var player = _playerManager.LocalPlayer?.Session;
-
+        var player = _playerManager.LocalSession;
         if (player == null)
             return true;
 
-        var reasonBuilder = new StringBuilder();
+        return CheckRoleRequirements(job, profile, out reason);
+    }
 
-        var first = true;
-        foreach (var requirement in job.Requirements)
+    public bool CheckRoleRequirements(JobPrototype job, HumanoidCharacterProfile? profile, [NotNullWhen(false)] out FormattedMessage? reason)
+    {
+        var reqs = _entManager.System<SharedRoleSystem>().GetJobRequirement(job);
+        return CheckRoleRequirements(reqs, profile, out reason);
+    }
+
+    public bool CheckRoleRequirements(HashSet<JobRequirement>? requirements, HumanoidCharacterProfile? profile, [NotNullWhen(false)] out FormattedMessage? reason)
+    {
+        reason = null;
+
+        if (requirements == null || !_cfg.GetCVar(CCVars.GameRoleTimers))
+            return true;
+
+        var reasons = new List<string>();
+        foreach (var requirement in requirements)
         {
-            if (JobRequirements.TryRequirementMet(requirement, _roles, out reason, _prototypes))
+            if (requirement.Check(_entManager, _prototypes, profile, _roles, out var jobReason))
                 continue;
 
-            if (!first)
-                reasonBuilder.Append('\n');
-            first = false;
-
-            reasonBuilder.AppendLine(reason);
+            reasons.Add(jobReason.ToMarkup());
         }
 
-        reason = reasonBuilder.Length == 0 ? null : reasonBuilder.ToString();
+        reason = reasons.Count == 0 ? null : FormattedMessage.FromMarkup(string.Join('\n', reasons));
         return reason == null;
+    }
+
+    public bool CheckWhitelist(JobPrototype job, [NotNullWhen(false)] out FormattedMessage? reason)
+    {
+        reason = default;
+        if (!_cfg.GetCVar(CCVars.GameRoleWhitelist))
+            return true;
+
+        if (job.Whitelisted && !_jobWhitelists.Contains(job.ID))
+        {
+            reason = FormattedMessage.FromUnformatted(Loc.GetString("role-not-whitelisted"));
+            return false;
+        }
+
+        return true;
+    }
+
+    public TimeSpan FetchOverallPlaytime()
+    {
+        return _roles.TryGetValue("Overall", out var overallPlaytime) ? overallPlaytime : TimeSpan.Zero;
+    }
+
+    public IEnumerable<KeyValuePair<string, TimeSpan>> FetchPlaytimeByRoles()
+    {
+        var jobsToMap = _prototypes.EnumeratePrototypes<JobPrototype>();
+
+        foreach (var job in jobsToMap)
+        {
+            if (_roles.TryGetValue(job.PlayTimeTracker, out var locJobName))
+            {
+                yield return new KeyValuePair<string, TimeSpan>(job.Name, locJobName);
+            }
+        }
+    }
+
+    public IReadOnlyDictionary<string, TimeSpan> GetPlayTimes(ICommonSession session)
+    {
+        if (session != _playerManager.LocalSession)
+        {
+            return new Dictionary<string, TimeSpan>();
+        }
+
+        return _roles;
     }
 }

@@ -8,6 +8,7 @@ using Robust.Client.Input;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
@@ -21,7 +22,8 @@ namespace Content.Client.NPC
         [Dependency] private readonly IMapManager _mapManager = default!;
         [Dependency] private readonly IResourceCache _cache = default!;
         [Dependency] private readonly NPCSteeringSystem _steering = default!;
-        [Dependency] private readonly SharedTransformSystem _transform = default!;
+        [Dependency] private readonly MapSystem _mapSystem = default!;
+        [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
 
         public PathfindingDebugMode Modes
         {
@@ -38,7 +40,7 @@ namespace Content.Client.NPC
                 }
                 else if (!overlayManager.HasOverlay<PathfindingOverlay>())
                 {
-                    overlayManager.AddOverlay(new PathfindingOverlay(EntityManager, _eyeManager, _inputManager, _mapManager, _cache, this));
+                    overlayManager.AddOverlay(new PathfindingOverlay(EntityManager, _eyeManager, _inputManager, _mapManager, _cache, this, _mapSystem, _transformSystem));
                 }
 
                 if ((value & PathfindingDebugMode.Steering) != 0x0)
@@ -62,8 +64,8 @@ namespace Content.Client.NPC
         private PathfindingDebugMode _modes = PathfindingDebugMode.None;
 
         // It's debug data IDC if it doesn't support snapshots I just want something fast.
-        public Dictionary<EntityUid, Dictionary<Vector2i, List<PathfindingBreadcrumb>>> Breadcrumbs = new();
-        public Dictionary<EntityUid, Dictionary<Vector2i, Dictionary<Vector2i, List<DebugPathPoly>>>> Polys = new();
+        public Dictionary<NetEntity, Dictionary<Vector2i, List<PathfindingBreadcrumb>>> Breadcrumbs = new();
+        public Dictionary<NetEntity, Dictionary<Vector2i, Dictionary<Vector2i, List<DebugPathPoly>>>> Polys = new();
         public readonly List<(TimeSpan Time, PathRouteMessage Message)> Routes = new();
 
         public override void Initialize()
@@ -138,11 +140,13 @@ namespace Content.Client.NPC
         private readonly IInputManager _inputManager;
         private readonly IMapManager _mapManager;
         private readonly PathfindingSystem _system;
-        private readonly SharedTransformSystem _transform;
+        private readonly MapSystem _mapSystem;
+        private readonly SharedTransformSystem _transformSystem;
 
         public override OverlaySpace Space => OverlaySpace.ScreenSpace | OverlaySpace.WorldSpace;
 
         private readonly Font _font;
+        private List<Entity<MapGridComponent>> _grids = new();
 
         public PathfindingOverlay(
             IEntityManager entManager,
@@ -150,14 +154,17 @@ namespace Content.Client.NPC
             IInputManager inputManager,
             IMapManager mapManager,
             IResourceCache cache,
-            PathfindingSystem system)
+            PathfindingSystem system,
+            MapSystem mapSystem,
+            SharedTransformSystem transformSystem)
         {
             _entManager = entManager;
             _eyeManager = eyeManager;
             _inputManager = inputManager;
             _mapManager = mapManager;
             _system = system;
-            _transform = entManager.System<TransformSystem>();
+            _mapSystem = mapSystem;
+            _transformSystem = transformSystem;
             _font = new VectorFont(cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 10);
         }
 
@@ -186,12 +193,17 @@ namespace Content.Client.NPC
             {
                 var found = false;
 
-                foreach (var grid in _mapManager.FindGridsIntersecting(mouseWorldPos.MapId, aabb))
+                _grids.Clear();
+                _mapManager.FindGridsIntersecting(mouseWorldPos.MapId, aabb, ref _grids);
+
+                foreach (var grid in _grids)
                 {
-                    if (found || !_system.Breadcrumbs.TryGetValue(grid.Owner, out var crumbs) || !xformQuery.TryGetComponent(grid.Owner, out var gridXform))
+                    var netGrid = _entManager.GetNetEntity(grid);
+
+                    if (found || !_system.Breadcrumbs.TryGetValue(netGrid, out var crumbs) || !xformQuery.TryGetComponent(grid, out var gridXform))
                         continue;
 
-                    var (_, _, worldMatrix, invWorldMatrix) = _transform.GetWorldPositionRotationMatrixWithInv(gridXform);
+                    var (_, _, worldMatrix, invWorldMatrix) = _transformSystem.GetWorldPositionRotationMatrixWithInv(gridXform);
                     var localAABB = invWorldMatrix.TransformBox(aabb.Enlarged(float.Epsilon - SharedPathfindingSystem.ChunkSize));
 
                     foreach (var chunk in crumbs)
@@ -211,7 +223,7 @@ namespace Content.Client.NPC
 
                         foreach (var crumb in chunk.Value)
                         {
-                            var crumbMapPos = worldMatrix.Transform(_system.GetCoordinate(chunk.Key, crumb.Coordinates));
+                            var crumbMapPos = Vector2.Transform(_system.GetCoordinate(chunk.Key, crumb.Coordinates), worldMatrix);
                             var distance = (crumbMapPos - mouseWorldPos.Position).Length();
 
                             if (distance < nearestDistance)
@@ -261,10 +273,10 @@ namespace Content.Client.NPC
                 if (!_mapManager.TryFindGridAt(mouseWorldPos, out var gridUid, out var grid) || !xformQuery.TryGetComponent(gridUid, out var gridXform))
                     return;
 
-                if (!_system.Polys.TryGetValue(gridUid, out var data))
+                if (!_system.Polys.TryGetValue(_entManager.GetNetEntity(gridUid), out var data))
                     return;
 
-                var tileRef = grid.GetTileRef(mouseWorldPos);
+                var tileRef = _mapSystem.GetTileRef(gridUid, grid, mouseWorldPos);
                 var localPos = tileRef.GridIndices;
                 var chunkOrigin = localPos / SharedPathfindingSystem.ChunkSize;
 
@@ -275,12 +287,12 @@ namespace Content.Client.NPC
                     return;
                 }
 
-                var invGridMatrix = _transform.GetInvWorldMatrix(gridXform);
+                var invGridMatrix = _transformSystem.GetInvWorldMatrix(gridXform);
                 DebugPathPoly? nearest = null;
 
                 foreach (var poly in tile)
                 {
-                    if (poly.Box.Contains(invGridMatrix.Transform(mouseWorldPos.Position)))
+                    if (poly.Box.Contains(Vector2.Transform(mouseWorldPos.Position, invGridMatrix)))
                     {
                         nearest = poly;
                         break;
@@ -334,15 +346,20 @@ namespace Content.Client.NPC
             if ((_system.Modes & PathfindingDebugMode.Breadcrumbs) != 0x0 &&
                 mouseWorldPos.MapId == args.MapId)
             {
-                foreach (var grid in _mapManager.FindGridsIntersecting(mouseWorldPos.MapId, aabb))
+                _grids.Clear();
+                _mapManager.FindGridsIntersecting(mouseWorldPos.MapId, aabb, ref _grids);
+
+                foreach (var grid in _grids)
                 {
-                    if (!_system.Breadcrumbs.TryGetValue(grid.Owner, out var crumbs) ||
-                        !xformQuery.TryGetComponent(grid.Owner, out var gridXform))
+                    var netGrid = _entManager.GetNetEntity(grid);
+
+                    if (!_system.Breadcrumbs.TryGetValue(netGrid, out var crumbs) ||
+                        !xformQuery.TryGetComponent(grid, out var gridXform))
                     {
                         continue;
                     }
 
-                    var (_, _, worldMatrix, invWorldMatrix) = _transform.GetWorldPositionRotationMatrixWithInv(gridXform);
+                    var (_, _, worldMatrix, invWorldMatrix) = _transformSystem.GetWorldPositionRotationMatrixWithInv(gridXform);
                     worldHandle.SetTransform(worldMatrix);
                     var localAABB = invWorldMatrix.TransformBox(aabb);
 
@@ -391,13 +408,18 @@ namespace Content.Client.NPC
             if ((_system.Modes & PathfindingDebugMode.Polys) != 0x0 &&
                 mouseWorldPos.MapId == args.MapId)
             {
-                foreach (var grid in _mapManager.FindGridsIntersecting(args.MapId, aabb))
+                _grids.Clear();
+                _mapManager.FindGridsIntersecting(args.MapId, aabb, ref _grids);
+
+                foreach (var grid in _grids)
                 {
-                    if (!_system.Polys.TryGetValue(grid.Owner, out var data) ||
-                        !xformQuery.TryGetComponent(grid.Owner, out var gridXform))
+                    var netGrid = _entManager.GetNetEntity(grid);
+
+                    if (!_system.Polys.TryGetValue(netGrid, out var data) ||
+                        !xformQuery.TryGetComponent(grid, out var gridXform))
                         continue;
 
-                    var (_, _, worldMatrix, invWorldMatrix) = _transform.GetWorldPositionRotationMatrixWithInv(gridXform);
+                    var (_, _, worldMatrix, invWorldMatrix) = _transformSystem.GetWorldPositionRotationMatrixWithInv(gridXform);
                     worldHandle.SetTransform(worldMatrix);
                     var localAABB = invWorldMatrix.TransformBox(aabb);
 
@@ -425,13 +447,18 @@ namespace Content.Client.NPC
             if ((_system.Modes & PathfindingDebugMode.PolyNeighbors) != 0x0 &&
                 mouseWorldPos.MapId == args.MapId)
             {
-                foreach (var grid in _mapManager.FindGridsIntersecting(args.MapId, aabb))
+                _grids.Clear();
+                _mapManager.FindGridsIntersecting(args.MapId, aabb, ref _grids);
+
+                foreach (var grid in _grids)
                 {
-                    if (!_system.Polys.TryGetValue(grid.Owner, out var data) ||
-                        !xformQuery.TryGetComponent(grid.Owner, out var gridXform))
+                    var netGrid = _entManager.GetNetEntity(grid);
+
+                    if (!_system.Polys.TryGetValue(netGrid, out var data) ||
+                        !xformQuery.TryGetComponent(grid, out var gridXform))
                         continue;
 
-                    var (_, _, worldMatrix, invMatrix) = _transform.GetWorldPositionRotationMatrixWithInv(gridXform);
+                    var (_, _, worldMatrix, invMatrix) = _transformSystem.GetWorldPositionRotationMatrixWithInv(gridXform);
                     worldHandle.SetTransform(worldMatrix);
                     var localAABB = invMatrix.TransformBox(aabb);
 
@@ -453,15 +480,15 @@ namespace Content.Client.NPC
                                     Color color;
                                     Vector2 neighborPos;
 
-                                    if (neighborPoly.EntityId != poly.GraphUid)
+                                    if (neighborPoly.NetEntity != poly.GraphUid)
                                     {
                                         color = Color.Green;
-                                        var neighborMap = neighborPoly.ToMap(_entManager);
+                                        var neighborMap = _transformSystem.ToMapCoordinates(_entManager.GetCoordinates(neighborPoly));
 
                                         if (neighborMap.MapId != args.MapId)
                                             continue;
 
-                                        neighborPos = invMatrix.Transform(neighborMap.Position);
+                                        neighborPos = Vector2.Transform(neighborMap.Position, invMatrix);
                                     }
                                     else
                                     {
@@ -479,13 +506,18 @@ namespace Content.Client.NPC
 
             if ((_system.Modes & PathfindingDebugMode.Chunks) != 0x0)
             {
-                foreach (var grid in _mapManager.FindGridsIntersecting(args.MapId, args.WorldBounds))
+                _grids.Clear();
+                _mapManager.FindGridsIntersecting(args.MapId, args.WorldBounds, ref _grids);
+
+                foreach (var grid in _grids)
                 {
-                    if (!_system.Breadcrumbs.TryGetValue(grid.Owner, out var crumbs) ||
-                        !xformQuery.TryGetComponent(grid.Owner, out var gridXform))
+                    var netGrid = _entManager.GetNetEntity(grid);
+
+                    if (!_system.Breadcrumbs.TryGetValue(netGrid, out var crumbs) ||
+                        !xformQuery.TryGetComponent(grid, out var gridXform))
                         continue;
 
-                    var (_, _, worldMatrix, invWorldMatrix) = _transform.GetWorldPositionRotationMatrixWithInv(gridXform);
+                    var (_, _, worldMatrix, invWorldMatrix) = _transformSystem.GetWorldPositionRotationMatrixWithInv(gridXform);
                     worldHandle.SetTransform(worldMatrix);
                     var localAABB = invWorldMatrix.TransformBox(args.WorldBounds);
 
@@ -509,10 +541,10 @@ namespace Content.Client.NPC
                 {
                     foreach (var node in route.Message.Path)
                     {
-                        if (!_entManager.TryGetComponent<TransformComponent>(node.GraphUid, out var graphXform))
+                        if (!_entManager.TryGetComponent<TransformComponent>(_entManager.GetEntity(node.GraphUid), out var graphXform))
                             continue;
 
-                        worldHandle.SetTransform(_transform.GetWorldMatrix(graphXform));
+                        worldHandle.SetTransform(_transformSystem.GetWorldMatrix(graphXform));
                         worldHandle.DrawRect(node.Box, Color.Orange.WithAlpha(0.10f));
                     }
                 }
@@ -528,13 +560,15 @@ namespace Content.Client.NPC
 
                     foreach (var (node, cost) in route.Message.Costs)
                     {
-                        if (matrix != node.GraphUid)
+                        var graph = _entManager.GetEntity(node.GraphUid);
+
+                        if (matrix != graph)
                         {
-                            if (!_entManager.TryGetComponent<TransformComponent>(node.GraphUid, out var graphXform))
+                            if (!_entManager.TryGetComponent<TransformComponent>(graph, out var graphXform))
                                 continue;
 
-                            matrix = node.GraphUid;
-                            worldHandle.SetTransform(_transform.GetWorldMatrix(graphXform));
+                            matrix = graph;
+                            worldHandle.SetTransform(_transformSystem.GetWorldMatrix(graphXform));
                         }
 
                         worldHandle.DrawRect(node.Box, new Color(0f, cost / highestGScore, 1f - (cost / highestGScore), 0.10f));
@@ -542,7 +576,7 @@ namespace Content.Client.NPC
                 }
             }
 
-            worldHandle.SetTransform(Matrix3.Identity);
+            worldHandle.SetTransform(Matrix3x2.Identity);
         }
     }
 }

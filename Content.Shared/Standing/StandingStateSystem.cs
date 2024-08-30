@@ -2,10 +2,9 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Physics;
 using Content.Shared.Rotation;
 using Robust.Shared.Audio;
-using Robust.Shared.GameStates;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
-using Robust.Shared.Serialization;
 
 namespace Content.Shared.Standing
 {
@@ -18,26 +17,6 @@ namespace Content.Shared.Standing
         // If StandingCollisionLayer value is ever changed to more than one layer, the logic needs to be edited.
         private const int StandingCollisionLayer = (int) CollisionGroup.MidImpassable;
 
-        public override void Initialize()
-        {
-            SubscribeLocalEvent<StandingStateComponent, ComponentGetState>(OnGetState);
-            SubscribeLocalEvent<StandingStateComponent, ComponentHandleState>(OnHandleState);
-        }
-
-        private void OnHandleState(EntityUid uid, StandingStateComponent component, ref ComponentHandleState args)
-        {
-            if (args.Current is not StandingComponentState state)
-                return;
-
-            component.Standing = state.Standing;
-            component.ChangedFixtures = new List<string>(state.ChangedFixtures);
-        }
-
-        private void OnGetState(EntityUid uid, StandingStateComponent component, ref ComponentGetState args)
-        {
-            args.State = new StandingComponentState(component.Standing, component.ChangedFixtures);
-        }
-
         public bool IsDown(EntityUid uid, StandingStateComponent? standingState = null)
         {
             if (!Resolve(uid, ref standingState, false))
@@ -46,7 +25,10 @@ namespace Content.Shared.Standing
             return !standingState.Standing;
         }
 
-        public bool Down(EntityUid uid, bool playSound = true, bool dropHeldItems = true,
+        public bool Down(EntityUid uid,
+            bool playSound = true,
+            bool dropHeldItems = true,
+            bool force = false,
             StandingStateComponent? standingState = null,
             AppearanceComponent? appearance = null,
             HandsComponent? hands = null)
@@ -70,14 +52,17 @@ namespace Content.Shared.Standing
                 RaiseLocalEvent(uid, new DropHandItemsEvent(), false);
             }
 
-            var msg = new DownAttemptEvent();
-            RaiseLocalEvent(uid, msg, false);
+            if (!force)
+            {
+                var msg = new DownAttemptEvent();
+                RaiseLocalEvent(uid, msg, false);
 
-            if (msg.Cancelled)
-                return false;
+                if (msg.Cancelled)
+                    return false;
+            }
 
             standingState.Standing = false;
-            Dirty(standingState);
+            Dirty(uid, standingState);
             RaiseLocalEvent(uid, new DownedEvent(), false);
 
             // Seemed like the best place to put it
@@ -103,7 +88,7 @@ namespace Content.Shared.Standing
 
             if (playSound)
             {
-                _audio.PlayPredicted(standingState.DownSound, uid, uid, AudioParams.Default.WithVariation(0.25f));
+                _audio.PlayPredicted(standingState.DownSound, uid, uid);
             }
 
             return true;
@@ -150,20 +135,6 @@ namespace Content.Shared.Standing
             standingState.ChangedFixtures.Clear();
 
             return true;
-        }
-
-        // I'm not calling it StandingStateComponentState
-        [Serializable, NetSerializable]
-        private sealed class StandingComponentState : ComponentState
-        {
-            public bool Standing { get; }
-            public List<string> ChangedFixtures { get; }
-
-            public StandingComponentState(bool standing, List<string> changedFixtures)
-            {
-                Standing = standing;
-                ChangedFixtures = changedFixtures;
-            }
         }
     }
 

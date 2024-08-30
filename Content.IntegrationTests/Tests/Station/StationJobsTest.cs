@@ -7,7 +7,6 @@ using Content.Shared.Preferences;
 using Content.Shared.Roles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Log;
-using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -21,7 +20,19 @@ public sealed class StationJobsTest
     [TestPrototypes]
     private const string Prototypes = @"
 - type: playTimeTracker
-  id: PlayTimeDummy
+  id: PlayTimeDummyAssistant
+
+- type: playTimeTracker
+  id: PlayTimeDummyMime
+
+- type: playTimeTracker
+  id: PlayTimeDummyClown
+
+- type: playTimeTracker
+  id: PlayTimeDummyCaptain
+
+- type: playTimeTracker
+  id: PlayTimeDummyChaplain
 
 - type: gameMap
   id: FooStation
@@ -34,8 +45,6 @@ public sealed class StationJobsTest
       stationProto: StandardNanotrasenStation
       components:
         - type: StationJobs
-          overflowJobs:
-          - Passenger
           availableJobs:
             TMime: [0, -1]
             TAssistant: [-1, -1]
@@ -44,26 +53,26 @@ public sealed class StationJobsTest
 
 - type: job
   id: TAssistant
-  playTimeTracker: PlayTimeDummy
+  playTimeTracker: PlayTimeDummyAssistant
 
 - type: job
   id: TMime
   weight: 20
-  playTimeTracker: PlayTimeDummy
+  playTimeTracker: PlayTimeDummyMime
 
 - type: job
   id: TClown
   weight: -10
-  playTimeTracker: PlayTimeDummy
+  playTimeTracker: PlayTimeDummyClown
 
 - type: job
   id: TCaptain
   weight: 10
-  playTimeTracker: PlayTimeDummy
+  playTimeTracker: PlayTimeDummyCaptain
 
 - type: job
   id: TChaplain
-  playTimeTracker: PlayTimeDummy
+  playTimeTracker: PlayTimeDummyChaplain
 ";
 
     private const int StationCount = 100;
@@ -152,7 +161,6 @@ public sealed class StationJobsTest
         var server = pair.Server;
 
         var prototypeManager = server.ResolveDependency<IPrototypeManager>();
-        var mapManager = server.ResolveDependency<IMapManager>();
         var fooStationProto = prototypeManager.Index<GameMapPrototype>("FooStation");
         var entSysMan = server.ResolveDependency<IEntityManager>().EntitySysManager;
         var stationJobs = entSysMan.GetEntitySystem<StationJobsSystem>();
@@ -203,6 +211,8 @@ public sealed class StationJobsTest
         var server = pair.Server;
 
         var prototypeManager = server.ResolveDependency<IPrototypeManager>();
+        var compFact = server.ResolveDependency<IComponentFactory>();
+        var name = compFact.GetComponentName<StationJobsComponent>();
 
         await server.WaitAssertion(() =>
         {
@@ -221,11 +231,14 @@ public sealed class StationJobsTest
                 {
                     foreach (var (stationId, station) in gameMap.Stations)
                     {
-                        if (!station.StationComponentOverrides.TryGetComponent("StationJobs", out var comp))
+                        if (!station.StationComponentOverrides.TryGetComponent(name, out var comp))
                             continue;
 
-                        foreach (var (job, _) in ((StationJobsComponent) comp).SetupAvailableJobs)
+                        foreach (var (job, array) in ((StationJobsComponent) comp).SetupAvailableJobs)
                         {
+                            Assert.That(array.Length, Is.EqualTo(2));
+                            Assert.That(array[0] is -1 or >= 0);
+                            Assert.That(array[1] is -1 or >= 0);
                             Assert.That(invalidJobs, Does.Not.Contain(job), $"Station {stationId} contains job prototype {job} which cannot be present roundstart.");
                         }
                     }

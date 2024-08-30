@@ -13,9 +13,6 @@ public sealed partial class GasAnalyzerComponent : Component
     [ViewVariables]
     public EntityUid User;
 
-    [ViewVariables(VVAccess.ReadWrite)]
-    public EntityCoordinates? LastPosition;
-
     [DataField("enabled"), ViewVariables(VVAccess.ReadWrite)]
     public bool Enabled;
 
@@ -32,11 +29,11 @@ public sealed partial class GasAnalyzerComponent : Component
     public sealed class GasAnalyzerUserMessage : BoundUserInterfaceMessage
     {
         public string DeviceName;
-        public EntityUid DeviceUid;
+        public NetEntity DeviceUid;
         public bool DeviceFlipped;
         public string? Error;
         public GasMixEntry[] NodeGasMixes;
-        public GasAnalyzerUserMessage(GasMixEntry[] nodeGasMixes, string deviceName, EntityUid deviceUid, bool deviceFlipped, string? error = null)
+        public GasAnalyzerUserMessage(GasMixEntry[] nodeGasMixes, string deviceName, NetEntity deviceUid, bool deviceFlipped, string? error = null)
         {
             NodeGasMixes = nodeGasMixes;
             DeviceName = deviceName;
@@ -56,13 +53,15 @@ public sealed partial class GasAnalyzerComponent : Component
         /// Name of the tab in the UI
         /// </summary>
         public readonly string Name;
+        public readonly float Volume;
         public readonly float Pressure;
         public readonly float Temperature;
         public readonly GasEntry[]? Gases;
 
-        public GasMixEntry(string name, float pressure, float temperature, GasEntry[]? gases = null)
+        public GasMixEntry(string name, float volume, float pressure, float temperature, GasEntry[]? gases = null)
         {
             Name = name;
+            Volume = volume;
             Pressure = pressure;
             Temperature = temperature;
             Gases = gases;

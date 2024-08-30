@@ -1,7 +1,6 @@
 using Content.Server.Administration.Notes;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
-using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Console;
 
@@ -27,9 +26,9 @@ public sealed class OpenUserVisibleNotesCommand : IConsoleCommand
             return;
         }
 
-        if (shell.Player is not IPlayerSession player)
+        if (shell.Player is not { } player)
         {
-            shell.WriteError("This does not work from the server console.");
+            shell.WriteError(Loc.GetString("shell-cannot-run-command-from-server"));
             return;
         }
 

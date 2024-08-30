@@ -1,7 +1,6 @@
 using System.Numerics;
 using Robust.Shared.GameStates;
 using Robust.Shared.Graphics;
-using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Serialization.Manager.Attributes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
@@ -12,16 +11,10 @@ namespace Robust.Shared.GameObjects
     [RegisterComponent, NetworkedComponent, Access(typeof(SharedEyeSystem)), AutoGenerateComponentState(true)]
     public sealed partial class EyeComponent : Component
     {
-        #region Client
-
-        [ViewVariables] internal Eye? _eye = default!;
-
-        public IEye? Eye => _eye;
+        public const int DefaultVisibilityMask = 1;
 
         [ViewVariables]
-        public MapCoordinates? Position => _eye?.Position;
-
-        #endregion
+        public readonly Eye Eye = new();
 
         /// <summary>
         ///     If not null, this entity is used to update the eye's position instead of just using the component's owner.
@@ -37,6 +30,9 @@ namespace Robust.Shared.GameObjects
         [ViewVariables(VVAccess.ReadWrite), DataField("drawFov"), AutoNetworkedField]
         public bool DrawFov = true;
 
+        [ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
+        public bool DrawLight = true;
+
         // yes it's not networked, don't ask.
         [ViewVariables(VVAccess.ReadWrite), DataField("rotation")]
         public Angle Rotation;
@@ -44,10 +40,11 @@ namespace Robust.Shared.GameObjects
         [ViewVariables(VVAccess.ReadWrite), DataField("zoom")]
         public Vector2 Zoom = Vector2.One;
 
+        /// <summary>
+        /// Eye offset, relative to the map, and not affected by <see cref="Rotation"/>
+        /// </summary>
         [ViewVariables(VVAccess.ReadWrite), DataField("offset"), AutoNetworkedField]
         public Vector2 Offset;
-
-        public const int DefaultVisibilityMask = 1;
 
         /// <summary>
         ///     The visibility mask for this eye.
@@ -55,10 +52,19 @@ namespace Robust.Shared.GameObjects
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite), DataField("visMask", customTypeSerializer:typeof(FlagSerializer<VisibilityMaskLayer>)), AutoNetworkedField]
         public int VisibilityMask = DefaultVisibilityMask;
+
+        /// <summary>
+        /// Scaling factor for the PVS view range of this eye. This effectively allows the
+        /// <see cref="CVars.NetMaxUpdateRange"/> and <see cref="CVars.NetPvsPriorityRange"/> cvars to be configured per
+        /// eye.
+        /// </summary>
+        [Access(typeof(SharedEyeSystem))]
+        [DataField]
+        public float PvsScale = 1;
     }
 
     /// <summary>
-    /// Single layer used for Eye visiblity. Controls what entities they are allowed to see.
+    /// Single layer used for Eye visibility. Controls what entities they are allowed to see.
     /// </summary>
     public sealed class VisibilityMaskLayer {}
 }

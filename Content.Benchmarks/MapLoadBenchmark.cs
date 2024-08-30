@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +26,7 @@ public class MapLoadBenchmark
     public void Setup()
     {
         ProgramShared.PathOffset = "../../../../";
+        PoolManager.Startup();
 
         _pair = PoolManager.GetServerClient().GetAwaiter().GetResult();
         var server = _pair.Server;
@@ -42,9 +43,10 @@ public class MapLoadBenchmark
     public async Task Cleanup()
     {
         await _pair.DisposeAsync();
+        PoolManager.Shutdown();
     }
 
-    public static IEnumerable<string> MapsSource { get; set; }
+    public static readonly string[] MapsSource = { "Empty", "Satlern", "Box", "Bagel", "Dev", "CentComm", "Core", "TestTeg", "Packed", "Omega", "Reach", "Meta", "Marathon", "MeteorArena", "Fland", "Oasis", "Cog" };
 
     [ParamsSource(nameof(MapsSource))]
     public string Map;

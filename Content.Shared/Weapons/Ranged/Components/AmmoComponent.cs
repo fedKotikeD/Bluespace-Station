@@ -20,7 +20,7 @@ public partial class AmmoComponent : Component, IShootable
 /// <summary>
 /// Spawns another prototype to be shot instead of itself.
 /// </summary>
-[RegisterComponent, NetworkedComponent, ComponentReference(typeof(AmmoComponent)), AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class CartridgeAmmoComponent : AmmoComponent
 {
     [ViewVariables(VVAccess.ReadWrite), DataField("proto", required: true, customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
@@ -29,18 +29,6 @@ public sealed partial class CartridgeAmmoComponent : AmmoComponent
     [ViewVariables(VVAccess.ReadWrite), DataField("spent")]
     [AutoNetworkedField]
     public bool Spent = false;
-
-    /// <summary>
-    /// How much the ammo spreads when shot, in degrees. Does nothing if count is 0.
-    /// </summary>
-    [ViewVariables(VVAccess.ReadWrite), DataField("spread")]
-    public Angle Spread = Angle.FromDegrees(5);
-
-    /// <summary>
-    /// How many prototypes are spawned when shot.
-    /// </summary>
-    [ViewVariables(VVAccess.ReadWrite), DataField("count")]
-    public int Count = 1;
 
     /// <summary>
     /// Caseless ammunition.

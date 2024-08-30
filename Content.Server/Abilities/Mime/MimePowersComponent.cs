@@ -1,8 +1,7 @@
-using Content.Shared.Actions.ActionTypes;
+using Content.Shared.Alert;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
-using Robust.Shared.Utility;
 
 namespace Content.Server.Abilities.Mime
 {
@@ -24,16 +23,10 @@ namespace Content.Server.Abilities.Mime
         [DataField("wallPrototype", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
         public string WallPrototype = "WallInvisible";
 
-        [DataField("invisibleWallAction")]
-        public InstantAction InvisibleWallAction = new()
-        {
-            UseDelay = TimeSpan.FromSeconds(30),
-            Icon = new SpriteSpecifier.Texture(new("Structures/Walls/solid.rsi/full.png")),
-            DisplayName = "mime-invisible-wall",
-            Description = "mime-invisible-wall-desc",
-            Priority = -1,
-            Event = new InvisibleWallActionEvent(),
-        };
+        [DataField("invisibleWallAction", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+        public string? InvisibleWallAction = "ActionMimeInvisibleWall";
+
+        [DataField("invisibleWallActionEntity")] public EntityUid? InvisibleWallActionEntity;
 
         // The vow zone lies below
         public bool VowBroken = false;
@@ -55,5 +48,12 @@ namespace Content.Server.Abilities.Mime
         /// </summary>
         [DataField("vowCooldown")]
         public TimeSpan VowCooldown = TimeSpan.FromMinutes(5);
+
+        [DataField]
+        public ProtoId<AlertPrototype> VowAlert = "VowOfSilence";
+
+        [DataField]
+        public ProtoId<AlertPrototype> VowBrokenAlert = "VowBroken";
+
     }
 }

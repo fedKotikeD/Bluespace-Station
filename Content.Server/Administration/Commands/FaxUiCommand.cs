@@ -1,12 +1,11 @@
 using Content.Server.EUI;
 using Content.Server.Fax.AdminUI;
 using Content.Shared.Administration;
-using Robust.Server.Player;
 using Robust.Shared.Console;
 
 namespace Content.Server.Administration.Commands;
 
-[AdminCommand(AdminFlags.Admin)]
+[AdminCommand(AdminFlags.Fun)]
 public sealed class FaxUiCommand : IConsoleCommand
 {
     public string Command => "faxui";
@@ -16,10 +15,9 @@ public sealed class FaxUiCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        var player = shell.Player as IPlayerSession;
-        if (player == null)
+        if (shell.Player is not { } player)
         {
-            shell.WriteLine("shell-only-players-can-run-this-command");
+            shell.WriteError(Loc.GetString("shell-cannot-run-command-from-server"));
             return;
         }
 
@@ -28,4 +26,3 @@ public sealed class FaxUiCommand : IConsoleCommand
         eui.OpenEui(ui, player);
     }
 }
-

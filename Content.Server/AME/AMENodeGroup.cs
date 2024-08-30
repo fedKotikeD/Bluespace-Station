@@ -5,7 +5,8 @@ using Content.Server.Chat.Managers;
 using Content.Server.Explosion.EntitySystems;
 using Content.Server.NodeContainer.NodeGroups;
 using Content.Server.NodeContainer.Nodes;
-using Robust.Shared.Map;
+using Robust.Server.GameObjects;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 
 namespace Content.Server.Ame;
@@ -18,7 +19,6 @@ public sealed class AmeNodeGroup : BaseNodeGroup
 {
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly IEntityManager _entMan = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     /// <summary>
@@ -46,6 +46,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
 
         var ameControllerSystem = _entMan.System<AmeControllerSystem>();
         var ameShieldingSystem = _entMan.System<AmeShieldingSystem>();
+        var mapSystem = _entMan.System<MapSystem>();
 
         var shieldQuery = _entMan.GetEntityQuery<AmeShieldComponent>();
         var controllerQuery = _entMan.GetEntityQuery<AmeControllerComponent>();
@@ -57,7 +58,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
                 continue;
             if (!xformQuery.TryGetComponent(nodeOwner, out var xform))
                 continue;
-            if (!_mapManager.TryGetGrid(xform.GridUid, out var grid))
+            if (!_entMan.TryGetComponent(xform.GridUid, out MapGridComponent? grid))
                 continue;
 
             if (gridEnt == null)
@@ -65,7 +66,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
             else if (gridEnt != xform.GridUid)
                 continue;
 
-            var nodeNeighbors = grid.GetCellsInSquareArea(xform.Coordinates, 1)
+            var nodeNeighbors = mapSystem.GetCellsInSquareArea(xform.GridUid.Value, grid, xform.Coordinates, 1)
                 .Where(entity => entity != nodeOwner && shieldQuery.HasComponent(entity));
 
             if (nodeNeighbors.Count() >= 8)
@@ -126,33 +127,18 @@ public sealed class AmeNodeGroup : BaseNodeGroup
 
         var safeFuelLimit = CoreCount * 2;
 
-        // Note the float conversions. The maths will completely fail if not done using floats.
-        // Oh, and don't ever stuff the result of this in an int. Seriously.
-        var floatFuel = (float) fuel;
-        var floatCores = (float) CoreCount;
-        var powerOutput = 20000f * floatFuel * floatFuel / floatCores;
+        var powerOutput = CalculatePower(fuel, CoreCount);
         if (fuel <= safeFuelLimit)
             return powerOutput;
 
         // The AME is being overloaded.
         // Note about these maths: I would assume the general idea here is to make larger engines less safe to overload.
         // In other words, yes, those are supposed to be CoreCount, not safeFuelLimit.
-        var instability = 0;
         var overloadVsSizeResult = fuel - CoreCount;
 
-        // fuel > safeFuelLimit: Slow damage. Can safely run at this level for burst periods if the engine is small and someone is keeping an eye on it.
-        if (_random.Prob(0.5f))
-            instability = 1;
-        // overloadVsSizeResult > 5:
-        if (overloadVsSizeResult > 5)
-            instability = 5;
-        // overloadVsSizeResult > 10: This will explode in at most 5 injections.
-        if (overloadVsSizeResult > 10)
-            instability = 20;
-
-        // Apply calculated instability
-        if (instability == 0)
-            return powerOutput;
+        var instability = overloadVsSizeResult / CoreCount;
+        var fuzz = _random.Next(-1, 2); // -1 to 1
+        instability += fuzz; // fuzz the values a tiny bit.
 
         overloading = true;
         var integrityCheck = 100;
@@ -175,6 +161,19 @@ public sealed class AmeNodeGroup : BaseNodeGroup
             _chat.SendAdminAlert($"AME overloading: {_entMan.ToPrettyString(_masterController.Value)}");
 
         return powerOutput;
+    }
+
+    /// <summary>
+    /// Calculates the amount of power the AME can produce with the given settings
+    /// </summary>
+    public float CalculatePower(int fuel, int cores)
+    {
+        // Balanced around a single core AME with injection level 2 producing 120KW.
+        // Overclocking yields diminishing returns until it evens out at around 360KW.
+
+        // The adjustment for cores make it so that a 1 core AME at 2 injections is better than a 2 core AME at 2 injections.
+        // However, for the relative amounts for each (1 core at 2 and 2 core at 4), more cores has more output.
+        return 200000f * MathF.Log10(fuel * fuel) * MathF.Pow(0.75f, cores - 1);
     }
 
     public int GetTotalStability()

@@ -3,6 +3,7 @@ using Content.Shared.Mech;
 using Content.Shared.Mech.Components;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
+using Robust.Client.UserInterface;
 
 namespace Content.Client.Mech.Ui;
 
@@ -20,14 +21,13 @@ public sealed class MechBoundUserInterface : BoundUserInterface
     {
         base.Open();
 
-        _menu = new(Owner);
-
-        _menu.OnClose += Close;
+        _menu = this.CreateWindow<MechMenu>();
+        _menu.SetEntity(Owner);
         _menu.OpenCenteredLeft();
 
         _menu.OnRemoveButtonPressed += uid =>
         {
-            SendMessage(new MechEquipmentRemoveMessage(uid));
+            SendMessage(new MechEquipmentRemoveMessage(EntMan.GetNetEntity(uid)));
         };
     }
 
@@ -54,20 +54,10 @@ public sealed class MechBoundUserInterface : BoundUserInterface
                 continue;
             foreach (var (attached, estate) in state.EquipmentStates)
             {
-                if (ent == attached)
+                if (ent == EntMan.GetEntity(attached))
                     ui.UpdateState(estate);
             }
         }
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
-
-        if (!disposing)
-            return;
-
-        _menu?.Close();
     }
 
     public UIFragment? GetEquipmentUi(EntityUid? uid)

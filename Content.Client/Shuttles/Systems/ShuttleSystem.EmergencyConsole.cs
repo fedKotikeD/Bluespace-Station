@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared.Shuttles.Events;
 using Content.Shared.Shuttles.Systems;
 using Robust.Client.Graphics;
@@ -37,9 +38,8 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
     private bool _enableShuttlePosition;
     private EmergencyShuttleOverlay? _overlay;
 
-    public override void Initialize()
+    private void InitializeEmergency()
     {
-        base.Initialize();
         SubscribeNetworkEvent<EmergencyShuttlePositionMessage>(OnShuttlePosMessage);
     }
 
@@ -47,7 +47,7 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
     {
         if (_overlay == null) return;
 
-        _overlay.StationUid = ev.StationUid;
+        _overlay.StationUid = GetEntity(ev.StationUid);
         _overlay.Position = ev.Position;
     }
 }
@@ -57,8 +57,7 @@ public sealed partial class ShuttleSystem : SharedShuttleSystem
 /// </summary>
 public sealed class EmergencyShuttleOverlay : Overlay
 {
-    private readonly IEntityManager _entManager;
-    private readonly SharedTransformSystem _transform;
+    private IEntityManager _entManager;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
@@ -68,16 +67,14 @@ public sealed class EmergencyShuttleOverlay : Overlay
     public EmergencyShuttleOverlay(IEntityManager entManager)
     {
         _entManager = entManager;
-        _transform = entManager.System<SharedTransformSystem>();
     }
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if (Position == null || !_entManager.TryGetComponent<TransformComponent>(StationUid, out var xform))
-            return;
+        if (Position == null || !_entManager.TryGetComponent<TransformComponent>(StationUid, out var xform)) return;
 
-        args.WorldHandle.SetTransform(_transform.GetWorldMatrix(xform));
+        args.WorldHandle.SetTransform(xform.WorldMatrix);
         args.WorldHandle.DrawRect(Position.Value, Color.Red.WithAlpha(100));
-        args.WorldHandle.SetTransform(Matrix3.Identity);
+        args.WorldHandle.SetTransform(Matrix3x2.Identity);
     }
 }

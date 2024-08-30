@@ -3,7 +3,7 @@
 
 #Basic Helmet (Security Helmet)
 - type: entity
-  parent: ClothingHeadBase
+  parent: [ClothingHeadBase, BaseRestrictedContraband]
   id: ClothingHeadHelmetBasic
   name: helmet
   description: Standard security gear. Protects the head from impacts.
@@ -22,6 +22,10 @@
   - type: Tag
     tags:
     - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - HeadTop
+    - HeadSide
 
 #Mercenary Helmet
 - type: entity
@@ -37,7 +41,7 @@
 
 #SWAT Helmet
 - type: entity
-  parent: ClothingHeadBase
+  parent: [ClothingHeadBase, BaseRestrictedContraband]
   id: ClothingHeadHelmetSwat
   name: SWAT helmet
   description: An extremely robust helmet, commonly used by paramilitary forces. This one has the Nanotrasen logo emblazoned on the top.
@@ -73,7 +77,7 @@
 
 #Light Riot Helmet
 - type: entity
-  parent: ClothingHeadBase
+  parent: [ClothingHeadBase, BaseRestrictedContraband]
   id: ClothingHeadHelmetRiot
   name: light riot helmet
   description: It's a helmet specifically designed to protect against close range attacks.
@@ -103,13 +107,32 @@
     sprite: Clothing/Head/Helmets/bombsuit.rsi
   - type: IngestionBlocker
   - type: ExplosionResistance
-    damageCoefficient: 0.5
+    damageCoefficient: 0.9
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.90
-        Slash: 0.90
+        Blunt: 0.95
+        Slash: 0.95
         Piercing: 0.95
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide
+
+#Janitorial Bombsuit Helmet
+- type: entity
+  parent: ClothingHeadHelmetBombSuit
+  id: ClothingHeadHelmetJanitorBombSuit
+  name: janitorial bombsuit helmet
+  description: A heavy helmet designed to withstand explosions formed from reactions between chemicals.
+  suffix: DO NOT MAP
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Helmets/janitor_bombsuit.rsi
+  - type: Clothing
+    sprite: Clothing/Head/Helmets/janitor_bombsuit.rsi
 
 #Cult Helmet
 - type: entity
@@ -131,32 +154,9 @@
         Piercing: 0.9
         Heat: 0.9
 
-#SCAF Helmet
-- type: entity
-  parent: ClothingHeadBase
-  id: ClothingHeadHelmetScaf
-  name: scaf helmet
-  description: A robust, strong helmet.
-  components:
-  - type: Sprite
-    sprite: Clothing/Head/Helmets/scaf.rsi
-  - type: Clothing
-    sprite: Clothing/Head/Helmets/scaf.rsi
-  - type: IngestionBlocker
-  - type: Armor
-    modifiers:
-      coefficients:
-        Blunt: 0.9
-        Slash: 0.9
-        Piercing: 0.8
-  - type: Tag
-    tags:
-    - HidesHair
-    - WhitelistChameleon
-
 #Space Ninja Helmet
 - type: entity
-  parent: ClothingHeadBase
+  parent: ClothingHeadEVAHelmetBase
   id: ClothingHeadHelmetSpaceNinja
   name: space ninja helmet
   description: What may appear to be a simple black garment is in fact a highly sophisticated nano-weave helmet. Standard issue ninja gear.
@@ -165,12 +165,17 @@
     sprite: Clothing/Head/Helmets/spaceninja.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/spaceninja.rsi
-  - type: IngestionBlocker
   - type: Tag
     tags:
-    - HidesHair
     - WhitelistChameleon
+  - type: IngestionBlocker
   - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide
 
 #Templar Helmet
 - type: entity
@@ -227,11 +232,18 @@
   - type: IngestionBlocker
   - type: TemperatureProtection
     coefficient: 0.005
+  - type: FireProtection
+    reduction: 0.15 # not fully sealed so less protection
   - type: IdentityBlocker
   - type: Tag
     tags:
-    - HidesHair
     - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide
 
 #Atmos Fire Helmet
 - type: entity
@@ -248,14 +260,22 @@
   - type: IngestionBlocker
   - type: TemperatureProtection
     coefficient: 0.005
+  - type: FireProtection
+    reduction: 0.2
   - type: PressureProtection
     highPressureMultiplier: 0.25
     lowPressureMultiplier: 1000
   - type: IdentityBlocker
   - type: Tag
     tags:
-    - HidesHair
     - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide
+  - type: BreathMask
 
 #Chitinous Helmet
 - type: entity
@@ -336,3 +356,47 @@
     sprite: Clothing/Head/Helmets/ert_janitor.rsi
   - type: Clothing
     sprite: Clothing/Head/Helmets/ert_janitor.rsi
+
+- type: entity
+  parent: [ ClothingHeadHelmetBasic, BaseSyndicateContraband ]
+  id: ClothingHeadHelmetRaid
+  name: syndicate raid helmet
+  description: An armored helmet for use with the syndicate raid suit. Very stylish.
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Helmets/syndie-raid.rsi
+  - type: Clothing
+    sprite: Clothing/Head/Helmets/syndie-raid.rsi
+  - type: Armor
+    modifiers: #There's gotta be SOME reason to use this over other helmets.
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
+        Heat: 0.85
+
+#Bone Helmet
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetBone
+  name: bone helmet
+  description: Cool-looking helmet made of skull of your enemies.
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Helmets/bone_helmet.rsi
+  - type: Clothing
+    sprite: Clothing/Head/Helmets/bone_helmet.rsi
+  - type: Construction
+    graph: BoneHelmet
+    node: helmet
+
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: ClothingHeadHelmetPodWars
+  name: ironclad II helmet
+  description: An ironclad II helmet, a relic of the pod wars.
+  components:
+  - type: Sprite
+    sprite: Clothing/Head/Helmets/podwars_helmet.rsi
+  - type: Clothing
+    sprite: Clothing/Head/Helmets/podwars_helmet.rsi

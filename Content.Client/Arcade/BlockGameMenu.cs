@@ -12,6 +12,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.Graphics;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
@@ -26,8 +27,6 @@ namespace Content.Client.Arcade
         private static readonly Color OverlayShadowColor = new(0, 0, 0, 83);
 
         private static readonly Vector2 BlockSize = new(15, 15);
-
-        private readonly BlockGameBoundUserInterface _owner;
 
         private readonly PanelContainer _mainPanel;
 
@@ -57,10 +56,11 @@ namespace Content.Client.Arcade
         private bool _isPlayer = false;
         private bool _gameOver = false;
 
-        public BlockGameMenu(BlockGameBoundUserInterface owner)
+        public event Action<BlockGamePlayerAction>? OnAction;
+
+        public BlockGameMenu()
         {
             Title = Loc.GetString("blockgame-menu-title");
-            _owner = owner;
 
             MinSize = SetSize = new Vector2(410, 490);
 
@@ -175,7 +175,7 @@ namespace Content.Client.Arcade
             };
             _newGameButton.OnPressed += (e) =>
             {
-                _owner.SendAction(BlockGamePlayerAction.NewGame);
+                OnAction?.Invoke(BlockGamePlayerAction.NewGame);
             };
             pauseMenuContainer.AddChild(_newGameButton);
             pauseMenuContainer.AddChild(new Control { MinSize = new Vector2(1, 10) });
@@ -185,7 +185,10 @@ namespace Content.Client.Arcade
                 Text = Loc.GetString("blockgame-menu-button-scoreboard"),
                 TextAlign = Label.AlignMode.Center
             };
-            _scoreBoardButton.OnPressed += (e) => _owner.SendAction(BlockGamePlayerAction.ShowHighscores);
+            _scoreBoardButton.OnPressed += (e) =>
+            {
+                OnAction?.Invoke(BlockGamePlayerAction.ShowHighscores);
+            };
             pauseMenuContainer.AddChild(_scoreBoardButton);
             _unpauseButtonMargin = new Control { MinSize = new Vector2(1, 10), Visible = false };
             pauseMenuContainer.AddChild(_unpauseButtonMargin);
@@ -198,7 +201,7 @@ namespace Content.Client.Arcade
             };
             _unpauseButton.OnPressed += (e) =>
             {
-                _owner.SendAction(BlockGamePlayerAction.Unpause);
+                OnAction?.Invoke(BlockGamePlayerAction.Unpause);
             };
             pauseMenuContainer.AddChild(_unpauseButton);
 
@@ -256,7 +259,7 @@ namespace Content.Client.Arcade
             };
             _finalNewGameButton.OnPressed += (e) =>
             {
-                _owner.SendAction(BlockGamePlayerAction.NewGame);
+                OnAction?.Invoke(BlockGamePlayerAction.NewGame);
             };
             gameOverMenuContainer.AddChild(_finalNewGameButton);
 
@@ -326,7 +329,10 @@ namespace Content.Client.Arcade
                 Text = Loc.GetString("blockgame-menu-button-back"),
                 TextAlign = Label.AlignMode.Center
             };
-            _highscoreBackButton.OnPressed += (e) => _owner.SendAction(BlockGamePlayerAction.Pause);
+            _highscoreBackButton.OnPressed += (e) =>
+            {
+                OnAction?.Invoke(BlockGamePlayerAction.Pause);
+            };
             menuContainer.AddChild(_highscoreBackButton);
 
             menuInnerPanel.AddChild(menuContainer);
@@ -374,7 +380,7 @@ namespace Content.Client.Arcade
             {
                 PanelOverride = back,
                 HorizontalExpand = true,
-                SizeFlagsStretchRatio = 60
+                SizeFlagsStretchRatio = 34.25f
             };
             var backgroundPanel = new PanelContainer
             {
@@ -472,7 +478,7 @@ namespace Content.Client.Arcade
 
         private void TryPause()
         {
-            _owner.SendAction(BlockGamePlayerAction.Pause);
+            OnAction?.Invoke(BlockGamePlayerAction.Pause);
         }
 
         public void SetStarted()
@@ -575,19 +581,19 @@ namespace Content.Client.Arcade
                 return;
 
             else if (args.Function == ContentKeyFunctions.ArcadeLeft)
-                _owner.SendAction(BlockGamePlayerAction.StartLeft);
+                OnAction?.Invoke(BlockGamePlayerAction.StartLeft);
             else if (args.Function == ContentKeyFunctions.ArcadeRight)
-                _owner.SendAction(BlockGamePlayerAction.StartRight);
+                OnAction?.Invoke(BlockGamePlayerAction.StartRight);
             else if (args.Function == ContentKeyFunctions.ArcadeUp)
-                _owner.SendAction(BlockGamePlayerAction.Rotate);
+                OnAction?.Invoke(BlockGamePlayerAction.Rotate);
             else if (args.Function == ContentKeyFunctions.Arcade3)
-                _owner.SendAction(BlockGamePlayerAction.CounterRotate);
+                OnAction?.Invoke(BlockGamePlayerAction.CounterRotate);
             else if (args.Function == ContentKeyFunctions.ArcadeDown)
-                _owner.SendAction(BlockGamePlayerAction.SoftdropStart);
+                OnAction?.Invoke(BlockGamePlayerAction.SoftdropStart);
             else if (args.Function == ContentKeyFunctions.Arcade2)
-                _owner.SendAction(BlockGamePlayerAction.Hold);
+                OnAction?.Invoke(BlockGamePlayerAction.Hold);
             else if (args.Function == ContentKeyFunctions.Arcade1)
-                _owner.SendAction(BlockGamePlayerAction.Harddrop);
+                OnAction?.Invoke(BlockGamePlayerAction.Harddrop);
         }
 
         protected override void KeyBindUp(GUIBoundKeyEventArgs args)
@@ -598,11 +604,11 @@ namespace Content.Client.Arcade
                 return;
 
             else if (args.Function == ContentKeyFunctions.ArcadeLeft)
-                _owner.SendAction(BlockGamePlayerAction.EndLeft);
+                OnAction?.Invoke(BlockGamePlayerAction.EndLeft);
             else if (args.Function == ContentKeyFunctions.ArcadeRight)
-                _owner.SendAction(BlockGamePlayerAction.EndRight);
+                OnAction?.Invoke(BlockGamePlayerAction.EndRight);
             else if (args.Function == ContentKeyFunctions.ArcadeDown)
-                _owner.SendAction(BlockGamePlayerAction.SoftdropEnd);
+                OnAction?.Invoke(BlockGamePlayerAction.SoftdropEnd);
         }
 
         public void UpdateNextBlock(BlockGameBlock[] blocks)

@@ -1,3 +1,5 @@
+using Content.Shared.StatusIcon;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Access.Systems
@@ -8,7 +10,7 @@ namespace Content.Shared.Access.Systems
     }
 
     /// <summary>
-    /// Key representing which <see cref="BoundUserInterface"/> is currently open.
+    /// Key representing which <see cref="PlayerBoundUserInterface"/> is currently open.
     /// Useful when there are multiple UI for an object. Here it's future-proofing only.
     /// </summary>
     [Serializable, NetSerializable]
@@ -23,15 +25,15 @@ namespace Content.Shared.Access.Systems
     [Serializable, NetSerializable]
     public sealed class AgentIDCardBoundUserInterfaceState : BoundUserInterfaceState
     {
-        public readonly HashSet<string> Icons;
         public string CurrentName { get; }
         public string CurrentJob { get; }
+        public string CurrentJobIconId { get; }
 
-        public AgentIDCardBoundUserInterfaceState(string currentName, string currentJob, HashSet<string> icons)
+        public AgentIDCardBoundUserInterfaceState(string currentName, string currentJob, string currentJobIconId)
         {
-            Icons = icons;
             CurrentName = currentName;
             CurrentJob = currentJob;
+            CurrentJobIconId = currentJobIconId;
         }
     }
 
@@ -60,11 +62,11 @@ namespace Content.Shared.Access.Systems
     [Serializable, NetSerializable]
     public sealed class AgentIDCardJobIconChangedMessage : BoundUserInterfaceMessage
     {
-        public string JobIcon { get; }
+        public ProtoId<JobIconPrototype> JobIconId { get; }
 
-        public AgentIDCardJobIconChangedMessage(string jobIcon)
+        public AgentIDCardJobIconChangedMessage(ProtoId<JobIconPrototype> jobIconId)
         {
-            JobIcon = jobIcon;
+            JobIconId = jobIconId;
         }
     }
 }

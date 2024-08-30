@@ -5,19 +5,20 @@ using Content.Server.Administration.Notes;
 using Content.Server.Afk;
 using Content.Server.Chat.Managers;
 using Content.Server.Connection;
-using Content.Server.Corvax.DiscordAuth;
-using Content.Server.Corvax.JoinQueue;
-using Content.Server.Corvax.Sponsors;
 using Content.Server.Corvax.TTS;
 using Content.Server.Database;
 using Content.Server.Discord;
 using Content.Server.EUI;
 using Content.Server.GhostKick;
 using Content.Server.Info;
+using Content.Server.Mapping;
 using Content.Server.Maps;
 using Content.Server.MoMMI;
 using Content.Server.NodeContainer.NodeGroups;
+using Content.Server.Players;
+using Content.Server.Players.JobWhitelist;
 using Content.Server.Players.PlayTimeTracking;
+using Content.Server.Players.RateLimiting;
 using Content.Server.Preferences.Managers;
 using Content.Server.ServerInfo;
 using Content.Server.ServerUpdates;
@@ -26,6 +27,7 @@ using Content.Server.Worldgen.Tools;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Administration.Managers;
 using Content.Shared.Kitchen;
+using Content.Shared.Players.PlayTimeTracking;
 
 namespace Content.Server.IoC
 {
@@ -58,13 +60,16 @@ namespace Content.Server.IoC
             IoCManager.Register<IAdminLogManager, AdminLogManager>();
             IoCManager.Register<PlayTimeTrackingManager>();
             IoCManager.Register<UserDbDataManager>();
-            IoCManager.Register<SponsorsManager>(); // Corvax-Sponsors
-            IoCManager.Register<JoinQueueManager>(); // Corvax-Queue
             IoCManager.Register<TTSManager>(); // Corvax-TTS
-            IoCManager.Register<DiscordAuthManager>(); // Corvax-DiscordAuth
             IoCManager.Register<ServerInfoManager>();
             IoCManager.Register<PoissonDiskSampler>();
             IoCManager.Register<DiscordWebhook>();
+            IoCManager.Register<ServerDbEntryManager>();
+            IoCManager.Register<ISharedPlaytimeManager, PlayTimeTrackingManager>();
+            IoCManager.Register<ServerApi>();
+            IoCManager.Register<JobWhitelistManager>();
+            IoCManager.Register<PlayerRateLimitManager>();
+            IoCManager.Register<MappingManager>();
         }
     }
 }

@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.Manager.Attributes;
-using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Robust.Shared.Containers
@@ -59,14 +57,7 @@ namespace Robust.Shared.Containers
             if (contained != ContainedEntity)
                 return false;
 
-#if DEBUG
-            if (IoCManager.Resolve<IGameTiming>().ApplyingState)
-                return true;
-
-            var entMan = IoCManager.Resolve<IEntityManager>();
-            var flags = entMan.GetComponent<MetaDataComponent>(contained).Flags;
-            DebugTools.Assert((flags & MetaDataFlags.InContainer) != 0, $"Entity has bad container flags. Ent: {entMan.ToPrettyString(contained)}. Container: {ID}, Owner: {entMan.ToPrettyString(Owner)}");
-#endif
+            System?.AssertInContainer(contained, this);
             return true;
         }
 
@@ -74,7 +65,7 @@ namespace Robust.Shared.Containers
             => ContainedEntity == null || assumeEmpty;
 
         /// <inheritdoc />
-        protected override void InternalInsert(EntityUid toInsert, IEntityManager entMan)
+        protected internal override void InternalInsert(EntityUid toInsert, IEntityManager entMan)
         {
             DebugTools.Assert(ContainedEntity == null);
 
@@ -87,14 +78,14 @@ namespace Robust.Shared.Containers
         }
 
         /// <inheritdoc />
-        protected override void InternalRemove(EntityUid toRemove, IEntityManager entMan)
+        protected internal override void InternalRemove(EntityUid toRemove, IEntityManager entMan)
         {
             DebugTools.Assert(ContainedEntity == toRemove);
             ContainedEntity = null;
         }
 
         /// <inheritdoc />
-        protected override void InternalShutdown(IEntityManager entMan, bool isClient)
+        protected internal override void InternalShutdown(IEntityManager entMan, SharedContainerSystem system, bool isClient)
         {
             if (ContainedEntity is not { } entity)
                 return;
@@ -102,7 +93,7 @@ namespace Robust.Shared.Containers
             if (!isClient)
                 entMan.DeleteEntity(entity);
             else if (entMan.EntityExists(entity))
-                Remove(entity, entMan, reparent: false, force: true);
+                system.Remove(entity, this, reparent: false, force: true);
         }
     }
 }

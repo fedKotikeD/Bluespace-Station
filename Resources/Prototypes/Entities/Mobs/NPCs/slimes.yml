@@ -1,16 +1,10 @@
 ﻿- type: entity
   name: basic slime
-  id: MobAdultSlimes
-  parent: SimpleMobBase
+  id: BaseMobAdultSlimes
+  parent: [ SimpleMobBase, MobCombat ]
   abstract: true
   description: It looks so much like jelly. I wonder what it tastes like?
   components:
-  - type: NpcFactionMember
-    factions:
-    - SimpleNeutral
-  - type: HTN
-    rootTask:
-      task: SimpleHostileCompound
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Aliens/slimes.rsi
@@ -43,6 +37,7 @@
   - type: Tag
     tags:
     - FootstepSound
+    - DoorBumpOpener
   - type: Butcherable
     butcheringType: Knife
     spawned:
@@ -64,7 +59,7 @@
     bloodlossDamage:
       types:
         Bloodloss:
-          1
+          0.5
     bloodlossHealDamage:
       types:
         Bloodloss:
@@ -86,17 +81,19 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaled: true
+        scaleByQuantity: true
         damage:
           types:
-            Heat: 3
+            Heat: 0.15
       - !type:PopupMessage
         type: Local
         messages: [ "slime-hurt-by-water-popup" ]
         probability: 0.25
-  - type: CombatMode
+  - type: Body
+    prototype: Slimes
+    requiredLegs: 1
   - type: MeleeWeapon
-    hidden: true
+    altDisarm: false
     soundHit:
         path: /Audio/Weapons/punch3.ogg
     angle: 0
@@ -110,6 +107,19 @@
     successChance: 0.5
     interactSuccessString: petting-success-slimes
     interactFailureString: petting-failure-generic
+  - type: Speech
+    speechVerb: Slime
+    speechSounds: Slime
+  - type: TypingIndicator
+    proto: slime
+
+- type: entity
+  name: basic slime
+  id: MobAdultSlimes
+  parent: BaseMobAdultSlimes
+  abstract: true
+  description: It looks so much like jelly. I wonder what it tastes like?
+  components:
   - type: ReplacementAccent
     accent: slimes
   - type: GhostTakeoverAvailable
@@ -117,6 +127,21 @@
     makeSentient: true
     name: ghost-role-information-slimes-name
     description: ghost-role-information-slimes-description
+    rules: ghost-role-information-nonantagonist-rules
+    raffle:
+      settings: short
+  - type: Speech
+    speechVerb: Slime
+    speechSounds: Slime
+    allowedEmotes: ['Squish']
+  - type: TypingIndicator
+    proto: slime
+  - type: NpcFactionMember
+    factions:
+    - SimpleNeutral
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
   - type: TTS # Corvax-TTS
     voice: Chen
 
@@ -143,6 +168,9 @@
         - SimpleHostile
     - type: GhostRole
       description: ghost-role-information-angry-slimes-description
+      rules: ghost-role-information-angry-slimes-rules
+      raffle:
+        settings: short
 
 - type: entity
   name: green slime
@@ -178,6 +206,9 @@
         - SimpleHostile
     - type: GhostRole
       description: ghost-role-information-angry-slimes-description
+      rules: ghost-role-information-angry-slimes-rules
+      raffle:
+        settings: short
 
 - type: entity
   name: yellow slime
@@ -213,3 +244,6 @@
         - SimpleHostile
     - type: GhostRole
       description: ghost-role-information-angry-slimes-description
+      rules: ghost-role-information-angry-slimes-rules
+      raffle:
+        settings: short

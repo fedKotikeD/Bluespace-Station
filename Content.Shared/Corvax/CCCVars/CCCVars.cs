@@ -9,25 +9,11 @@ namespace Content.Shared.Corvax.CCCVars;
 // ReSharper disable once InconsistentNaming
 public sealed class CCCVars
 {
-    /**
-     * Sponsors
-     */
-
     /// <summary>
-    ///     URL of the sponsors server API.
+    /// Deny any VPN connections.
     /// </summary>
-    public static readonly CVarDef<string> SponsorsApiUrl =
-        CVarDef.Create("sponsor.api_url", "", CVar.SERVERONLY);
-
-    /*
-     * Queue
-     */
-
-    /// <summary>
-    ///     Controls if the connections queue is enabled. If enabled stop kicking new players after `SoftMaxPlayers` cap and instead add them to queue.
-    /// </summary>
-    public static readonly CVarDef<bool>
-        QueueEnabled = CVarDef.Create("queue.enabled", false, CVar.SERVERONLY);
+    public static readonly CVarDef<bool> PanicBunkerDenyVPN =
+        CVarDef.Create("game.panic_bunker.deny_vpn", false, CVar.SERVERONLY);
 
     /**
      * TTS (Text-To-Speech)
@@ -37,7 +23,7 @@ public sealed class CCCVars
     /// URL of the TTS server API.
     /// </summary>
     public static readonly CVarDef<bool> TTSEnabled =
-        CVarDef.Create("tts.enabled", false, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("tts.enabled", false, CVar.SERVER | CVar.REPLICATED | CVar.ARCHIVE);
 
     /// <summary>
     /// URL of the TTS server API.
@@ -69,6 +55,19 @@ public sealed class CCCVars
     public static readonly CVarDef<int> TTSMaxCache =
         CVarDef.Create("tts.max_cache", 250, CVar.SERVERONLY | CVar.ARCHIVE);
 
+    /// <summary>
+    /// Tts rate limit values are accounted in periods of this size (seconds).
+    /// After the period has passed, the count resets.
+    /// </summary>
+    public static readonly CVarDef<int> TTSRateLimitPeriod =
+        CVarDef.Create("tts.rate_limit_period", 2, CVar.SERVERONLY);
+
+    /// <summary>
+    /// How many tts preview messages are allowed in a single rate limit period.
+    /// </summary>
+    public static readonly CVarDef<int> TTSRateLimitCount =
+        CVarDef.Create("tts.rate_limit_count", 3, CVar.SERVERONLY);
+
     /*
      * Peaceful Round End
      */
@@ -78,26 +77,4 @@ public sealed class CCCVars
     /// </summary>
     public static readonly CVarDef<bool> PeacefulRoundEnd =
         CVarDef.Create("game.peaceful_end", true, CVar.SERVERONLY);
-
-    /*
-     * Discord Auth
-     */
-
-    /// <summary>
-    ///     Enabled Discord linking, show linking button and modal window
-    /// </summary>
-    public static readonly CVarDef<bool> DiscordAuthEnabled =
-        CVarDef.Create("discord_auth.enabled", false, CVar.SERVERONLY);
-
-    /// <summary>
-    ///     URL of the Discord auth server API
-    /// </summary>
-    public static readonly CVarDef<string> DiscordAuthApiUrl =
-        CVarDef.Create("discord_auth.api_url", "", CVar.SERVERONLY);
-
-    /// <summary>
-    ///     Secret key of the Discord auth server API
-    /// </summary>
-    public static readonly CVarDef<string> DiscordAuthApiKey =
-        CVarDef.Create("discord_auth.api_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 }

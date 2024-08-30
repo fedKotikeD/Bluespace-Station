@@ -39,56 +39,16 @@ namespace Content.Shared.Interaction
     }
 
     /// <summary>
-    /// Low-level interaction event used for entities without hands.
+    /// Raised on the user before interacting on an entity with bare hand.
+    /// Interaction is cancelled if this event is handled, so set it to true if you do custom interaction logic.
     /// </summary>
-    /// <remarks>
-    /// SHIT IS CURSED.
-    /// </remarks>
-    //TODO: KILLLLLLL
-    public sealed class InteractNoHandEvent : HandledEntityEventArgs
+    public sealed class BeforeInteractHandEvent : HandledEntityEventArgs
     {
-        /// <summary>
-        ///     Entity that triggered the interaction.
-        /// </summary>
-        public EntityUid User;
+        public EntityUid Target { get; }
 
-        /// <summary>
-        ///     Entity that was interacted on.
-        /// </summary>
-        public EntityUid? Target;
-
-        public EntityCoordinates ClickLocation;
-
-        public InteractNoHandEvent(EntityUid user, EntityUid? target, EntityCoordinates clickLocation)
-        {
-            User = user;
-            Target = target;
-            ClickLocation = clickLocation;
-        }
-    }
-
-    /// <summary>
-    /// Reverse of the InteractNoHandEvent - raised on what was interacted on, rather than the other way around.
-    /// </summary>
-    public sealed class InteractedNoHandEvent : HandledEntityEventArgs
-    {
-        /// <summary>
-        /// Entity that was interacted on
-        /// </summary>
-        public EntityUid Target;
-
-        /// <summary>
-        /// Entity that triggered this interaction
-        /// </summary>
-        public EntityUid User;
-
-        public EntityCoordinates ClickLocation;
-
-        public InteractedNoHandEvent(EntityUid target, EntityUid user, EntityCoordinates clickLocation)
+        public BeforeInteractHandEvent(EntityUid target)
         {
             Target = target;
-            User = user;
-            ClickLocation = clickLocation;
         }
     }
 }

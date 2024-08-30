@@ -1,7 +1,8 @@
 using Content.Shared.PDA;
 using Content.Shared.PDA.Ringer;
 using JetBrains.Annotations;
-using Robust.Client.GameObjects;
+using Robust.Client.UserInterface;
+using Robust.Shared.Timing;
 
 namespace Content.Client.PDA.Ringer
 {
@@ -18,9 +19,8 @@ namespace Content.Client.PDA.Ringer
         protected override void Open()
         {
             base.Open();
-            _menu = new RingtoneMenu();
+            _menu = this.CreateWindow<RingtoneMenu>();
             _menu.OpenToLeft();
-            _menu.OnClose += Close;
 
             _menu.TestRingerButton.OnPressed += _ =>
             {
@@ -29,9 +29,17 @@ namespace Content.Client.PDA.Ringer
 
             _menu.SetRingerButton.OnPressed += _ =>
             {
-                if (!TryGetRingtone(out var ringtone)) return;
+                if (!TryGetRingtone(out var ringtone))
+                    return;
 
                 SendMessage(new RingerSetRingtoneMessage(ringtone));
+                _menu.SetRingerButton.Disabled = true;
+
+                Timer.Spawn(333, () =>
+                {
+                    if (_menu is { Disposed: false, SetRingerButton: { Disposed: false } ringer})
+                        ringer.Disabled = false;
+                });
             };
         }
 
@@ -74,7 +82,7 @@ namespace Content.Client.PDA.Ringer
 
             }
 
-            _menu.TestRingerButton.Visible = !msg.IsPlaying;
+            _menu.TestRingerButton.Disabled = msg.IsPlaying;
         }
 
 

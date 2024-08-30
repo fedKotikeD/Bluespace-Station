@@ -1,7 +1,7 @@
 using Content.Server.Light.EntitySystems;
 using Content.Shared.Damage;
 using Content.Shared.DeviceLinking;
-using Content.Shared.Light.Component;
+using Content.Shared.Light.Components;
 using Robust.Shared.Audio;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
@@ -29,10 +29,6 @@ namespace Content.Server.Light.Components
 
         [DataField("on")]
         public bool On = true;
-
-        [DataField("damage", required: true)]
-        [ViewVariables(VVAccess.ReadWrite)]
-        public DamageSpecifier Damage = default!;
 
         [DataField("ignoreGhostsBoo")]
         public bool IgnoreGhostsBoo;

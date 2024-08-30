@@ -1,14 +1,14 @@
 using System.Linq;
 using System.Numerics;
+using Content.Server.Advertise;
+using Content.Server.Advertise.Components;
 using Content.Server.Cargo.Systems;
 using Content.Server.Emp;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
-using Content.Server.UserInterface;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Actions;
-using Content.Shared.Actions.ActionTypes;
 using Content.Shared.Damage;
 using Content.Shared.Destructible;
 using Content.Shared.DoAfter;
@@ -17,7 +17,9 @@ using Content.Shared.Emag.Systems;
 using Content.Shared.Emp;
 using Content.Shared.Popups;
 using Content.Shared.Throwing;
+using Content.Shared.UserInterface;
 using Content.Shared.VendingMachines;
+using Content.Shared.Wall;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
@@ -36,30 +38,41 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
         [Dependency] private readonly UserInterfaceSystem _userInterfaceSystem = default!;
         [Dependency] private readonly IGameTiming _timing = default!;
+        [Dependency] private readonly SpeakOnUIClosedSystem _speakOnUIClosed = default!;
 
-        private ISawmill _sawmill = default!;
+        private const float WallVendEjectDistanceFromWall = 1f;
 
         public override void Initialize()
         {
             base.Initialize();
 
-            _sawmill = Logger.GetSawmill("vending");
+            SubscribeLocalEvent<VendingMachineComponent, MapInitEvent>(OnComponentMapInit);
             SubscribeLocalEvent<VendingMachineComponent, PowerChangedEvent>(OnPowerChanged);
             SubscribeLocalEvent<VendingMachineComponent, BreakageEventArgs>(OnBreak);
             SubscribeLocalEvent<VendingMachineComponent, GotEmaggedEvent>(OnEmagged);
-            SubscribeLocalEvent<VendingMachineComponent, DamageChangedEvent>(OnDamage);
+            SubscribeLocalEvent<VendingMachineComponent, DamageChangedEvent>(OnDamageChanged);
             SubscribeLocalEvent<VendingMachineComponent, PriceCalculationEvent>(OnVendingPrice);
             SubscribeLocalEvent<VendingMachineComponent, EmpPulseEvent>(OnEmpPulse);
 
             SubscribeLocalEvent<VendingMachineComponent, ActivatableUIOpenAttemptEvent>(OnActivatableUIOpenAttempt);
-            SubscribeLocalEvent<VendingMachineComponent, BoundUIOpenedEvent>(OnBoundUIOpened);
-            SubscribeLocalEvent<VendingMachineComponent, VendingMachineEjectMessage>(OnInventoryEjectMessage);
+
+            Subs.BuiEvents<VendingMachineComponent>(VendingMachineUiKey.Key, subs =>
+            {
+                subs.Event<BoundUIOpenedEvent>(OnBoundUIOpened);
+                subs.Event<VendingMachineEjectMessage>(OnInventoryEjectMessage);
+            });
 
             SubscribeLocalEvent<VendingMachineComponent, VendingMachineSelfDispenseEvent>(OnSelfDispense);
 
             SubscribeLocalEvent<VendingMachineComponent, RestockDoAfterEvent>(OnDoAfter);
 
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
+        }
+
+        private void OnComponentMapInit(EntityUid uid, VendingMachineComponent component, MapInitEvent args)
+        {
+            _action.AddAction(uid, ref component.ActionEntity, component.Action, uid);
+            Dirty(uid, component);
         }
 
         private void OnVendingPrice(EntityUid uid, VendingMachineComponent component, ref PriceCalculationEvent args)
@@ -70,7 +83,7 @@ namespace Content.Server.VendingMachines
             {
                 if (!PrototypeManager.TryIndex<EntityPrototype>(entry.ID, out var proto))
                 {
-                    _sawmill.Error($"Unable to find entity prototype {entry.ID} on {ToPrettyString(uid)} vending.");
+                    Log.Error($"Unable to find entity prototype {entry.ID} on {ToPrettyString(uid)} vending.");
                     continue;
                 }
 
@@ -87,12 +100,6 @@ namespace Content.Server.VendingMachines
             if (HasComp<ApcPowerReceiverComponent>(uid))
             {
                 TryUpdateVisualState(uid, component);
-            }
-
-            if (component.Action != null)
-            {
-                var action = new InstantAction(PrototypeManager.Index<InstantActionPrototype>(component.Action));
-                _action.AddAction(uid, action, uid);
             }
         }
 
@@ -111,7 +118,7 @@ namespace Content.Server.VendingMachines
         {
             var state = new VendingMachineInterfaceState(GetAllInventory(uid, component));
 
-            _userInterfaceSystem.TrySetUiState(uid, VendingMachineUiKey.Key, state);
+            _userInterfaceSystem.SetUiState(uid, VendingMachineUiKey.Key, state);
         }
 
         private void OnInventoryEjectMessage(EntityUid uid, VendingMachineComponent component, VendingMachineEjectMessage args)
@@ -119,7 +126,7 @@ namespace Content.Server.VendingMachines
             if (!this.IsPowered(uid, EntityManager))
                 return;
 
-            if (args.Session.AttachedEntity is not { Valid: true } entity || Deleted(entity))
+            if (args.Actor is not { Valid: true } entity || Deleted(entity))
                 return;
 
             AuthorizedVend(uid, entity, args.Type, args.ID, component);
@@ -142,13 +149,20 @@ namespace Content.Server.VendingMachines
             args.Handled = component.EmaggedInventory.Count > 0;
         }
 
-        private void OnDamage(EntityUid uid, VendingMachineComponent component, DamageChangedEvent args)
+        private void OnDamageChanged(EntityUid uid, VendingMachineComponent component, DamageChangedEvent args)
         {
+            if (!args.DamageIncreased && component.Broken)
+            {
+                component.Broken = false;
+                TryUpdateVisualState(uid, component);
+                return;
+            }
+
             if (component.Broken || component.DispenseOnHitCoolingDown ||
                 component.DispenseOnHitChance == null || args.DamageDelta == null)
                 return;
 
-            if (args.DamageIncreased && args.DamageDelta.Total >= component.DispenseOnHitThreshold &&
+            if (args.DamageIncreased && args.DamageDelta.GetTotal() >= component.DispenseOnHitThreshold &&
                 _random.Prob(component.DispenseOnHitChance.Value))
             {
                 if (component.DispenseOnHitCooldown > 0f)
@@ -173,7 +187,7 @@ namespace Content.Server.VendingMachines
 
             if (!TryComp<VendingMachineRestockComponent>(args.Args.Used, out var restockComponent))
             {
-                _sawmill.Error($"{ToPrettyString(args.Args.User)} tried to restock {ToPrettyString(uid)} with {ToPrettyString(args.Args.Used.Value)} which did not have a VendingMachineRestockComponent.");
+                Log.Error($"{ToPrettyString(args.Args.User)} tried to restock {ToPrettyString(uid)} with {ToPrettyString(args.Args.Used.Value)} which did not have a VendingMachineRestockComponent.");
                 return;
             }
 
@@ -223,10 +237,10 @@ namespace Content.Server.VendingMachines
             if (!Resolve(uid, ref vendComponent))
                 return false;
 
-            if (!TryComp<AccessReaderComponent?>(uid, out var accessReader))
+            if (!TryComp<AccessReaderComponent>(uid, out var accessReader))
                 return true;
 
-            if (_accessReader.IsAllowed(sender, accessReader) || HasComp<EmaggedComponent>(uid))
+            if (_accessReader.IsAllowed(sender, uid, accessReader) || HasComp<EmaggedComponent>(uid))
                 return true;
 
             Popup.PopupEntity(Loc.GetString("vending-machine-component-try-eject-access-denied"), uid);
@@ -277,6 +291,10 @@ namespace Content.Server.VendingMachines
             vendComponent.Ejecting = true;
             vendComponent.NextItemToEject = entry.ID;
             vendComponent.ThrowNextItem = throwItem;
+
+            if (TryComp(uid, out SpeakOnUIClosedComponent? speakComponent))
+                _speakOnUIClosed.TrySetFlag((uid, speakComponent));
+
             entry.Amount--;
             UpdateVendingMachineInterfaceState(uid, vendComponent);
             TryUpdateVisualState(uid, vendComponent);
@@ -376,7 +394,20 @@ namespace Content.Server.VendingMachines
                 return;
             }
 
-            var ent = Spawn(vendComponent.NextItemToEject, Transform(uid).Coordinates);
+            // Default spawn coordinates
+            var spawnCoordinates = Transform(uid).Coordinates;
+
+            //Make sure the wallvends spawn outside of the wall.
+
+            if (TryComp<WallMountComponent>(uid, out var wallMountComponent))
+            {
+
+                var offset = wallMountComponent.Direction.ToWorldVec() * WallVendEjectDistanceFromWall;
+                spawnCoordinates = spawnCoordinates.Offset(offset);
+            }
+
+            var ent = Spawn(vendComponent.NextItemToEject, spawnCoordinates);
+
             if (vendComponent.ThrowNextItem)
             {
                 var range = vendComponent.NonLimitedEjectRange;

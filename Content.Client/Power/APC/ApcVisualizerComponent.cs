@@ -87,7 +87,7 @@ public sealed partial class ApcVisualsComponent : Component
     /// </summary>
     [DataField("screenColors")]
     [ViewVariables(VVAccess.ReadWrite)]
-    public Color[] ScreenColors = new Color[(byte)ApcChargeState.NumStates]{Color.FromHex("#d1332e"), Color.FromHex("#2e8ad1"), Color.FromHex("#3db83b"), Color.FromHex("#ffac1c")};
+    public Color[] ScreenColors = new Color[(byte)ApcChargeState.NumStates]{Color.FromHex("#d1332e"), Color.FromHex("#dcdc28"), Color.FromHex("#82ff4c"), Color.FromHex("#ffac1c")};
 
     /// <summary>
     /// The sprite state of the unlit overlay used for the APC screen when the APC has been emagged.
@@ -97,7 +97,7 @@ public sealed partial class ApcVisualsComponent : Component
     public string EmaggedScreenState = "emag-unlit";
 
     /// <summary>
-    /// The sprite state of the unlit overlay used for the APC screen when the APC has been emagged.
+    /// The color of the light emitted when the APC has been emagged.
     /// </summary>
     [DataField("emaggedScreenColor")]
     [ViewVariables(VVAccess.ReadWrite)]

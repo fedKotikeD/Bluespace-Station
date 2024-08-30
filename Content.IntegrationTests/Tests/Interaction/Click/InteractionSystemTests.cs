@@ -4,6 +4,7 @@ using Content.Server.Interaction;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
+using Content.Shared.Interaction.Components;
 using Content.Shared.Item;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
@@ -47,13 +48,9 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             var sysMan = server.ResolveDependency<IEntitySystemManager>();
             var handSys = sysMan.GetEntitySystem<SharedHandsSystem>();
 
-            var mapId = MapId.Nullspace;
-            var coords = MapCoordinates.Nullspace;
-            await server.WaitAssertion(() =>
-            {
-                mapId = mapManager.CreateMap();
-                coords = new MapCoordinates(Vector2.Zero, mapId);
-            });
+            var map = await pair.CreateTestMap();
+            var mapId = map.MapId;
+            var coords = map.MapCoords;
 
             await server.WaitIdleAsync();
             EntityUid user = default;
@@ -63,11 +60,12 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             await server.WaitAssertion(() =>
             {
                 user = sEntities.SpawnEntity(null, coords);
-                user.EnsureComponent<HandsComponent>();
+                sEntities.EnsureComponent<HandsComponent>(user);
+                sEntities.EnsureComponent<ComplexInteractionComponent>(user);
                 handSys.AddHand(user, "hand", HandLocation.Left);
                 target = sEntities.SpawnEntity(null, coords);
                 item = sEntities.SpawnEntity(null, coords);
-                item.EnsureComponent<ItemComponent>();
+                sEntities.EnsureComponent<ItemComponent>(item);
             });
 
             await server.WaitRunTicks(1);
@@ -117,13 +115,9 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             var sysMan = server.ResolveDependency<IEntitySystemManager>();
             var handSys = sysMan.GetEntitySystem<SharedHandsSystem>();
 
-            var mapId = MapId.Nullspace;
-            var coords = MapCoordinates.Nullspace;
-            await server.WaitAssertion(() =>
-            {
-                mapId = mapManager.CreateMap();
-                coords = new MapCoordinates(Vector2.Zero, mapId);
-            });
+            var map = await pair.CreateTestMap();
+            var mapId = map.MapId;
+            var coords = map.MapCoords;
 
             await server.WaitIdleAsync();
             EntityUid user = default;
@@ -134,11 +128,11 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             await server.WaitAssertion(() =>
             {
                 user = sEntities.SpawnEntity(null, coords);
-                user.EnsureComponent<HandsComponent>();
+                sEntities.EnsureComponent<HandsComponent>(user);
                 handSys.AddHand(user, "hand", HandLocation.Left);
                 target = sEntities.SpawnEntity(null, new MapCoordinates(new Vector2(1.9f, 0), mapId));
                 item = sEntities.SpawnEntity(null, coords);
-                item.EnsureComponent<ItemComponent>();
+                sEntities.EnsureComponent<ItemComponent>(item);
                 wall = sEntities.SpawnEntity("DummyDebugWall", new MapCoordinates(new Vector2(1, 0), sEntities.GetComponent<TransformComponent>(user).MapID));
             });
 
@@ -188,13 +182,9 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             var sysMan = server.ResolveDependency<IEntitySystemManager>();
             var handSys = sysMan.GetEntitySystem<SharedHandsSystem>();
 
-            var mapId = MapId.Nullspace;
-            var coords = MapCoordinates.Nullspace;
-            await server.WaitAssertion(() =>
-            {
-                mapId = mapManager.CreateMap();
-                coords = new MapCoordinates(Vector2.Zero, mapId);
-            });
+            var map = await pair.CreateTestMap();
+            var mapId = map.MapId;
+            var coords = map.MapCoords;
 
             await server.WaitIdleAsync();
             EntityUid user = default;
@@ -204,11 +194,12 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             await server.WaitAssertion(() =>
             {
                 user = sEntities.SpawnEntity(null, coords);
-                user.EnsureComponent<HandsComponent>();
+                sEntities.EnsureComponent<HandsComponent>(user);
+                sEntities.EnsureComponent<ComplexInteractionComponent>(user);
                 handSys.AddHand(user, "hand", HandLocation.Left);
                 target = sEntities.SpawnEntity(null, new MapCoordinates(new Vector2(SharedInteractionSystem.InteractionRange - 0.1f, 0), mapId));
                 item = sEntities.SpawnEntity(null, coords);
-                item.EnsureComponent<ItemComponent>();
+                sEntities.EnsureComponent<ItemComponent>(item);
             });
 
             await server.WaitRunTicks(1);
@@ -258,13 +249,9 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             var sysMan = server.ResolveDependency<IEntitySystemManager>();
             var handSys = sysMan.GetEntitySystem<SharedHandsSystem>();
 
-            var mapId = MapId.Nullspace;
-            var coords = MapCoordinates.Nullspace;
-            await server.WaitAssertion(() =>
-            {
-                mapId = mapManager.CreateMap();
-                coords = new MapCoordinates(Vector2.Zero, mapId);
-            });
+            var map = await pair.CreateTestMap();
+            var mapId = map.MapId;
+            var coords = map.MapCoords;
 
             await server.WaitIdleAsync();
             EntityUid user = default;
@@ -274,11 +261,11 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             await server.WaitAssertion(() =>
             {
                 user = sEntities.SpawnEntity(null, coords);
-                user.EnsureComponent<HandsComponent>();
+                sEntities.EnsureComponent<HandsComponent>(user);
                 handSys.AddHand(user, "hand", HandLocation.Left);
                 target = sEntities.SpawnEntity(null, new MapCoordinates(new Vector2(SharedInteractionSystem.InteractionRange + 0.01f, 0), mapId));
                 item = sEntities.SpawnEntity(null, coords);
-                item.EnsureComponent<ItemComponent>();
+                sEntities.EnsureComponent<ItemComponent>(item);
             });
 
             await server.WaitRunTicks(1);
@@ -328,29 +315,26 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             var handSys = sysMan.GetEntitySystem<SharedHandsSystem>();
             var conSystem = sysMan.GetEntitySystem<SharedContainerSystem>();
 
-            var mapId = MapId.Nullspace;
-            var coords = MapCoordinates.Nullspace;
-            await server.WaitAssertion(() =>
-            {
-                mapId = mapManager.CreateMap();
-                coords = new MapCoordinates(Vector2.Zero, mapId);
-            });
+            var map = await pair.CreateTestMap();
+            var mapId = map.MapId;
+            var coords = map.MapCoords;
 
             await server.WaitIdleAsync();
             EntityUid user = default;
             EntityUid target = default;
             EntityUid item = default;
             EntityUid containerEntity = default;
-            IContainer container = null;
+            BaseContainer container = null;
 
             await server.WaitAssertion(() =>
             {
                 user = sEntities.SpawnEntity(null, coords);
-                user.EnsureComponent<HandsComponent>();
+                sEntities.EnsureComponent<HandsComponent>(user);
+                sEntities.EnsureComponent<ComplexInteractionComponent>(user);
                 handSys.AddHand(user, "hand", HandLocation.Left);
                 target = sEntities.SpawnEntity(null, coords);
                 item = sEntities.SpawnEntity(null, coords);
-                item.EnsureComponent<ItemComponent>();
+                sEntities.EnsureComponent<ItemComponent>(item);
                 containerEntity = sEntities.SpawnEntity(null, coords);
                 container = conSystem.EnsureContainer<Container>(containerEntity, "InteractionTestContainer");
             });
@@ -373,7 +357,7 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             await server.WaitAssertion(() =>
             {
 #pragma warning disable NUnit2045 // Interdependent assertions.
-                Assert.That(container.Insert(user));
+                Assert.That(conSystem.Insert(user, container));
                 Assert.That(sEntities.GetComponent<TransformComponent>(user).ParentUid, Is.EqualTo(containerEntity));
 #pragma warning restore NUnit2045
 
@@ -407,7 +391,6 @@ namespace Content.IntegrationTests.Tests.Interaction.Click
             await pair.CleanReturnAsync();
         }
 
-        [Reflect(false)]
         public sealed class TestInteractionSystem : EntitySystem
         {
             public EntityEventHandler<InteractUsingEvent>? InteractUsingEvent;

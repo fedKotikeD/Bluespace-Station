@@ -1,10 +1,9 @@
-using Content.Shared.Devour;
+using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
-using Content.Shared.Humanoid;
 using Content.Shared.Chemistry.Components;
-using Content.Server.Devour.Components;
-using Content.Shared.DoAfter;
-using Robust.Shared.Serialization;
+using Content.Shared.Devour;
+using Content.Shared.Devour.Components;
+using Content.Shared.Humanoid;
 
 namespace Content.Server.Devour;
 
@@ -17,6 +16,7 @@ public sealed class DevourSystem : SharedDevourSystem
         base.Initialize();
 
         SubscribeLocalEvent<DevourerComponent, DevourDoAfterEvent>(OnDoAfter);
+        SubscribeLocalEvent<DevourerComponent, BeingGibbedEvent>(OnGibContents);
     }
 
     private void OnDoAfter(EntityUid uid, DevourerComponent component, DevourDoAfterEvent args)
@@ -33,7 +33,7 @@ public sealed class DevourSystem : SharedDevourSystem
 
             if (component.ShouldStoreDevoured && args.Args.Target is not null)
             {
-                component.Stomach.Insert(args.Args.Target.Value);
+                ContainerSystem.Insert(args.Args.Target.Value, component.Stomach);
             }
             _bloodstreamSystem.TryAddToChemicals(uid, ichorInjection);
         }
@@ -46,6 +46,16 @@ public sealed class DevourSystem : SharedDevourSystem
         }
 
         _audioSystem.PlayPvs(component.SoundDevour, uid);
+    }
+    
+    private void OnGibContents(EntityUid uid, DevourerComponent component, ref BeingGibbedEvent args)
+    {
+        if (!component.ShouldStoreDevoured)
+            return;
+
+        // For some reason we have two different systems that should handle gibbing,
+        // and for some another reason GibbingSystem, which should empty all containers, doesn't get involved in this process
+        ContainerSystem.EmptyContainer(component.Stomach);
     }
 }
 

@@ -1,13 +1,16 @@
 using System.Linq;
 using Content.Client.CharacterInfo;
 using Content.Client.Gameplay;
+using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Character.Controls;
 using Content.Client.UserInterface.Systems.Character.Windows;
 using Content.Client.UserInterface.Systems.Objectives.Controls;
 using Content.Shared.Input;
+using Content.Shared.Objectives.Systems;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
+using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
@@ -21,6 +24,7 @@ namespace Content.Client.UserInterface.Systems.Character;
 [UsedImplicitly]
 public sealed class CharacterUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>, IOnSystemChanged<CharacterInfoSystem>
 {
+    [Dependency] private readonly IPlayerManager _player = default!;
     [UISystemDependency] private readonly CharacterInfoSystem _characterInfo = default!;
     [UISystemDependency] private readonly SpriteSystem _sprite = default!;
 
@@ -56,13 +60,13 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
     public void OnSystemLoaded(CharacterInfoSystem system)
     {
         system.OnCharacterUpdate += CharacterUpdated;
-        system.OnCharacterDetached += CharacterDetached;
+        _player.LocalPlayerDetached += CharacterDetached;
     }
 
     public void OnSystemUnloaded(CharacterInfoSystem system)
     {
         system.OnCharacterUpdate -= CharacterUpdated;
-        system.OnCharacterDetached -= CharacterDetached;
+        _player.LocalPlayerDetached -= CharacterDetached;
     }
 
     public void UnloadButton()
@@ -119,16 +123,22 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
                 Modulate = Color.Gray
             };
 
-            objectiveControl.AddChild(new Label
+
+            var objectiveText = new FormattedMessage();
+            objectiveText.TryAddMarkup(groupId, out _);
+
+            var objectiveLabel = new RichTextLabel
             {
-                Text = groupId,
-                Modulate = Color.LightSkyBlue
-            });
+                StyleClasses = {StyleNano.StyleClassTooltipActionTitle}
+            };
+            objectiveLabel.SetMessage(objectiveText);
+
+            objectiveControl.AddChild(objectiveLabel);
 
             foreach (var condition in conditions)
             {
                 var conditionControl = new ObjectiveConditionsControl();
-                conditionControl.ProgressTexture.Texture = _sprite.Frame0(condition.SpriteSpecifier);
+                conditionControl.ProgressTexture.Texture = _sprite.Frame0(condition.Icon);
                 conditionControl.ProgressTexture.Progress = condition.Progress;
                 var titleMessage = new FormattedMessage();
                 var descriptionMessage = new FormattedMessage();
@@ -141,11 +151,17 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
                 objectiveControl.AddChild(conditionControl);
             }
 
-            var briefingControl = new ObjectiveBriefingControl();
-            briefingControl.Label.Text = briefing;
-
-            objectiveControl.AddChild(briefingControl);
             _window.Objectives.AddChild(objectiveControl);
+        }
+
+        if (briefing != null)
+        {
+            var briefingControl = new ObjectiveBriefingControl();
+            var text = new FormattedMessage();
+            text.PushColor(Color.Yellow);
+            text.AddText(briefing);
+            briefingControl.Label.SetMessage(text);
+            _window.Objectives.AddChild(briefingControl);
         }
 
         var controls = _characterInfo.GetCharacterInfoControls(entity);
@@ -154,10 +170,10 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
             _window.Objectives.AddChild(control);
         }
 
-        _window.RolePlaceholder.Visible = !controls.Any() && !objectives.Any();
+        _window.RolePlaceholder.Visible = briefing == null && !controls.Any() && !objectives.Any();
     }
 
-    private void CharacterDetached()
+    private void CharacterDetached(EntityUid uid)
     {
         CloseWindow();
     }
@@ -179,7 +195,7 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
 
         if (CharacterButton != null)
         {
-            CharacterButton.Pressed = !_window.IsOpen;
+            CharacterButton.SetClickPressed(!_window.IsOpen);
         }
 
         if (_window.IsOpen)

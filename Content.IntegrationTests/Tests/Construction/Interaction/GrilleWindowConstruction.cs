@@ -17,15 +17,14 @@ public sealed class GrilleWindowConstruction : InteractionTest
     {
         // Construct Grille
         await StartConstruction(Grille);
-        await Interact(Rod, 10);
-        AssertPrototype(Grille);
-
+        await InteractUsing(Rod, 10);
+        ClientAssertPrototype(Grille, Target);
         var grille = Target;
 
         // Construct Window
         await StartConstruction(Window);
-        await Interact(Glass, 10);
-        AssertPrototype(Window);
+        await InteractUsing(Glass, 10);
+        ClientAssertPrototype(Window, Target);
 
         // Deconstruct Window
         await Interact(Screw, Wrench);
@@ -33,7 +32,7 @@ public sealed class GrilleWindowConstruction : InteractionTest
 
         // Deconstruct Grille
         Target = grille;
-        await Interact(Cut);
+        await InteractUsing(Cut);
         AssertDeleted();
     }
 
@@ -50,7 +49,7 @@ public sealed class GrilleWindowConstruction : InteractionTest
         await Client.WaitPost(() =>
         {
             var proto = ProtoMan.Index<ConstructionPrototype>(second);
-            Assert.That(CConSys.TrySpawnGhost(proto, TargetCoords, Direction.South, out _), Is.False);
+            Assert.That(CConSys.TrySpawnGhost(proto, CEntMan.GetCoordinates(TargetCoords), Direction.South, out _), Is.False);
         });
     }
 }

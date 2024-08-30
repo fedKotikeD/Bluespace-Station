@@ -1,8 +1,8 @@
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using Content.Server.Administration.Logs;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Systems;
-using Content.Server.Chemistry.EntitySystems;
+using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Server.Construction;
 using Content.Server.Destructible.Thresholds;
 using Content.Server.Destructible.Thresholds.Behaviors;
@@ -15,9 +15,12 @@ using Content.Shared.Database;
 using Content.Shared.Destructible;
 using Content.Shared.FixedPoint;
 using JetBrains.Annotations;
+using Robust.Server.Audio;
 using Robust.Server.GameObjects;
+using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using System.Linq;
 
 namespace Content.Server.Destructible
 {
@@ -36,6 +39,7 @@ namespace Content.Server.Destructible
         [Dependency] public readonly TriggerSystem TriggerSystem = default!;
         [Dependency] public readonly SolutionContainerSystem SolutionContainerSystem = default!;
         [Dependency] public readonly PuddleSystem PuddleSystem = default!;
+        [Dependency] public readonly SharedContainerSystem ContainerSystem = default!;
         [Dependency] public readonly IPrototypeManager PrototypeManager = default!;
         [Dependency] public readonly IComponentFactory ComponentFactory = default!;
         [Dependency] public readonly IAdminLogManager _adminLogger = default!;
@@ -85,6 +89,16 @@ namespace Content.Server.Destructible
                 if (EntityManager.IsQueuedForDeletion(uid) || Deleted(uid))
                     return;
             }
+        }
+
+        public bool TryGetDestroyedAt(Entity<DestructibleComponent?> ent, [NotNullWhen(true)] out FixedPoint2? destroyedAt)
+        {
+            destroyedAt = null;
+            if (!Resolve(ent, ref ent.Comp, false))
+                return false;
+
+            destroyedAt = DestroyedAt(ent, ent.Comp);
+            return true;
         }
 
         // FFS this shouldn't be this hard. Maybe this should just be a field of the destructible component. Its not

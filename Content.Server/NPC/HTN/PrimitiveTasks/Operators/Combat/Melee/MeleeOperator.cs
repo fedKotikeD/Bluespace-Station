@@ -68,6 +68,20 @@ public sealed partial class MeleeOperator : HTNOperator, IHtnConditionalShutdown
         blackboard.Remove<EntityUid>(TargetKey);
     }
 
+    public override void TaskShutdown(NPCBlackboard blackboard, HTNOperatorStatus status)
+    {
+        base.TaskShutdown(blackboard, status);
+
+        ConditionalShutdown(blackboard);
+    }
+
+    public override void PlanShutdown(NPCBlackboard blackboard)
+    {
+        base.PlanShutdown(blackboard);
+        
+        ConditionalShutdown(blackboard);
+    }
+
     public override HTNOperatorStatus Update(NPCBlackboard blackboard, float frameTime)
     {
         base.Update(blackboard, frameTime);
@@ -75,7 +89,8 @@ public sealed partial class MeleeOperator : HTNOperator, IHtnConditionalShutdown
         HTNOperatorStatus status;
 
         if (_entManager.TryGetComponent<NPCMeleeCombatComponent>(owner, out var combat) &&
-            blackboard.TryGetValue<EntityUid>(TargetKey, out var target, _entManager))
+            blackboard.TryGetValue<EntityUid>(TargetKey, out var target, _entManager) &&
+            target != EntityUid.Invalid)
         {
             combat.Target = target;
 

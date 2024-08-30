@@ -7,7 +7,8 @@
   - type: Sprite
     sprite: Corvax/Back/Backpacks/military.rsi
   - type: Storage
-    capacity: 131
+    grid:
+    - 0,0,8,4
 
 - type: entity
   parent: ClothingBackpack
@@ -18,7 +19,9 @@
   - type: Sprite
     sprite: Corvax/Back/Backpacks/deathsquad-backpack.rsi
   - type: Storage
-    capacity: 300
+    grid:
+    - 0,0,13,7
+    maxItemSize: Huge
 
 - type: entity
   parent: ClothingBackpack
@@ -28,5 +31,3 @@
   components:
   - type: Sprite
     sprite: Corvax/Back/Backpacks/ce.rsi
-  - type: Storage
-    capacity: 100

@@ -1,10 +1,15 @@
+using System.Linq;
 using Content.Shared.Examine;
 using Content.Shared.Hands.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Input;
+using Content.Shared.Interaction;
+using Content.Shared.Inventory.VirtualItem;
+using Content.Shared.Localizations;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Map;
-using Robust.Shared.Players;
+using Robust.Shared.Player;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Hands.EntitySystems;
 
@@ -19,6 +24,7 @@ public abstract partial class SharedHandsSystem : EntitySystem
         SubscribeAllEvent<RequestMoveHandItemEvent>(HandleMoveItemFromHand);
         SubscribeAllEvent<RequestHandAltInteractEvent>(HandleHandAltInteract);
 
+        SubscribeLocalEvent<HandsComponent, GetUsedEntityEvent>(OnGetUsedEntity);
         SubscribeLocalEvent<HandsComponent, ExaminedEvent>(HandleExamined);
 
         CommandBinds.Builder
@@ -86,13 +92,13 @@ public abstract partial class SharedHandsSystem : EntitySystem
         var newActiveIndex = component.SortedHands.IndexOf(component.ActiveHand.Name) + 1;
         var nextHand = component.SortedHands[newActiveIndex % component.Hands.Count];
 
-        TrySetActiveHand(component.Owner, nextHand, component);
+        TrySetActiveHand(session.AttachedEntity.Value, nextHand, component);
     }
 
-    private bool DropPressed(ICommonSession? session, EntityCoordinates coords, EntityUid uid)
+    private bool DropPressed(ICommonSession? session, EntityCoordinates coords, EntityUid netEntity)
     {
         if (TryComp(session?.AttachedEntity, out HandsComponent? hands) && hands.ActiveHand != null)
-            TryDrop(session.AttachedEntity!.Value, hands.ActiveHand, coords, handsComp: hands);
+            TryDrop(session.AttachedEntity.Value, hands.ActiveHand, coords, handsComp: hands);
 
         // always send to server.
         return false;
@@ -177,15 +183,34 @@ public abstract partial class SharedHandsSystem : EntitySystem
         return true;
     }
 
-    //TODO: Actually shows all items/clothing/etc.
-    private void HandleExamined(EntityUid uid, HandsComponent handsComp, ExaminedEvent args)
+    private void OnGetUsedEntity(EntityUid uid, HandsComponent component, ref GetUsedEntityEvent args)
     {
-        foreach (var inhand in EnumerateHeld(uid, handsComp))
-        {
-            if (HasComp<HandVirtualItemComponent>(inhand))
-                continue;
+        if (args.Handled)
+            return;
 
-            args.PushText(Loc.GetString("comp-hands-examine", ("user", Identity.Entity(handsComp.Owner, EntityManager)), ("item", inhand)));
+        // TODO: this pattern is super uncommon, but it might be worth changing GetUsedEntityEvent to be recursive.
+        if (TryComp<VirtualItemComponent>(component.ActiveHandEntity, out var virtualItem))
+            args.Used = virtualItem.BlockingEntity;
+        else
+            args.Used = component.ActiveHandEntity;
+    }
+
+    //TODO: Actually shows all items/clothing/etc.
+    private void HandleExamined(EntityUid examinedUid, HandsComponent handsComp, ExaminedEvent args)
+    {
+        var heldItemNames = EnumerateHeld(examinedUid, handsComp)
+            .Where(entity => !HasComp<VirtualItemComponent>(entity))
+            .Select(item => FormattedMessage.EscapeText(Identity.Name(item, EntityManager)))
+            .Select(itemName => Loc.GetString("comp-hands-examine-wrapper", ("item", itemName)))
+            .ToList();
+
+        var locKey = heldItemNames.Count != 0 ? "comp-hands-examine" : "comp-hands-examine-empty";
+        var locUser = ("user", Identity.Entity(examinedUid, EntityManager));
+        var locItems = ("items", ContentLocalizationManager.FormatList(heldItemNames));
+
+        using (args.PushGroup(nameof(HandsComponent)))
+        {
+            args.PushMarkup(Loc.GetString(locKey, locUser, locItems));
         }
     }
 }

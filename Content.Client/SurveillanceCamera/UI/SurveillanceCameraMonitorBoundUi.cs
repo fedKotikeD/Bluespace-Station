@@ -1,6 +1,7 @@
 using Content.Client.Eye;
 using Content.Shared.SurveillanceCamera;
 using Robust.Client.GameObjects;
+using Robust.Client.UserInterface;
 
 namespace Content.Client.SurveillanceCamera.UI;
 
@@ -25,20 +26,12 @@ public sealed class SurveillanceCameraMonitorBoundUserInterface : BoundUserInter
     {
         base.Open();
 
-        _window = new SurveillanceCameraMonitorWindow();
-
-        if (State != null)
-        {
-            UpdateState(State);
-        }
-
-        _window.OpenCentered();
+        _window = this.CreateWindow<SurveillanceCameraMonitorWindow>();
 
         _window.CameraSelected += OnCameraSelected;
         _window.SubnetOpened += OnSubnetRequest;
         _window.CameraRefresh += OnCameraRefresh;
         _window.SubnetRefresh += OnSubnetRefresh;
-        _window.OnClose += Close;
         _window.CameraSwitchTimer += OnCameraSwitchTimer;
         _window.CameraDisconnect += OnCameraDisconnect;
     }
@@ -80,7 +73,9 @@ public sealed class SurveillanceCameraMonitorBoundUserInterface : BoundUserInter
             return;
         }
 
-        if (cast.ActiveCamera == null)
+        var active = EntMan.GetEntity(cast.ActiveCamera);
+
+        if (active == null)
         {
             _window.UpdateState(null, cast.Subnets, cast.ActiveAddress, cast.ActiveSubnet, cast.Cameras);
 
@@ -95,17 +90,17 @@ public sealed class SurveillanceCameraMonitorBoundUserInterface : BoundUserInter
         {
             if (_currentCamera == null)
             {
-                _eyeLerpingSystem.AddEye(cast.ActiveCamera.Value);
-                _currentCamera = cast.ActiveCamera;
+                _eyeLerpingSystem.AddEye(active.Value);
+                _currentCamera = active;
             }
-            else if (_currentCamera != cast.ActiveCamera)
+            else if (_currentCamera != active)
             {
                 _eyeLerpingSystem.RemoveEye(_currentCamera.Value);
-                _eyeLerpingSystem.AddEye(cast.ActiveCamera.Value);
-                _currentCamera = cast.ActiveCamera;
+                _eyeLerpingSystem.AddEye(active.Value);
+                _currentCamera = active;
             }
 
-            if (EntMan.TryGetComponent<EyeComponent>(cast.ActiveCamera, out var eye))
+            if (EntMan.TryGetComponent<EyeComponent>(active, out var eye))
             {
                 _window.UpdateState(eye.Eye, cast.Subnets, cast.ActiveAddress, cast.ActiveSubnet, cast.Cameras);
             }

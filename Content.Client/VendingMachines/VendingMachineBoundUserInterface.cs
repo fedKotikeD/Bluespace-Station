@@ -1,8 +1,11 @@
+using Content.Client.UserInterface.Controls;
 using Content.Client.VendingMachines.UI;
 using Content.Shared.VendingMachines;
-using Robust.Client.GameObjects;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Input;
 using System.Linq;
+using Robust.Client.UserInterface;
 
 namespace Content.Client.VendingMachines
 {
@@ -26,14 +29,15 @@ namespace Content.Client.VendingMachines
 
             _cachedInventory = vendingMachineSys.GetAllInventory(Owner);
 
-            _menu = new VendingMachineMenu { Title = EntMan.GetComponent<MetaDataComponent>(Owner).EntityName };
+            _menu = this.CreateWindow<VendingMachineMenu>();
+            _menu.OpenCenteredLeft();
+            _menu.Title = EntMan.GetComponent<MetaDataComponent>(Owner).EntityName;
 
-            _menu.OnClose += Close;
             _menu.OnItemSelected += OnItemSelected;
 
             _menu.Populate(_cachedInventory);
 
-            _menu.OpenCentered();
+            _menu.OpenCenteredLeft();
         }
 
         protected override void UpdateState(BoundUserInterfaceState state)
@@ -48,12 +52,18 @@ namespace Content.Client.VendingMachines
             _menu?.Populate(_cachedInventory);
         }
 
-        private void OnItemSelected(ItemList.ItemListSelectedEventArgs args)
+        private void OnItemSelected(GUIBoundKeyEventArgs args, ListData data)
         {
+            if (args.Function != EngineKeyFunctions.UIClick)
+                return;
+
+            if (data is not VendorItemsListData { ItemIndex: var itemIndex })
+                return;
+
             if (_cachedInventory.Count == 0)
                 return;
 
-            var selectedItem = _cachedInventory.ElementAtOrDefault(args.ItemIndex);
+            var selectedItem = _cachedInventory.ElementAtOrDefault(itemIndex);
 
             if (selectedItem == null)
                 return;

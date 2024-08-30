@@ -8,6 +8,9 @@
     - HEAD
   - type: Sprite
     state: icon
+  - type: Item
+    size: Small
+    storedRotation: -90
   - type: Food
     requiresSpecialDigestion: true
   - type: SolutionContainerManager
@@ -20,7 +23,6 @@
   - type: Tag
     tags:
       - ClothMade
-      - DroneUsable
       - WhitelistChameleon
 
 - type: entity
@@ -35,6 +37,7 @@
       amount: 1
   - type: Tag
     tags:
+      - ClothMade
       - WhitelistChameleon
 
 - type: entity
@@ -56,7 +59,7 @@
   parent: ClothingHeadBase
   id: ClothingHeadLightBase
   name: base helmet with light
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
     layers:
@@ -68,11 +71,12 @@
     equippedPrefix: off
   - type: Item
     heldPrefix: off
+    size: Normal
   - type: ToggleableLightVisuals
   - type: PointLight
     enabled: false
     radius: 3
-    energy: 2
+    energy: 1
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -90,8 +94,6 @@
         startValue: 3.0
         endValue: 2.0
         isLooped: true
-        property: Radius
-        enabled: false
         reverseWhenFinished: true
       - !type:PulseBehaviour
         id: blinking
@@ -100,8 +102,6 @@
         minValue: 0.1
         maxValue: 2.0
         isLooped: true
-        property: Radius
-        enabled: false
   - type: PowerCellSlot
     cellSlotId: cell_slot
   - type: ItemSlots
@@ -119,28 +119,41 @@
   id: ClothingHeadEVAHelmetBase
   name: base space helmet
   components:
+  - type: BreathMask
   - type: Item
-    size: 10
+    size: Normal
   - type: PressureProtection
     highPressureMultiplier: 0.6
     lowPressureMultiplier: 1000
   - type: TemperatureProtection
     coefficient: 0.2
   - type: IngestionBlocker
+  - type: Clothing
+    #Copies ClothingHeadHardsuitBase behavior
+    equipSound: /Audio/Mecha/mechmove03.ogg
+    unequipSound: /Audio/Mecha/mechmove03.ogg
+    equipDelay: 2
+    unequipDelay: 2
   - type: Tag
     tags:
-    - HidesHair
     - WhitelistChameleon
     - HelmetEVA
   - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide
 
 - type: entity
   abstract: true
   # No parent since we aren't actually an item.
   id: ClothingHeadHardsuitBase
   name: base hardsuit helmet
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
+  - type: BreathMask
   - type: Sprite
     state: icon # default state used by most inheritors
   - type: Clickable
@@ -168,16 +181,21 @@
   - type: IngestionBlocker
   - type: Tag
     tags:
-    - HidesHair
     - WhitelistChameleon
   - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide
 
 - type: entity
   abstract: true
   parent: ClothingHeadHardsuitBase
   id: ClothingHeadHardsuitWithLightBase
   name: base hardsuit helmet with light
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
     layers:
@@ -209,8 +227,6 @@
         startValue: 3.0
         endValue: 2.0
         isLooped: true
-        property: Radius
-        enabled: false
         reverseWhenFinished: true
       - !type:PulseBehaviour
         id: blinking
@@ -219,11 +235,33 @@
         minValue: 0.1
         maxValue: 2.0
         isLooped: true
-        property: Radius
-        enabled: false
   - type: Battery
     maxCharge: 600 #lights drain 3/s but recharge of 2 makes this 1/s. Therefore 600 is 10 minutes of light.
     startingCharge: 600
   - type: BatterySelfRecharger
     autoRecharge: true
     autoRechargeRate: 2 #recharge of 2 makes total drain 1w / s so max charge is 1:1 with time. Time to fully charge should be 5 minutes. Having recharge gives light an extended flicker period which gives you some warning to return to light area.
+
+- type: entity
+  abstract: true
+  id: ClothingHeadHatHoodWinterBase
+  name: base winter coat hood
+  description: A hood, made to keep your head warm.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: icon
+  - type: Clickable
+  - type: Clothing
+    equipSound: /Audio/Effects/rustle1.ogg
+    unequipSound: /Audio/Effects/rustle2.ogg
+    quickEquip: false
+    slots: [ HEAD ]
+  - type: TemperatureProtection
+    coefficient: 0.7
+  - type: GroupExamine
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide

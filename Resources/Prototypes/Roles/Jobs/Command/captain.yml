@@ -18,6 +18,8 @@
 #      time: 54000 # 15 hours
     - !type:OverallPlaytimeRequirement
       time: 504000 #140 hrs # Corvax-RoleTime
+    - !type:AgeRequirement
+      requiredAge: 21
   weight: 20
   startingGear: CaptainGear
   icon: "JobIconCaptain"
@@ -27,19 +29,22 @@
   canBeAntag: false
   accessGroups:
   - AllAccess
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant ]
+  - !type:AddComponentSpecial
+    components:
+      - type: CommandStaff
 
 - type: startingGear
   id: CaptainGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitCaptain
-    back: ClothingBackpackCaptainFilled
     shoes: ClothingShoesBootsLaceup
-    head: ClothingHeadHatCaptain
     eyes: ClothingEyesGlassesSunglasses
     gloves: ClothingHandsGlovesCaptain
-    outerClothing: ClothingOuterArmorCaptainCarapace
     id: CaptainPDA
     ears: ClothingHeadsetAltCommand
-  innerclothingskirt: ClothingUniformJumpskirtCaptain
-  satchel: ClothingBackpackSatchelCaptainFilled
-  duffelbag: ClothingBackpackDuffelCaptainFilled
+  storage:
+    back:
+    - Flash
+    # - StationCharter

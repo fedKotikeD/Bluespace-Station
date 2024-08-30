@@ -7,7 +7,8 @@
   - type: Sprite
     sprite: Corvax/Back/Satchels/military.rsi
   - type: Storage
-    capacity: 131
+    grid:
+    - 0,0,8,4
 
 - type: entity
   parent: ClothingBackpackSatchel
@@ -17,6 +18,3 @@
   components:
   - type: Sprite
     sprite: Corvax/Back/Satchels/ce.rsi
-    state: icon
-  - type: Storage
-    capacity: 100

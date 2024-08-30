@@ -1,11 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Content.Shared.Emag.Systems;
+using Content.Shared.Examine;
+using Content.Shared.Localizations;
 using Content.Shared.Materials;
 using Content.Shared.Research.Prototypes;
 using JetBrains.Annotations;
-using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization;
-using System.Net.Mail;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Lathe;
 
@@ -17,25 +19,26 @@ public abstract class SharedLatheSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SharedMaterialStorageSystem _materialStorage = default!;
 
+    private readonly Dictionary<string, List<LatheRecipePrototype>> _inverseRecipeDictionary = new();
+
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<LatheComponent, ComponentGetState>(OnGetState);
-        SubscribeLocalEvent<LatheComponent, ComponentHandleState>(OnHandleState);
         SubscribeLocalEvent<EmagLatheRecipesComponent, GotEmaggedEvent>(OnEmagged);
+        SubscribeLocalEvent<LatheComponent, ExaminedEvent>(OnExamined);
+        SubscribeLocalEvent<PrototypesReloadedEventArgs>(OnPrototypesReloaded);
+
+        BuildInverseRecipeDictionary();
     }
 
-    private void OnGetState(EntityUid uid, LatheComponent component, ref ComponentGetState args)
+    private void OnExamined(Entity<LatheComponent> ent, ref ExaminedEvent args)
     {
-        args.State = new LatheComponentState(component.MaterialUseMultiplier);
-    }
-
-    private void OnHandleState(EntityUid uid, LatheComponent component, ref ComponentHandleState args)
-    {
-        if (args.Current is not LatheComponentState state)
+        if (!args.IsInDetailsRange)
             return;
-        component.MaterialUseMultiplier = state.MaterialUseMultiplier;
+
+        if (ent.Comp.ReagentOutputSlotId != null)
+            args.PushMarkup(Loc.GetString("lathe-menu-reagent-slot-examine"));
     }
 
     [PublicAPI]
@@ -51,11 +54,11 @@ public abstract class SharedLatheSystem : EntitySystem
         if (!HasRecipe(uid, recipe, component))
             return false;
 
-        foreach (var (material, needed) in recipe.RequiredMaterials)
+        foreach (var (material, needed) in recipe.Materials)
         {
             var adjustedAmount = AdjustMaterial(needed, recipe.ApplyMaterialDiscount, component.MaterialUseMultiplier);
 
-            if (_materialStorage.GetMaterialAmount(component.Owner, material) < adjustedAmount * amount)
+            if (_materialStorage.GetMaterialAmount(uid, material) < adjustedAmount * amount)
                 return false;
         }
         return true;
@@ -70,15 +73,82 @@ public abstract class SharedLatheSystem : EntitySystem
         => reduce ? (int) MathF.Ceiling(original * multiplier) : original;
 
     protected abstract bool HasRecipe(EntityUid uid, LatheRecipePrototype recipe, LatheComponent component);
-}
 
-[Serializable, NetSerializable]
-public sealed class LatheComponentState : ComponentState
-{
-    public float MaterialUseMultiplier;
-
-    public LatheComponentState(float materialUseMultiplier)
+    private void OnPrototypesReloaded(PrototypesReloadedEventArgs obj)
     {
-        MaterialUseMultiplier = materialUseMultiplier;
+        if (!obj.WasModified<LatheRecipePrototype>())
+            return;
+        BuildInverseRecipeDictionary();
+    }
+
+    private void BuildInverseRecipeDictionary()
+    {
+        _inverseRecipeDictionary.Clear();
+        foreach (var latheRecipe in _proto.EnumeratePrototypes<LatheRecipePrototype>())
+        {
+            if (latheRecipe.Result == null)
+                continue;
+
+            _inverseRecipeDictionary.GetOrNew(latheRecipe.Result).Add(latheRecipe);
+        }
+    }
+
+    public bool TryGetRecipesFromEntity(string prototype, [NotNullWhen(true)] out List<LatheRecipePrototype>? recipes)
+    {
+        recipes = new();
+        if (_inverseRecipeDictionary.TryGetValue(prototype, out var r))
+            recipes.AddRange(r);
+        return recipes.Count != 0;
+    }
+
+    public string GetRecipeName(ProtoId<LatheRecipePrototype> proto)
+    {
+        return GetRecipeName(_proto.Index(proto));
+    }
+
+    public string GetRecipeName(LatheRecipePrototype proto)
+    {
+        if (!string.IsNullOrWhiteSpace(proto.Name))
+            return Loc.GetString(proto.Name);
+
+        if (proto.Result is { } result)
+        {
+            return _proto.Index(result).Name;
+        }
+
+        if (proto.ResultReagents is { } resultReagents)
+        {
+            return ContentLocalizationManager.FormatList(resultReagents
+                .Select(p => Loc.GetString("lathe-menu-result-reagent-display", ("reagent", _proto.Index(p.Key).LocalizedName), ("amount", p.Value)))
+                .ToList());
+        }
+
+        return string.Empty;
+    }
+
+    [PublicAPI]
+    public string GetRecipeDescription(ProtoId<LatheRecipePrototype> proto)
+    {
+        return GetRecipeDescription(_proto.Index(proto));
+    }
+
+    public string GetRecipeDescription(LatheRecipePrototype proto)
+    {
+        if (!string.IsNullOrWhiteSpace(proto.Description))
+            return Loc.GetString(proto.Description);
+
+        if (proto.Result is { } result)
+        {
+            return _proto.Index(result).Description;
+        }
+
+        if (proto.ResultReagents is { } resultReagents)
+        {
+            // We only use the first one for the description since these descriptions don't combine very well.
+            var reagent = resultReagents.First().Key;
+            return _proto.Index(reagent).LocalizedDescription;
+        }
+
+        return string.Empty;
     }
 }
